@@ -1,0 +1,11 @@
+Name:                dimensional
+Version:             0.0
+Synopsis:            Statically checked physical dimensions.
+License:             BSD3
+Author:              Bjorn Buckwalter 
+Maintainer:          bjorn@buckwalter.se
+Stability:           Experimental
+Build-Depends:       base
+Exposed-Modules:     Buckwalter.NumType, Buckwalter.Dimensional
+ghc-options:         -O
+ 
