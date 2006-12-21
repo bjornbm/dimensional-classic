@@ -31,7 +31,7 @@ notation that makes mathematicians and physicist cringe. He does
 not mind constructive criticism (or darcs patches).
 
 The sets of functions and units defined herein are incomplete and
-reflect the author's need to date. Again, patches are welcome.
+reflect only the author's needs to date. Again, patches are welcome.
 
 The author has elected to keep the module detached from the standard(?)
 Haskell library hierarchy. In part because the module name space
@@ -44,11 +44,13 @@ where to fit it in.
 This module requires GHC 6.6 or later. We utilize multi-parameter
 type classes, phantom types, functional dependencies and undecidable
 instances (and possibly additional unidentified GHC extensions).
+Clients of the module are generally not required to use these
+extensions.
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
 > module Buckwalter.Dimensional 
->       -- TODO discriminate exports
+>       -- TODO discriminate exports, in particular Variants and Dims.
 >   where
 
 > import Prelude
@@ -63,8 +65,8 @@ instances (and possibly additional unidentified GHC extensions).
 >                            Neg1, Neg2, Neg3, neg1, neg2, neg3)
 
 We will reuse the operators and function names from the Prelude.
-To prevent unpleasant surprises we also give operators the same
-fixity as in the Prelude.
+To prevent unpleasant surprises we give operators the same fixity
+as the Prelude.
 
 > infixr 8  ^
 > infixl 7  *, /
@@ -76,13 +78,13 @@ fixity as in the Prelude.
 Our primary objective is to define a data type that can be used to
 represent (while still differentiating between) units and quantities.
 There are two reasons for consolidating units and quantities in one
-data type. The first being to maximize code reuse as they are largely
+data type. The first being to allow code reuse as they are largely
 subject to the same operations. The second being that it allows
 reuse of operators (and functions) between the two without resorting
 to occasionally cumbersome type classes.
 
-We call this data type 'Dimensional' to capture that the units and
-quantities it represents have physical dimensions.
+We call this data type 'Dimensional' to capture the notion that the
+units and quantities it represents have physical dimensions.
 
 > newtype (Variant v, Dims d) 
 >      => Dimensional v d a = Dimensional a deriving (Show, Eq, Ord)
@@ -105,8 +107,8 @@ and quantities. It should be one of the following:
 > data DUnit
 > data DQuantity
 
-We enforce this using the (non-exported) type class 'DType' of which
-'DUnit' and 'DQuantity' are the only instances.
+We enforce this using the (non-exported) type class 'Variant' of
+which 'DUnit' and 'DQuantity' are the only instances.
 
 > class Variant v
 > instance Variant DUnit
@@ -118,10 +120,10 @@ For convenience we define type synonyms for units and quantities.
 > type Quantity = Dimensional DQuantity
 
 The relationship between (the value of) a 'Quantity', its numerical
-value and its 'Unit' is described in "7.1 Value and numerical value
-of a quantity".  In short a 'Quantity' is the product of a number
-and a 'Unit'. We define the '(*~)' operator as a convenient way to
-declare quantities as such a product.
+value and its 'Unit' is described in 7.1 "Value and numerical value
+of a quantity" of [1]. In short a 'Quantity' is the product of a
+number and a 'Unit'. We define the '(*~)' operator as a convenient
+way to declare quantities as such a product.
 
 > (*~) :: Num a => a -> Unit d a -> Quantity d a
 > x *~ Dimensional y = Dimensional (x P.* y)
@@ -145,10 +147,10 @@ units using '*' and '/', e.g. "1 *~ (meter / second)".
 
 The phantom type variable d encompasses the physical dimension of
 the 'Dimensional'. As detailed in [1] there are seven base dimensions,
-which can be combined in integer power to a given physical dimension.
+which can be combined in integer powers to a given physical dimension.
 We represent physical dimensions as the powers of the seven base
 dimensions that make up the given dimension. The powers are represented
-using 'NumTypes'. For convenience we collect all seven base dimensions
+using NumTypes. For convenience we collect all seven base dimensions
 in a data type 'Dim' which is the sole instance of the 'Dims' type
 class.
 
@@ -200,7 +202,7 @@ quantities of particular physical dimensions.
 
 Quantities with the base dimensions.
 
-> type DimensionLess = Quantity DOne
+> type Dimensionless = Quantity DOne
 > type Length        = Quantity DLength
 > type Mass          = Quantity DMass
 > type Time          = Quantity DTime
@@ -213,8 +215,8 @@ Some quantities with derived dimensions.
 
 > type Frequency       = Quantity DFrequency
 > type Velocity        = Quantity DVelocity
-> type Angle           = DimensionLess
-> type SolidAngle      = DimensionLess
+> type Angle           = Dimensionless
+> type SolidAngle      = Dimensionless
 > type AngularVelocity = Frequency
 > type Force           = Quantity DForce
 > type Thrust          = Force
@@ -227,7 +229,9 @@ Some quantities with derived dimensions.
 
 When performing arithmetic on units and quantities the arithmetics
 must be applied to both the numerical values of the dimensionals
-but also to their physical dimensions.
+but also to their physical dimensions. The type level arithmetic
+on physical dimensions is governed by multiparameter type classes
+and functional dependences.
 
 Multiplication of dimensions corresponds to adding of the base
 dimensions' exponents.
@@ -318,7 +322,7 @@ A special case is that dimensionless quantities are not restricted
 to integer powers. A dimensionless quantity can be raised to the
 power of any other dimensionless quantity.
 
-> instance (Floating a) => Power a DOne (DimensionLess a) DOne
+> instance (Floating a) => Power a DOne (Dimensionless a) DOne
 >   where (Dimensional x) ^ (Dimensional y) = Dimensional (x ** y)
 
 It is permissible to express powers of length units by prefixing
@@ -359,13 +363,13 @@ quantities.
 Sine and cosine make sense only for angles (the type synonym 'Angle'
 is defined later).
 
-> sin, cos :: (Floating a) => Angle a -> DimensionLess a
+> sin, cos :: (Floating a) => Angle a -> Dimensionless a
 > sin (Dimensional x) = Dimensional (P.sin x)
 > cos (Dimensional x) = Dimensional (P.cos x)
 
 The exponential function only makes sense for dimensionless quantities.
 
-> exp :: (Floating a) => DimensionLess a -> DimensionLess a
+> exp :: (Floating a) => Dimensionless a -> Dimensionless a
 > exp (Dimensional x) = Dimensional (P.exp x)
 
 

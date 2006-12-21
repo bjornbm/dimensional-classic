@@ -55,7 +55,7 @@ respectively. The 'PosType' class corresponds to HList's 'HNat'.
 > class NumType n => NegType n
 
 Now we Define the data types used to represent integers. We begin
-with 'Zero' which we allow to be used as both a positive and a
+with 'Zero', which we allow to be used as both a positive and a
 negative number in the sense of the previously defined type classes.
 'Zero' corresponds to HList's 'HZero'.
 
@@ -72,11 +72,8 @@ to HList's 'HSucc').
 > instance (PosType n) => PosType (Pos n)
 
 We could be more restrictive using "data (PosType n) => Pos n" but
-this constriant will not be checked (by GHC) anyway when 'Pos' is
-used solely at the type level. Also note that in the functions of
-the remainder of this module we have neglected to provide e.g.
-'NumType' or 'PosType' constraints, perhaps out of lazyness more
-than anything else.
+this constraint will not be checked (by GHC) anyway when 'Pos' is
+used solely at the type level. 
 
 Finally we define the "predecessor" type used to represent negative
 numbers.
@@ -92,68 +89,71 @@ We start off with some basic building blocks. Negation is a simple
 matter of recursively changing 'Pos' to 'Neg' or vice versa while
 leaving 'Zero' unchanged.
 
-> class (NumType a, NumType b) => Negate a b | a -> b 
->   where negate :: a -> b
-> instance Negate Zero Zero where negate = undefined
+> class (NumType a, NumType b) => Negate a b | a -> b where 
+>   negate :: a -> b
+>   negate _ = undefined
+> instance Negate Zero Zero
 > instance (PosType a, NegType b, Negate a b) => Negate (Pos a) (Neg b)
->    where negate _ = undefined
 > instance (NegType a, PosType b, Negate a b) => Negate (Neg a) (Pos b) 
-> 	where negate _ = undefined
 
 To increment NumTypes we either prepend 'Pos' to numbers greater
 than or equal to Zero or remove a 'Neg' from numbers less than Zero.
 The 'incr' function corresponds roughly to HList's 'hSucc'.
 
-> class (NumType a, NumType b) => Incr a b | a -> b where incr :: a -> b
-> instance Incr Zero (Pos Zero) where incr _ = undefined
-> instance (PosType a) => Incr (Pos a) (Pos (Pos a)) where incr _ = undefined
-> instance (NegType a) => Incr (Neg a) a where incr _ = undefined
+> class (NumType a, NumType b) => Incr a b | a -> b where 
+>   incr :: a -> b
+>   incr _ = undefined
+> instance Incr Zero (Pos Zero)
+> instance (PosType a) => Incr (Pos a) (Pos (Pos a))
+> instance (NegType a) => Incr (Neg a) a
 
 Decrementing is similar but we either remove a 'Pos' from numbers
 greater than Zero or prepend a 'Neg' to numbers less than or equal
 to 'Zero'. The 'decr' function corresponds roughly to HList's
 'hPred'.
 
-> class (NumType a, NumType b) => Decr a b | a -> b where decr :: a -> b
-> instance Decr Zero (Neg Zero) where decr _ = undefined
-> instance (PosType a) => Decr (Pos a) a where decr _ = undefined
-> instance (NegType a) => Decr (Neg a) (Neg (Neg a)) where decr _ = undefined
+> class (NumType a, NumType b) => Decr a b | a -> b where 
+>   decr :: a -> b
+>   decr _ = undefined
+> instance Decr Zero (Neg Zero)
+> instance (PosType a) => Decr (Pos a) a
+> instance (NegType a) => Decr (Neg a) (Neg (Neg a))
 
 We define a class for addition of NumTypes.
 
-> class (NumType a, NumType b, NumType c) => Add a b c | a b -> c
-> 	where (+) :: a -> b -> c
+> class (NumType a, NumType b, NumType c) => Add a b c | a b -> c where 
+>   (+) :: a -> b -> c
+>   _ + _ = undefined
 
 Adding anything to Zero gives "anything".
 
-> instance (NumType a) => Add Zero a a where (+) _ = undefined
+> instance (NumType a) => Add Zero a a
 
 When adding to a non-Zero number our strategy is to "transfer" type
 constructors from the first type to the second type until the first
 type is Zero. We use the 'incr' and 'decr' operators to do this.
 
 > instance (PosType a, Incr b c, Add a c d) => Add (Pos a) b d
->   where _ + _ = undefined
 > instance (NegType a, Decr b c, Add a c d) => Add (Neg a) b d
->   where _ + _ = undefined
 
 We define subtraction using negation and addition.
 
-> class (NumType a, NumType b, NumType c) => Sub a b c | a b -> c 
-> 	where (-) :: a -> b -> c
-> instance (Negate b b', Add a b' c) => Sub a b c where _ - _ = undefined
+> class (NumType a, NumType b, NumType c) => Sub a b c | a b -> c where
+>   (-) :: a -> b -> c
+>   _ - _ = undefined
+> instance (Negate b b', Add a b' c) => Sub a b c
 
 We neglect to provide multiplication and division. However, let us
-define a halving operator which is useful when using a NumType to
-represent an power. Taking the square root requires halving the
-power.
+define a halving operator which is useful when using NumTypes to
+represent powers (taking the square root requires halving the
+power).
 
-> class (NumType a, NumType b) => Halve a b | a -> b where halve :: a -> b
-> instance Halve Zero Zero where halve _ = undefined
+> class (NumType a, NumType b) => Halve a b | a -> b where 
+>   halve :: a -> b
+>   halve _ = undefined
+> instance Halve Zero Zero
 > instance (PosType a, PosType b, Halve a b) => Halve (Pos (Pos a)) (Pos b) 
-> 	where halve _ = undefined
 > instance (NegType a, NegType b, Halve a b) => Halve (Neg (Neg a)) (Neg b) 
-> 	where halve _ = undefined
 
 
 = Convenince types and values =
