@@ -1,6 +1,5 @@
 #labels Announcement,Version-0.1
-{{{
-                                                                                                                                                                                                                                                               
+{{{                                                                                                                                                                                                                                                               
 Received: by 10.65.214.10 with HTTP; Thu, 28 Dec 2006 06:30:22 -0800 (PST)
 Message-ID: <8b2a1a960612280630x39722e50h8f2f75820d954a32@mail.gmail.com>
 Date: Thu, 28 Dec 2006 09:30:22 -0500
@@ -907,5 +906,4 @@ but with the expected types).
 [1] http://homepages.cwi.nl/~ralf/HList/
 
 ~~~~~~~~~~ END 'Buckwalter/NumType.lhs' ~~~~~~~~~~
-
 }}}
