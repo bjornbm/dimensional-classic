@@ -1,4 +1,7 @@
-For documentation see Buckwalter/Dimensional.lhs.
+For documentation see 'Buckwalter/Dimensional.lhs'.
+
+For project information (issues, updates) see:
+    http://code.google.com/p/dimensional/
 
 To install (requires GHC 6.6):
     runhaskell Setup.lhs configure

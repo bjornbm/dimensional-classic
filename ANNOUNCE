@@ -1,0 +1,36 @@
+To: Haskell@haskell.org, FringeDC@googlegroups.com
+Date: 2006-12-28
+Subject: ANNOUNCE: Dimensional -- Statically checked physical dimensions
+
+Dear all,
+
+Inspired by Dons' blog post [2] and further spurred by the recent
+CalDims announcement [3] I have wrapped up version 0.1 of my
+'Dimensional' module for statically checked physical dimensions
+(requires GHC 6.6).
+
+The module facilitates calculations with physical quantities while
+statically preventing e.g. addition of quantities with differing
+physical dimensions. I have used the module to implement (proprietary)
+algorithms related to spacecraft propulsion systems and my experience
+is that it is both usable and substantially improves confidence in
+the code produced.
+
+The 'Dimensional' module and the supporting module 'NumType', both
+written in literate Haskell, follow at the end of this message. For
+a tarball and/or a current darcs repository see [1]. The code is
+released under a BSD3 license.
+
+Before a 1.0 release I intend to, among other thing, change the
+name to something more descriptive (also to avoid confusion with
+Aaron Denney's very similar library [4]). Feedback on whether/where
+to fit the modules in the "module name space" would be appreciated.
+
+Happy New Year!
+
+-Bjorn Buckwalter
+
+[1] http://code.google.com/p/dimensional/
+[2] http://cgi.cse.unsw.edu.au/~dons/blog/2006/12/11#release-a-library-today
+[3] http://article.gmane.org/gmane.comp.lang.haskell.general/14671
+[4] http://www.haskell.org/haskellwiki/Dimensionalized_numbers
