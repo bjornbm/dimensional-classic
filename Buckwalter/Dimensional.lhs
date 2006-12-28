@@ -53,8 +53,8 @@ extensions.
 >       -- TODO discriminate exports, in particular Variants and Dims.
 >   where
 
-> import Prelude
->   (Show, Eq, Ord, Num, Fractional, Floating, String, (.), (++), (**))
+> import Prelude hiding
+>   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
 > import qualified Prelude as P 
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
 > import Buckwalter.NumType (NumType, PosType, NegType, 
@@ -228,9 +228,9 @@ Some quantities with derived dimensions.
 = Arithmetic on physical dimensions =
 
 When performing arithmetic on units and quantities the arithmetics
-must be applied to both the numerical values of the dimensionals
+must be applied to both the numerical values of the Dimensionals
 but also to their physical dimensions. The type level arithmetic
-on physical dimensions is governed by multiparameter type classes
+on physical dimensions is governed by multi-parameter type classes
 and functional dependences.
 
 Multiplication of dimensions corresponds to adding of the base
@@ -278,7 +278,7 @@ base dimensions' exponents.
 = Arithmetic on units and quantities =
 
 Thanks to the arithmetic on physical dimensions having been sorted
-out already a lot of the arithmetic on dimensionals is straight
+out separately a lot of the arithmetic on Dimensionals is straight
 forward. In particular the type signatures are much simplified.
 
 Multiplication, division and powers apply to both units and quantities.
@@ -291,15 +291,13 @@ Multiplication, division and powers apply to both units and quantities.
 >     => Dimensional v d a -> Dimensional v d' a -> Dimensional v d'' a
 > Dimensional x / Dimensional y = Dimensional (x P./ y)
 
-We limit ourselves to integer powers of dimensionals as fractional
+We limit ourselves to integer powers of Dimensionals as fractional
 powers make little physical sense. Since the value of the exponent
 affects the type of the result the value of the exponent must be
-visible to the type system, therefore we represent the exponent
-with a 'NumType'. We must also use a type class to capture the
-different behaviors of positive, zero and negative exponents (To
-accommodate negative powers there is an unfortunate constraint of
-'Fractional' on '^' even if a positive power is used). Also note
-that the we haven't enforced that 'n' is a 'NumType', should we?
+visible to the type system, therefore we will generally represent
+the exponent with a 'NumType'. We must also use a type class to
+capture the different behaviors of positive, zero and negative
+exponents.
 
 > class Power a d n d' | d n -> d' 
 >   where (^) :: Dimensional v d a -> n -> Dimensional v d' a
@@ -319,8 +317,10 @@ Negative exponents.
 >       => Power a d (Neg n) d'' where x ^ n = x ^ incr n / x
 
 A special case is that dimensionless quantities are not restricted
-to integer powers. A dimensionless quantity can be raised to the
-power of any other dimensionless quantity.
+to integer powers. Here we utilize the 'a' type variable of 'Power'
+as well as the fact that the 'n' type variable is not limited to
+NumTypes to allow a dimensionless quantity to be raised to the power
+of any other dimensionless quantity.
 
 > instance (Floating a) => Power a DOne (Dimensionless a) DOne
 >   where (Dimensional x) ^ (Dimensional y) = Dimensional (x ** y)
@@ -331,6 +331,7 @@ of [1]).
 
 > square :: (Num a) => Unit DLength a -> Unit DArea a
 > square x = x * x
+> cubic :: (Num a) => Unit DLength a -> Unit DVolume a
 > cubic  x = square x * x
 
 Some operations only make sense for quantities. Of these, negation,
@@ -377,8 +378,9 @@ The exponential function only makes sense for dimensionless quantities.
 
 Prefixes are used to form decimal multiples and submultiples of SI
 Units as described in 4.4 of [1]. We will define the SI prefixes
-in terms of a 'prefix' function. (The 'prefix' function will also
-be used to define non-SI units.)
+in terms of a 'prefix' function which applies a scale factor to a
+unit. (The 'prefix' function will also be used to define non-SI
+units.)
 
 > prefix :: (Num a) => a -> Unit d a -> Unit d a
 > prefix x (Dimensional y) = Dimensional (x P.* y)
@@ -422,15 +424,15 @@ By defining SI prefixes as functions applied to a 'Unit' we satisfy
 Finally we define the units. To avoid a myriad of one-letter functions
 that would doubtlessly cause clashes and frustration in users' code
 we spell out all unit names in full, as we did for prefixes. We
-also elect to spell the unit names in singular form, as allowed in
+also elect to spell the unit names in singular form, as allowed by
 9.7 "Other spelling conventions" of [1].
 
 The first unit we will define is 'one'. The unit one has dimension
-one and is the base unit of "dimension-less" values. As detailed
-in 7.10 "Values of quantities expressed simply as numbers: the unit
+one and is the base unit of dimensionless values. As detailed in
+7.10 "Values of quantities expressed simply as numbers: the unit
 one, symbol 1" of [1] the unit one generally does not appear in
 expressions. However, for us it is necessary to use 'one' as we
-would any other unit to perform the boxing of dimension-less values.
+would any other unit to perform the "boxing" of dimensionless values.
 
 > one     :: Num a => Unit DOne a
 > one     = Dimensional 1
@@ -441,8 +443,8 @@ We continue by defining the other SI base units (see 4.1 of [1]).
 > meter   = Dimensional 1
 
 For mass the SI base unit is kilogram. For sensible prefixes we
-define gram here (see 6.2.7 Prefixes and the kilogram). The drawback
-is that we are forced to use 'Fractional'.
+define gram here (see 6.2.7 "Prefixes and the kilogram" in [1]).
+The drawback is that we are forced to use 'Fractional'.
 
 > gram    :: Fractional a => Unit DMass a
 > gram    = Dimensional 1e-3
@@ -515,13 +517,13 @@ Other (non inch-pound) units.
 
 The unit system we have devised and used above will not work well
 with some non-SI units. In particular units which do not scale
-linearly with respect to the SI units, for example the logarithmic
-unit neper (see 8.7 "Logarithmic quantities and units: level, neper,
-bel" of [1]).
+linearly with respect to the SI units, for example logarithmic units
+(see 8.7 "Logarithmic quantities and units: level, neper, bel" of
+[1]).
 
 Another problematic area is units which increase proportionally to
-the SI unit but crosses zero at a different point. An example would
-be degrees Celsius.  The author feels that it is appropriate to
+the SI units but cross zero at a different point. An example would
+be degrees Celsius. The author feels that it is appropriate to
 define a unit for use with relative quantities (taking only into
 account the proportionality) and complement the unit with functions
 for converting absolute values.
@@ -538,13 +540,15 @@ for converting absolute values.
 
 We have defined operators and units that allow us to define and
 work with physical quantities. A physical quantity is defined by
-multiplying a number with a unit.
+multiplying a number with a unit (the type signature is optional).
 
+] v :: Velocity Prelude.Double
 ] v = 90 *~ (kilo meter / hour)
 
 It follows naturally that the numerical value of a quantity is
 obtained by division by a unit.
 
+] numval :: Prelude.Double
 ] numval = v /~ (meter / second)
  
 The notion of a quantity as the product of a numerical value and a
@@ -555,7 +559,7 @@ that it must violate a number of the guidelines in [1], in particular
 obtained by multiplication", 9.5 "Spelling unit names obtained by
 division".
 
-As a more elaborate example of how to use the library we define a
+As a more elaborate example of how to use the module we define a
 function for calculating the escape velocity of a celestial body
 [2].
 
@@ -605,21 +609,19 @@ In other cases the error messages aren't very friendly.
       Sub Zero (Pos Zero) Zero,
         arising from use of `/' at Buckwalter/Dimensional.lhs:532:5-30
 
-It is the author's experience that the compiler error messages
-usefullness is more often than not limited to pinpointing the
+It is the author's experience that the usefullness of the compiler
+error messages is more often than not limited to pinpointing the
 location of errors.
 
 
-= Future work (TODO) =
+= Future work =
 
 While there is an insane amount of units in use around the world
 it is reasonable to provide at least all SI units. Units outside
-of SI could be added on an as needed basis. As the number of units
-grows perhaps it will be desirable to move the units (or at least
-the non-SI units) to a separate module.
+of SI will most likely be added on an as-needed basis. 
 
-There are also plenty of elementary functions to add. The Floating
-class could be used as reference.
+There are also plenty of elementary functions to add. The 'Floating'
+class can be used as reference.
 
 Another useful addition would be decent 'Show' and 'Read' instances.
 The 'show' implementation could output the numerical value and the
@@ -630,9 +632,8 @@ unit expressed in (base?) SI units, along the lines of:
 
 Additional functions could be provided for "showing" with any unit
 and prefix.  The 'read' implementation should be able to read values
-with any unit and prefix. Of course the implementation. It is not
-clear to the author how to best implement these, and if it can be
-done generically.
+with any unit and prefix. It is not clear to the author how to best 
+implement these.
 
 Additional physics models could be implemented. See [3] for ideas.
 
@@ -642,11 +643,13 @@ Additional physics models could be implemented. See [3] for ideas.
 Henning Thielemann numeric prelude has a physical units library,
 however, checking of dimensions is dynamic rather than static.
 Aaron Denney has created a toy example of statically checked
-physical checking. HaskellWiki has pointers [4] to these.
+physical dimensions covering only length and time. HaskellWiki
+has pointers [4] to these.
 
-Similar libraries exist for other programming languages and may
-serve as inspiration. The author has found the Java library JScience
-[5] and the Fortress programming language [6] particularly noteworthy.
+Libraries with similar functionality exist for other programming
+languages and may serve as inspiration. The author has found the
+Java library JScience [5] and the Fortress programming language [6]
+particularly noteworthy.
 
 
 = References =
