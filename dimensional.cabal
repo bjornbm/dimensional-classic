@@ -5,7 +5,7 @@ License:             BSD3
 License-File:        LICENSE
 Author:              Bjorn Buckwalter 
 Maintainer:          bjorn@buckwalter.se
-Stability:           Experimental
+Stability:           Unstable
 Build-Depends:       base
 Exposed-Modules:     Buckwalter.NumType, Buckwalter.Dimensional
 ghc-options:         -O
