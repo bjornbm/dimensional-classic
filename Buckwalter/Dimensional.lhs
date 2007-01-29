@@ -331,7 +331,7 @@ of [1]).
 
 > square :: (Num a) => Unit DLength a -> Unit DArea a
 > square x = x * x
-> cubic :: (Num a) => Unit DLength a -> Unit DVolume a
+> cubic  :: (Num a) => Unit DLength a -> Unit DVolume a
 > cubic  x = square x * x
 
 Some operations only make sense for quantities. Of these, negation,
