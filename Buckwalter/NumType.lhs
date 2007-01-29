@@ -1,6 +1,5 @@
 Buckwalter.NumType -- Type level integers
-Bjorn Buckwalter, bjorn@buckwalter.se
-2006-12-19, version 0.1 (unstable)
+Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: Public domain
 
 

@@ -1,6 +1,5 @@
 Buckwalter.Dimensional -- Statically checked physical dimensions
-Bjorn Buckwalter, bjorn@buckwalter.se
-2006-12-28, version 0.1 (unstable)
+Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
 

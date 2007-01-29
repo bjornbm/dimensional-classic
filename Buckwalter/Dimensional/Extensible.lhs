@@ -1,12 +1,11 @@
-Buckwalter.Dimensional.Extensible
-Bjorn Buckwalter, bjorn@buckwalter.se
-2007-01-28, version 0.1 (experimental)
+Buckwalter.Dimensional.Extensible -- Extensible physical dimensions
+Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
 
 = Summary =
 
-On January 3 Mike Gunter asked:
+On January 3 Mike Gunter asked[1]:
 
 | The very nice Buckwalter and Denney dimensional-numbers packages
 | both work on a fixed set of base dimensions.  This is a significant
@@ -167,4 +166,9 @@ Ditto for 'square' and 'cubic'.
 (As a side note we could probably use 'BaseDim' to clean up the constraints and/or
 reduce the instances of 'Power' above, and perhaps for 'Mul' and
 'Div'.)
+
+
+= References =
+
+[1] http://www.haskell.org/pipermail/haskell-cafe/2007-January/021069.html
 
