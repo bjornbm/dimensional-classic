@@ -33,9 +33,9 @@ Similarly with 'Buckwalter.Dimensional' this module requires GHC
 
 > import Prelude hiding
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
-> import qualified Prelude as P ((*), sin, cos, exp)
-> import Buckwalter.NumType (NumType, Add, Sub, Halve, Negate, Zero, Pos1) 
-> import Buckwalter.Dimensional hiding (square, cubic, sin, cos, exp)
+> import qualified Prelude as P ((*), (/), sin, cos, exp)
+> import Buckwalter.NumType (NumType, Add, Sub, Halve, Negate, Zero, Pos, Neg) 
+> import Buckwalter.Dimensional hiding ((/~), square, cubic, sin, cos, exp)
 
 
 = DExt, Apples and Oranges =
@@ -49,7 +49,7 @@ us to use the 'Dimensional' type without change.
 > instance Dims (DExt n d)
 
 Using 'DExt' we can define type synonyms for extended dimensions
-applicable to our problem domain. For exampel, Mike Gunter could
+applicable to our problem domain. For example, Mike Gunter could
 define the 'Apples' and 'Oranges' dimensions and the corresponding
 quantities.
 
@@ -69,7 +69,7 @@ And while he was at it he could define corresponding units.
 
 = Arithmetic =
 
-We get negation, addition and subtracton for free with extended
+We get negation, addition and subtraction for free with extended
 dimensionals. However, we will need instances of the 'Mul', 'Div'
 and 'Sqrt' classes for the corresponding operations to work.
 
@@ -130,7 +130,7 @@ In 'Buckwalter.Dimensional' the elementary functions where restricted
 to dimensionals with the physical dimension 'DOne'. The same applies
 to the 'square' and 'cubic' functions and the 'DLength' dimension
 respectively. Unfortunately this implementation is inflexible in
-that it will not accomodate extended dimensionals even if they have
+that it will not accommodate extended dimensionals even if they have
 no extend into the extra dimensions (i.e. the powers are all 'Zero').
 To solve this problem we must provide new, generalized implementations
 of such functions.
@@ -141,7 +141,7 @@ extended dimension has a corresponding base dimension if the powers
 of all extra dimensions are 'Zero'. Two 'BaseDim' instances are
 required.
 
-> class BaseDim d d' | d -> d'
+> class (Dims d, Dims d') => BaseDim d d' | d -> d'
 > instance BaseDim (Dim l m t i th n j) (Dim l m t i th n j)
 > instance (BaseDim d d') => BaseDim (DExt Zero d) d'
 
@@ -163,9 +163,32 @@ Ditto for 'square' and 'cubic'.
 > cubic  :: (Num a, BaseDim d DLength) => Unit d a -> Unit DVolume a
 > cubic  (Dimensional x) = Dimensional (x P.* x P.* x)
 
-(As a side note we could probably use 'BaseDim' to clean up the constraints and/or
-reduce the instances of 'Power' above, and perhaps for 'Mul' and
-'Div'.)
+(As a side note we could probably use 'BaseDim' to clean up the
+constraints and/or reduce the instances of 'Power' above, and perhaps
+for 'Mul' and 'Div'.)
+
+
+= Two days later... =
+
+I realized that '(/~)' was broken for the combination of extended
+quantity and "base" units.  Specifically the compiler would choke
+when dividing a extended quantity by a base unit even if the
+dimensions are equivalent.  To work around this we define the type
+class 'Minimal' which relates 'Dims' to the minimal equivalent
+'Dims' type.
+
+> class (Dims d, Dims d') => Minimal d d' | d -> d'
+> instance Minimal (Dim l m t i th n j) (Dim l m t i th n j)
+> instance (Minimal d d') => Minimal (DExt Zero d) d'
+> instance Minimal (DExt (Pos n) d) (DExt (Pos n) d)
+> instance Minimal (DExt (Neg n) d) (DExt (Neg n) d)
+
+We then redefine the '(/~)' operator.
+
+> infixl 7  /~
+> (/~) :: (Fractional a, Minimal d d'', Minimal d' d'') 
+>      => Quantity d a -> Unit d' a -> a
+> Dimensional x /~ Dimensional y = x P./ y
 
 
 = References =
