@@ -183,12 +183,23 @@ class 'Minimal' which relates 'Dims' to the minimal equivalent
 > instance Minimal (DExt (Pos n) d) (DExt (Pos n) d)
 > instance Minimal (DExt (Neg n) d) (DExt (Neg n) d)
 
+('Minimal' can replace 'BaseDim' above.)
+
 We then redefine the '(/~)' operator.
 
 > infixl 7  /~
 > (/~) :: (Fractional a, Minimal d d'', Minimal d' d'') 
 >      => Quantity d a -> Unit d' a -> a
 > Dimensional x /~ Dimensional y = x P./ y
+
+
+= Even later =
+
+'(+)' and '(-)' are similarly broken. Perhaps a better change is
+to modify the 'Mul' and 'Div' instances to return a base dimensional
+if possible. Since '(*)' and '(/)' are the only operations that may
+cause cancelling of dimensions that should be sufficient and also
+save us from redefining the elementary functions!
 
 
 = References =
