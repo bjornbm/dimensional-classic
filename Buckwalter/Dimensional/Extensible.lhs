@@ -33,9 +33,9 @@ Similarly with 'Buckwalter.Dimensional' this module requires GHC
 
 > import Prelude hiding
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
-> import qualified Prelude as P ((*), (/), sin, cos, exp)
+> import qualified Prelude as P ((*), (/), (+), (-), sin, cos, exp)
 > import Buckwalter.NumType (NumType, Add, Sub, Halve, Negate, Zero, Pos, Neg) 
-> import Buckwalter.Dimensional hiding ((/~), square, cubic, sin, cos, exp)
+> import Buckwalter.Dimensional hiding ((/~), (+), (-), square, cubic, sin, cos, exp)
 
 
 = DExt, Apples and Oranges =
@@ -195,12 +195,27 @@ We then redefine the '(/~)' operator.
 
 = Even later =
 
-'(+)' and '(-)' are similarly broken. Perhaps a better change is
-to modify the 'Mul' and 'Div' instances to return a base dimensional
-if possible. Since '(*)' and '(/)' are the only operations that may
-cause cancelling of dimensions that should be sufficient and also
-save us from redefining the elementary functions!
+'(+)' and '(-)' are similarly broken. 
 
+> infixl 6 +, -
+
+> (+) :: (Num a, Minimal d d'', Minimal d' d'') 
+>     => Quantity d a -> Quantity d' a -> Quantity d a
+> Dimensional x + Dimensional y = Dimensional (x P.+ y)
+
+> (-) :: (Num a, Minimal d d'', Minimal d' d'') 
+>     => Quantity d a -> Quantity d' a -> Quantity d a
+> x - y = x + negate y
+
+To the best of my knowledge the above fixes the arithmetic
+interoperability with base dimensionals. It does not however permit
+completely seamless use of base dimensions in tyoe signatures.
+
+Perhaps a better change is to modify the 'Mul' and 'Div' instances
+to return a base dimensional if possible. Since '(*)' and '(/)' are
+the only operations that may cause cancelling of dimensions that
+should be sufficient and also save us from redefining the elementary
+functions!
 
 = References =
 
