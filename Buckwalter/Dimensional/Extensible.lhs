@@ -53,7 +53,7 @@ applicable to our problem domain. For example, Mike Gunter could
 define the 'Apples' and 'Oranges' dimensions and the corresponding
 quantities.
 
-] type DApples  = DExt Pos1 (DExt Zero DOne)
+] type DApples  = DExt Pos1 DOne
 ] type DOranges = DExt Zero (DExt Pos1 DOne)
 
 ] type Apples   = Quantity DApples
@@ -67,155 +67,85 @@ And while he was at it he could define corresponding units.
 ] orange = Dimensional 1
 
 
-= Arithmetic =
+= Minimal representation =
+
+Extended dimensions are added in a left to right (or outermost to
+innermost) with the base dimensions ('Dim') terminating the sequence.
+Any dimensions with zero extent directly preceeding the 'Dim' are
+insignificant. A /minimal representation/ of a dimension is one
+where all insignificant dimensions have been removed. For example,
+the minimal representation of "DExt Pos1 (DExt Zero (Dim ...))" is
+"DExt Pos1 (Dim ...)". 
+
+We define the type class 'Minimal' that "derives" the minimal
+representation of a dimension.
+
+ > class (Dims d, Dims d') => Minimal d d' | d -> d'
+ > instance Minimal (Dim l m t i th n j) (Dim l m t i th n j)
+ > instance (Minimal d d') => Minimal (DExt (Pos n) d) (DExt (Pos n) d')
+ > instance (Minimal d d') => Minimal (DExt (Neg n) d) (DExt (Neg n) d')
+ > instance (Minimal d d', Minimal' d' d'') => Minimal (DExt Zero d) d''
+
+For the last instance we need the helping 'Minimal'' class. If the
+first parameter ('d') of the 'Minimal'' class is a 'Dim' then the
+second parameter is a 'Dim'. Otherwise the first parameter is
+prefixed by a zero dimension. The intent of this class is to obtain
+the minimal representation of "DExt Zero d", assuming d is already
+minimal.
+
+ > class (Dims d, Dims d') => Minimal' d d' | d -> d'
+ > instance Minimal' (Dim l m t i th n j) (Dim l m t i th n j)
+ > instance Minimal' (DExt n d) (DExt Zero (DExt n d))
+
+> class (Dims d, Dims d') => Minimal d d' | d -> d'
+> instance Minimal (DExt (Pos n) d) (DExt (Pos n) d)
+> instance Minimal (DExt (Neg n) d) (DExt (Neg n) d)
+> instance Minimal (DExt Zero (DExt n d)) (DExt Zero (DExt n d))
+> instance Minimal (DExt Zero (Dim l m t i th n j)) (Dim l m t i th j j)
+
+The minimal representation should always be
+used, as in the above example.
+
+
+= Mul and Div = 
 
 We get negation, addition and subtraction for free with extended
 dimensionals. However, we will need instances of the 'Mul', 'Div'
 and 'Sqrt' classes for the corresponding operations to work.
 
-> instance (Add n n' n'', Mul d d' d'') 
->       => Mul (DExt n d) (DExt n' d') (DExt n'' d'')
 
-> instance (Sub n n' n'', Div d d' d'') 
->       => Div (DExt n d) (DExt n' d') (DExt n'' d'')
+Multiplication and division can cause dimensions to be eliminated.
+We use the 'Minimal' type class to guarantee that the result of a
+multiplication or division has a minimal representation.
+
+When only one of the 'Mul' factors is an extended dimensional there is
+no need to minimize.
+
+> instance (Mul d (Dim l m t i th n j) d') 
+>       => Mul (DExt x d) (Dim l m t i th n j) (DExt x d')
+> instance (Mul (Dim l m t i th n j) d d') 
+>       => Mul (Dim l m t i th n j) (DExt x d) (DExt x d')
+
+If both of the factors are extended the product must be minimized.
+
+> instance (Add n n' n'', Mul d d' d'', Minimal (DExt n'' d'') d''') 
+>       => Mul (DExt n d) (DExt n' d') d'''
+
+Analogously for 'Div'.
+
+> instance (Div d (Dim l m t i th n j) d') 
+>       => Div (DExt x d) (Dim l m t i th n j) (DExt x d')
+> instance (Div (Dim l m t i th n j) d d', Negate x x') 
+>       => Div (Dim l m t i th n j) (DExt x d) (DExt x' d')
+
+> instance (Sub n n' n'', Div d d' d'', Minimal (DExt n'' d'') d''') 
+>       => Div (DExt n d) (DExt n' d') d'''
+
+The 'sqrt' function is straight-forward since it cannot eliminate
+any dimensions.
 
 > instance (Halve n n', Sqrt d d') => Sqrt (DExt n d) (DExt n' d')
 
-Now, in order to work seamlessly with the quantities and units
-defined in 'Buckwalter.Dimensional' we must be able to automatically
-extend their dimensions when multiplying or dividing by an extended
-dimensional.
-
-> instance (Mul d (Dim l m t i th n j) d') => Mul (DExt x d)
->                                                 (Dim l m t i th n j)
->                                                 (DExt x d')
-> instance (Mul (Dim l m t i th n j) d d') => Mul (Dim l m t i th n j)
->                                                 (DExt x d)
->                                                 (DExt x d')
-
-> instance (Div d (Dim l m t i th n j) d') => Div (DExt x d)
->                                                 (Dim l m t i th n j)
->                                                 (DExt x d')
-> instance (Div (Dim l m t i th n j) d d', Negate x x') 
->       => Div (Dim l m t i th n j)
->              (DExt x d) 
->              (DExt x' d')
-
-The above instances also enable taking integer powers of extended
-dimensionals. To allow dimensionless quantities to be raised to the
-power of any other dimensionless quantity (where either or both of
-the quantities may be an extended dimensional) some new 'Power'
-instances are required.
-
-> instance (Floating a, Power a d (Dimensionless a) DOne)
->       => Power a (DExt Zero d) (Dimensionless a) DOne
->   where (Dimensional x) ^ (Dimensional y) = Dimensional (x ** y)
-
-> instance (Floating a, Power a DOne (Quantity d a) DOne)
->       => Power a DOne (Quantity (DExt Zero d) a) DOne
->   where (Dimensional x) ^ (Dimensional y) = Dimensional (x ** y)
-
-> instance (Floating a, Power a d (Quantity d' a) DOne)
->       => Power a (DExt Zero d) (Quantity (DExt Zero d') a) DOne
->   where (Dimensional x) ^ (Dimensional y) = Dimensional (x ** y)
-
-Note that the extra dimensions are dropped from the result. This
-is acceptable since they will be added again as necessary when
-multiplying or dividing by extended dimensionals.
-
-
-= Elementary functions, 'square' and 'cubic' =
-
-In 'Buckwalter.Dimensional' the elementary functions where restricted
-to dimensionals with the physical dimension 'DOne'. The same applies
-to the 'square' and 'cubic' functions and the 'DLength' dimension
-respectively. Unfortunately this implementation is inflexible in
-that it will not accommodate extended dimensionals even if they have
-no extend into the extra dimensions (i.e. the powers are all 'Zero').
-To solve this problem we must provide new, generalized implementations
-of such functions.
-
-We start by defining the class 'BaseDim' which relates extended
-dimensions to the corresponding base dimension if applicable. An
-extended dimension has a corresponding base dimension if the powers
-of all extra dimensions are 'Zero'. Two 'BaseDim' instances are
-required.
-
-> class (Dims d, Dims d') => BaseDim d d' | d -> d'
-> instance BaseDim (Dim l m t i th n j) (Dim l m t i th n j)
-> instance (BaseDim d d') => BaseDim (DExt Zero d) d'
-
-Using 'BaseDim' in the constraints we can now redefine the elementary
-functions. As with the 'Power' instances above we drop the extra
-dimensions from the results.
-
-> sin, cos :: (Floating a, BaseDim d DOne) => Quantity d a -> Dimensionless a
-> sin (Dimensional x) = Dimensional (P.sin x)
-> cos (Dimensional x) = Dimensional (P.cos x)
-
-> exp :: (Floating a, BaseDim d DOne) => Quantity d a -> Dimensionless a
-> exp (Dimensional x) = Dimensional (P.exp x)
-
-Ditto for 'square' and 'cubic'.
-
-> square :: (Num a, BaseDim d DLength) => Unit d a -> Unit DArea a
-> square (Dimensional x) = Dimensional (x P.* x)
-> cubic  :: (Num a, BaseDim d DLength) => Unit d a -> Unit DVolume a
-> cubic  (Dimensional x) = Dimensional (x P.* x P.* x)
-
-(As a side note we could probably use 'BaseDim' to clean up the
-constraints and/or reduce the instances of 'Power' above, and perhaps
-for 'Mul' and 'Div'.)
-
-
-= Two days later... =
-
-I realized that '(/~)' was broken for the combination of extended
-quantity and "base" units.  Specifically the compiler would choke
-when dividing a extended quantity by a base unit even if the
-dimensions are equivalent.  To work around this we define the type
-class 'Minimal' which relates 'Dims' to the minimal equivalent
-'Dims' type.
-
-> class (Dims d, Dims d') => Minimal d d' | d -> d'
-> instance Minimal (Dim l m t i th n j) (Dim l m t i th n j)
-> instance (Minimal d d') => Minimal (DExt Zero d) d'
-> instance Minimal (DExt (Pos n) d) (DExt (Pos n) d)
-> instance Minimal (DExt (Neg n) d) (DExt (Neg n) d)
-
-('Minimal' can replace 'BaseDim' above.)
-
-We then redefine the '(/~)' operator.
-
-> infixl 7  /~
-> (/~) :: (Fractional a, Minimal d d'', Minimal d' d'') 
->      => Quantity d a -> Unit d' a -> a
-> Dimensional x /~ Dimensional y = x P./ y
-
-
-= Even later =
-
-'(+)' and '(-)' are similarly broken. 
-
-> infixl 6 +, -
-
-> (+) :: (Num a, Minimal d d'', Minimal d' d'') 
->     => Quantity d a -> Quantity d' a -> Quantity d a
-> Dimensional x + Dimensional y = Dimensional (x P.+ y)
-
-> (-) :: (Num a, Minimal d d'', Minimal d' d'') 
->     => Quantity d a -> Quantity d' a -> Quantity d a
-> x - y = x + negate y
-
-To the best of my knowledge the above fixes the arithmetic
-interoperability with base dimensionals. It does not however permit
-completely seamless use of base dimensions in tyoe signatures.
-
-Perhaps a better change is to modify the 'Mul' and 'Div' instances
-to return a base dimensional if possible. Since '(*)' and '(/)' are
-the only operations that may cause cancelling of dimensions that
-should be sufficient and also save us from redefining the elementary
-functions!
 
 = References =
 
