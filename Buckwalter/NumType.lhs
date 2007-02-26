@@ -34,7 +34,8 @@ instances (and possibly additional unidentified GHC extensions).
 > 	zero, pos1, pos2, pos3, neg1, neg2, neg3,
 >   ) where
 
-> import Prelude (undefined)
+> import Prelude hiding ((*), (/), (+), (-), negate) -- (undefined, Integral)
+> import qualified Prelude as P ((+), (-))
 
 Use the same fixity for operators as the Prelude.
 
@@ -43,9 +44,11 @@ Use the same fixity for operators as the Prelude.
 
 = NumTypes =
 
-We start by defining a class encompassing all integers.
+We start by defining a class encompassing all integers with the
+class function 'asIntegral' that converts from the type-level to a
+value-level 'Integral'.
 
-> class NumType n
+> class NumType n where asIntegral :: (Integral a) => n -> a
 
 Then we define classes encompassing all positive and negative integers
 respectively. The 'PosType' class corresponds to HList's 'HNat'.
@@ -59,7 +62,7 @@ negative number in the sense of the previously defined type classes.
 'Zero' corresponds to HList's 'HZero'.
 
 > data Zero
-> instance NumType Zero
+> instance NumType Zero where asIntegral _ = 0
 > instance PosType Zero
 > instance NegType Zero
 
@@ -67,7 +70,8 @@ Next we define the "successor" type, here called 'Pos' (corresponding
 to HList's 'HSucc').
 
 > data Pos n
-> instance (PosType n) => NumType (Pos n)
+> instance (PosType n) => NumType (Pos n) where 
+>   asIntegral _ = asIntegral (undefined :: n) P.+ 1 
 > instance (PosType n) => PosType (Pos n)
 
 We could be more restrictive using "data (PosType n) => Pos n" but
@@ -78,9 +82,19 @@ Finally we define the "predecessor" type used to represent negative
 numbers.
 
 > data Neg n
-> instance (NegType n) => NumType (Neg n)
+> instance (NegType n) => NumType (Neg n) where
+>   asIntegral _ = asIntegral (undefined :: n) P.- 1 
 > instance (NegType n) => NegType (Neg n)
  
+
+= Show instances =
+
+We create show instances for the defines NumTypes for convenience.
+
+> instance Show Zero where show _ = "NumType 0"
+> instance (PosType n) => Show (Pos n) where show x = "NumType " ++ show (asIntegral x)
+> instance (NegType n) => Show (Neg n) where show x = "NumType " ++ show (asIntegral x)
+
  
 = NumType arithmetic =
 
@@ -154,6 +168,45 @@ power).
 > instance (PosType a, PosType b, Halve a b) => Halve (Pos (Pos a)) (Pos b) 
 > instance (NegType a, NegType b, Halve a b) => Halve (Neg (Neg a)) (Neg b) 
 
+Class for multiplication. Limited by the type checker stack. If the
+multiplication is too large this error message will be emitted:
+
+    Context reduction stack overflow; size = 20 
+    Use -fcontext-stack=N to increase stack size to N
+
+> class (NumType a, NumType b, NumType c) => Mul a b c | a b -> c where 
+>   (*) :: a -> b -> c 
+>   _ * _ = undefined
+
+> instance (NumType n) => Mul Zero n Zero
+> instance (PosType n, Mul n n' n'', Add n'' n' n''') => Mul (Pos n) n' n'''
+> instance (NegType n, Mul n n' n'', Sub n'' n' n''') => Mul (Neg n) n' n'''
+
+
+Class for non-zero numbers. This is needed to prohibit divide-by-zero.
+
+> class NonZero n
+> instance NonZero (Pos n)
+> instance NonZero (Neg n)
+
+Division.
+
+> -- class (NumType a, NumType b, NumType c) => Div a b c | a b -> c where 
+> class Div a b c | a b -> c where 
+>   (/) :: a -> b -> c 
+>   _ / _ = undefined
+
+> instance (NonZero n) => Div Zero n Zero
+> instance (Sub (Pos n) (Pos n') n'', PosType n'',  Div n'' (Pos n') n''') 
+>       => Div (Pos n) (Pos n') (Pos n''')
+> instance (Negate n p, Negate n' p', Div (Pos p) (Pos p') (Pos p''))
+>       => Div (Neg n) (Neg n') (Pos p'')
+> -- instance (Sub (Neg n) (Neg n') n'', NegType n'', Div n'' (Neg n') n''') => 
+> --   Div (Neg n) (Neg n') (Pos n''')
+
+
+
+ > instance (NonZero n', Div' n n' n'') => Div n n' n''
 
 = Convenince types and values =
 

@@ -483,10 +483,16 @@ the SI (see 5.1 of [1]).
 
 > degree :: Floating a => Unit DOne a
 > degree = prefix (P.pi P./ 180) radian
-> minute, hour, day :: Num a => Unit DTime a
+
+Note that all the below time units are "nominal" units, in the sense
+that they represent the given time span provided there was no leap
+second or leap year.
+
+> minute, hour, day, year :: Num a => Unit DTime a
 > minute = prefix 60 second
 > hour   = prefix 60 minute
 > day    = prefix 24 hour
+> year   = prefix 365 day
 
 We continue with units not accepted for use in with the SI, in
 particular the US customary (that is, inch-pound) units.
@@ -510,6 +516,8 @@ Other (non inch-pound) units.
 
 > bar :: (Fractional a) => Unit DPressure a
 > bar = prefix 1.0e5 pascal
+> revolution :: (Floating a) => Unit DOne a
+> revolution = prefix 360 degree
 
 
 = Less conformant units =
