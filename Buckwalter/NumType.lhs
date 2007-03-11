@@ -27,11 +27,11 @@ instances (and possibly additional unidentified GHC extensions).
 
 > module Buckwalter.NumType (
 > 	Zero, Pos, Neg,
-> 	NumType, PosType, NegType,
+> 	NumType, PosType, NegType, asIntegral,
 > 	Negate, negate, Incr, incr, Decr, decr, 
 >   Add, (+), Sub, (-), Halve, halve,
 > 	Pos1, Pos2, Pos3, Neg1, Neg2, Neg3,
-> 	zero, pos1, pos2, pos3, neg1, neg2, neg3,
+> 	zero, pos1, pos2, pos3, pos4, pos5, neg1, neg2, neg3, neg4, neg5
 >   ) where
 
 > import Prelude hiding ((*), (/), (+), (-), negate) -- (undefined, Integral)
@@ -102,37 +102,39 @@ We start off with some basic building blocks. Negation is a simple
 matter of recursively changing 'Pos' to 'Neg' or vice versa while
 leaving 'Zero' unchanged.
 
-> class (NumType a, NumType b) => Negate a b | a -> b where 
+> class (NumType a, NumType b) => Negate a b | a -> b, b -> a where 
 >   negate :: a -> b
 >   negate _ = undefined
 > instance Negate Zero Zero
 > instance (PosType a, NegType b, Negate a b) => Negate (Pos a) (Neg b)
 > instance (NegType a, PosType b, Negate a b) => Negate (Neg a) (Pos b) 
 
-To increment NumTypes we either prepend 'Pos' to numbers greater
-than or equal to Zero or remove a 'Neg' from numbers less than Zero.
-The 'incr' function corresponds roughly to HList's 'hSucc'.
+We define two type classes for incrementing and decrementing NumTypes.
+The 'incr' and 'decr' functions correspond roughly to HList's 'hSucc'
+and 'hPred' respectively.
 
-> class (NumType a, NumType b) => Incr a b | a -> b where 
+> class (NumType a, NumType b) => Incr a b | a -> b, b -> a where 
 >   incr :: a -> b
 >   incr _ = undefined
-> instance Incr Zero (Pos Zero)
-> instance (PosType a) => Incr (Pos a) (Pos (Pos a))
-> instance (NegType a) => Incr (Neg a) a
 
-Decrementing is similar but we either remove a 'Pos' from numbers
-greater than Zero or prepend a 'Neg' to numbers less than or equal
-to 'Zero'. The 'decr' function corresponds roughly to HList's
-'hPred'.
-
-> class (NumType a, NumType b) => Decr a b | a -> b where 
+> class (NumType a, NumType b) => Decr a b | a -> b, b -> a where
 >   decr :: a -> b
 >   decr _ = undefined
-> instance Decr Zero (Neg Zero)
-> instance (PosType a) => Decr (Pos a) a
-> instance (NegType a) => Decr (Neg a) (Neg (Neg a))
 
-We define a class for addition of NumTypes.
+To increment NumTypes we either prepend 'Pos' to numbers greater
+than or equal to Zero or remove a 'Neg' from numbers less than Zero.
+
+> instance Incr Zero (Pos Zero)
+> instance (PosType a) => Incr (Pos a) (Pos (Pos a))
+> instance Incr (Neg Zero) Zero
+> instance (NegType a) => Incr (Neg (Neg a)) (Neg a)
+
+Decrementing is the inverse of incrementing. 
+
+> instance (Incr b a) => Decr a b
+
+Now let us move on towards more complex arithmetic operations. We define
+a class for addition of NumTypes.
 
 > class (NumType a, NumType b, NumType c) => Add a b c | a b -> c where 
 >   (+) :: a -> b -> c
@@ -228,9 +230,13 @@ but with the expected types).
 > pos1 = incr zero
 > pos2 = incr pos1
 > pos3 = incr pos2
+> pos4 = incr pos3
+> pos5 = incr pos4
 > neg1 = decr zero
 > neg2 = decr neg1
 > neg3 = decr neg2
+> neg4 = decr neg3
+> neg5 = decr neg4
 
 
 = References =
