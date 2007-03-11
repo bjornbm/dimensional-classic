@@ -25,14 +25,14 @@ instances (and possibly additional unidentified GHC extensions).
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module Buckwalter.NumType (
+> module Buckwalter.NumType {- (
 > 	Zero, Pos, Neg,
 > 	NumType, PosType, NegType, asIntegral,
 > 	Negate, negate, Incr, incr, Decr, decr, 
->   Add, (+), Sub, (-), Halve, halve,
+>   Add, (+), Sub, (-), (*), (/), Halve, halve,
 > 	Pos1, Pos2, Pos3, Neg1, Neg2, Neg3,
 > 	zero, pos1, pos2, pos3, pos4, pos5, neg1, neg2, neg3, neg4, neg5
->   ) where
+>   ) -} where
 
 > import Prelude hiding ((*), (/), (+), (-), negate) -- (undefined, Integral)
 > import qualified Prelude as P ((+), (-))
@@ -96,7 +96,7 @@ We create show instances for the defines NumTypes for convenience.
 > instance (NegType n) => Show (Neg n) where show x = "NumType " ++ show (asIntegral x)
 
  
-= NumType arithmetic =
+= Negation, incrementing and decrementing =
 
 We start off with some basic building blocks. Negation is a simple
 matter of recursively changing 'Pos' to 'Neg' or vice versa while
@@ -133,42 +133,71 @@ Decrementing is the inverse of incrementing.
 
 > instance (Incr b a) => Decr a b
 
-Now let us move on towards more complex arithmetic operations. We define
-a class for addition of NumTypes.
 
-> class (NumType a, NumType b, NumType c) => Add a b c | a b -> c where 
->   (+) :: a -> b -> c
->   _ + _ = undefined
+= Addition and subtraction =
+
+Now let us move on towards more complex arithmetic operations. We
+define classes for addition and subtraction of NumTypes.
+
+> class (NumType a, NumType b, NumType c) 
+>    => Add a b c | a b -> c, a c -> b, b c -> a where 
+>       (+) :: a -> b -> c
+>       _ + _ = undefined
+
+> class (NumType a, NumType b, NumType c) 
+>    => Sub a b c | a b -> c, a c -> b, b c -> a where
+>       (-) :: a -> b -> c
+>       _ - _ = undefined
+
+In order to provide instances satisfying the functional dependencies
+of 'Add' and 'Sub', in particular the property that any two parameters
+uniquely define the third, we must use helper classes.
+
+> class (NumType a, NumType b, NumType c) => Add' a b c | a b -> c
 
 Adding anything to Zero gives "anything".
 
-> instance (NumType a) => Add Zero a a
+> instance (NumType a) => Add' Zero a a
 
 When adding to a non-Zero number our strategy is to "transfer" type
 constructors from the first type to the second type until the first
 type is Zero. We use the 'incr' and 'decr' operators to do this.
 
-> instance (PosType a, Incr b c, Add a c d) => Add (Pos a) b d
-> instance (NegType a, Decr b c, Add a c d) => Add (Neg a) b d
+> instance (PosType a, Incr b c, Add' a c d) => Add' (Pos a) b d
+> instance (NegType a, Decr b c, Add' a c d) => Add' (Neg a) b d
 
-We define subtraction using negation and addition.
+We define our helper class for subtraction using negation and
+addition.
 
-> class (NumType a, NumType b, NumType c) => Sub a b c | a b -> c where
->   (-) :: a -> b -> c
->   _ - _ = undefined
-> instance (Negate b b', Add a b' c) => Sub a b c
+> class (NumType a, NumType b, NumType c) => Sub' a b c | a b -> c
+> instance (Negate b b', Add' a b' c) => Sub' a b c
+
+Using the helper classes we can provide an instance of 'Add' that
+satisfies its functional dependencies. We provide an instance of
+'Sub' in terms of 'Add'.
+
+> instance (Add' a b c, Sub' c b a) => Add a b c
+> instance (Add c b a) => Sub a b c
+
+
+= Halving =
+
+TODO: If we fix division we this class is redundant.
 
 We neglect to provide multiplication and division. However, let us
 define a halving operator which is useful when using NumTypes to
 represent powers (taking the square root requires halving the
 power).
 
-> class (NumType a, NumType b) => Halve a b | a -> b where 
+> class (NumType a, NumType b) => Halve a b | a -> b, b -> a where 
 >   halve :: a -> b
 >   halve _ = undefined
 > instance Halve Zero Zero
 > instance (PosType a, PosType b, Halve a b) => Halve (Pos (Pos a)) (Pos b) 
 > instance (NegType a, NegType b, Halve a b) => Halve (Neg (Neg a)) (Neg b) 
+
+
+= Multiplication =
 
 Class for multiplication. Limited by the type checker stack. If the
 multiplication is too large this error message will be emitted:
@@ -185,30 +214,35 @@ multiplication is too large this error message will be emitted:
 > instance (NegType n, Mul n n' n'', Sub n'' n' n''') => Mul (Neg n) n' n'''
 
 
+
+
+= Division =
+
 Class for non-zero numbers. This is needed to prohibit divide-by-zero.
 
 > class NonZero n
 > instance NonZero (Pos n)
 > instance NonZero (Neg n)
 
-Division.
-
 > -- class (NumType a, NumType b, NumType c) => Div a b c | a b -> c where 
 > class Div a b c | a b -> c where 
 >   (/) :: a -> b -> c 
 >   _ / _ = undefined
+
+The 'Div' instances are incomplete and only work with positive numbers.
 
 > instance (NonZero n) => Div Zero n Zero
 > instance (Sub (Pos n) (Pos n') n'', PosType n'',  Div n'' (Pos n') n''') 
 >       => Div (Pos n) (Pos n') (Pos n''')
 > instance (Negate n p, Negate n' p', Div (Pos p) (Pos p') (Pos p''))
 >       => Div (Neg n) (Neg n') (Pos p'')
-> -- instance (Sub (Neg n) (Neg n') n'', NegType n'', Div n'' (Neg n') n''') => 
-> --   Div (Neg n) (Neg n') (Pos n''')
+> --instance (Sub (Neg n) (Neg n') n'', NegType n'', Div n'' (Neg n') n''') => 
+> --  Div (Neg n) (Neg n') (Pos n''')
 
 
 
- > instance (NonZero n', Div' n n' n'') => Div n n' n''
+> --instance (NonZero n', Div' n n' n'') => Div n n' n''
+
 
 = Convenince types and values =
 
