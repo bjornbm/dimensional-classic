@@ -57,11 +57,12 @@ extensions.
 > import qualified Prelude as P 
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
 > import Buckwalter.NumType (NumType, PosType, NegType, 
->                            Zero, Pos, Neg,
+>                            Zero, Pos, Neg, asIntegral,
 >                            incr, decr, Add, Sub, Halve, 
 >                            zero,
 >                            Pos1, Pos2, Pos3, pos1, pos2, pos3, 
 >                            Neg1, Neg2, Neg3, neg1, neg2, neg3)
+> import qualified Buckwalter.NumType as N (Mul) 
 
 We will reuse the operators and function names from the Prelude.
 To prevent unpleasant surprises we give operators the same fixity
@@ -184,17 +185,6 @@ and illustrative purposes. We start with the base dimensions.
 > type DAmount      = Dim Zero Zero Zero Zero Zero Pos1 Zero
 > type DIntensity   = Dim Zero Zero Zero Zero Zero Zero Pos1
 
-We add some derived physical dimensions.
-
-> type DArea         = Dim Pos2 Zero Zero Zero Zero Zero Zero
-> type DVolume       = Dim Pos3 Zero Zero Zero Zero Zero Zero
-> type DFrequency    = Dim Zero Zero Neg1 Zero Zero Zero Zero
-> type DVelocity     = Dim Pos1 Zero Neg1 Zero Zero Zero Zero
-> type DAcceleration = Dim Pos1 Zero Neg2 Zero Zero Zero Zero
-> type DForce        = Dim Pos1 Pos1 Neg2 Zero Zero Zero Zero
-> type DImpulse      = Dim Pos1 Pos1 Neg1 Zero Zero Zero Zero
-> type DMassFlow     = Dim Zero Pos1 Neg1 Zero Zero Zero Zero
-> type DPressure     = Dim Neg1 Pos1 Neg2 Zero Zero Zero Zero
 
 Using the above type synonyms we can define type synonyms for
 quantities of particular physical dimensions.
@@ -210,19 +200,6 @@ Quantities with the base dimensions.
 > type Amount        = Quantity DAmount
 > type Intensity     = Quantity DIntensity
 
-Some quantities with derived dimensions.
-
-> type Frequency       = Quantity DFrequency
-> type Velocity        = Quantity DVelocity
-> type Angle           = Dimensionless
-> type SolidAngle      = Dimensionless
-> type AngularVelocity = Frequency
-> type Force           = Quantity DForce
-> type Thrust          = Force
-> type Impulse         = Quantity DImpulse
-> type MassFlow        = Quantity DMassFlow
-> type Pressure        = Quantity DPressure
-
 
 = Arithmetic on physical dimensions =
 
@@ -235,7 +212,7 @@ and functional dependences.
 Multiplication of dimensions corresponds to adding of the base
 dimensions' exponents.
 
-> class Mul d d' d'' | d d' -> d'' 
+> class Mul d d' d'' | d d' -> d'', d d'' -> d', d' d'' -> d
 > instance (Add l  l'  l'',
 >           Add m  m'  m'',
 >           Add t  t'  t'',
@@ -249,7 +226,7 @@ dimensions' exponents.
 Division of dimensions corresponds to subtraction of the base
 dimensions' exponents.
 
-> class Div d d' d'' | d d' -> d'' 
+> class Div d d' d'' | d d' -> d'', d d'' -> d', d' d'' -> d
 > instance (Sub l  l'  l'',
 >           Sub m  m'  m'',
 >           Sub t  t'  t'',
@@ -263,7 +240,7 @@ dimensions' exponents.
 Taking the square root of a dimension corresponds to halving the
 base dimensions' exponents.
 
-> class Sqrt d d' | d -> d'
+> class Sqrt d d' | d -> d', d' -> d
 > instance (Halve l  l',
 >           Halve m  m',
 >           Halve t  t',
@@ -303,10 +280,23 @@ exponents.
 
 Anything to the power of zero equals one.
 
-> instance (Num a) => Power a d Zero DOne where _ ^ _ = Dimensional 1
+>-- instance (Num a) => Power a d Zero DOne where _ ^ _ = Dimensional 1
 
 Positive exponents.
 
+> instance (Num a, NumType x,
+>           N.Mul l  x l',
+>           N.Mul m  x m',
+>           N.Mul t  x t',
+>           N.Mul i  x i',
+>           N.Mul th x th',
+>           N.Mul n  x n',
+>           N.Mul j  x j') => Power a (Dim l   m   t   i   th   n   j)
+>                                   x (Dim l'  m'  t'  i'  th'  n'  j')
+>   where
+>       (Dimensional x) ^ n = Dimensional $ x P.^ asIntegral n
+
+> {-
 > instance (Num a, PosType n, Power a d n d', Mul d' d d'') 
 >       => Power a d (Pos n) d'' where x ^ n = x ^ decr n * x
 
@@ -314,6 +304,7 @@ Negative exponents.
 
 > instance (Fractional a, NegType n, Power a d n d', Div d' d d'') 
 >       => Power a d (Neg n) d'' where x ^ n = x ^ incr n / x
+> -}
 
 A special case is that dimensionless quantities are not restricted
 to integer powers. Here we utilize the 'a' type variable of 'Power'
@@ -321,17 +312,9 @@ as well as the fact that the 'n' type variable is not limited to
 NumTypes to allow a dimensionless quantity to be raised to the power
 of any other dimensionless quantity.
 
-> instance (Floating a) => Power a DOne (Dimensionless a) DOne
->   where (Dimensional x) ^ (Dimensional y) = Dimensional (x ** y)
+>-- instance (Floating a) => Power a DOne (Dimensionless a) DOne
+>--   where (Dimensional x) ^ (Dimensional y) = Dimensional (x ** y)
 
-It is permissible to express powers of length units by prefixing
-'square' and 'cubic' (9.6 "Spelling unit names raised to powers"
-of [1]).
-
-> square :: (Num a) => Unit DLength a -> Unit DArea a
-> square x = x * x
-> cubic  :: (Num a) => Unit DLength a -> Unit DVolume a
-> cubic  x = square x * x
 
 Some operations only make sense for quantities. Of these, negation,
 addition and subtraction are particularly simple as they are done
@@ -363,14 +346,17 @@ quantities.
 Sine and cosine make sense only for angles (the type synonym 'Angle'
 is defined later).
 
-> sin, cos :: (Floating a) => Angle a -> Dimensionless a
-> sin (Dimensional x) = Dimensional (P.sin x)
-> cos (Dimensional x) = Dimensional (P.cos x)
+> --sin, cos :: (Floating a) => Angle a -> Dimensionless a
+> --sin (Dimensional x) = Dimensional (P.sin x)
+> --cos (Dimensional x) = Dimensional (P.cos x)
 
 The exponential function only makes sense for dimensionless quantities.
 
 > exp :: (Floating a) => Dimensionless a -> Dimensionless a
 > exp (Dimensional x) = Dimensional (P.exp x)
+
+> instance Functor Dimensionless where
+>   fmap f (Dimensional x) = Dimensional (f x)
 
 
 = Unit prefixes =
@@ -457,90 +443,6 @@ The drawback is that we are forced to use 'Fractional'.
 > mole    = Dimensional 1
 > candela :: Num a => Unit DIntensity a
 > candela = Dimensional 1
-
-Now we go on to define (a limited set of) the SI derived units in
-terms of the base units (see 4.2 "SI derived units" of [1]).
-
-> radian, steradian :: Fractional a => Unit DOne a
-> radian    = meter / meter
-> steradian = meter ^ pos2 / meter ^ pos2
-> hertz :: Fractional a => Unit DFrequency a
-> hertz = one / second
-> newton :: Fractional a => Unit DForce a
-> newton = kilo gram * meter / second ^ pos2
-> pascal :: Fractional a => Unit DPressure a
-> pascal = newton / meter ^ pos2
- 
-
-= Non-SI units =
-
-We will define a small subset of the myriad of units that exists
-outside of the SI. These are generally defined in terms of another
-unit with a prefix (using the 'prefix' function defined earlier).
-
-We start with (a limited set of) the units accepted for use with
-the SI (see 5.1 of [1]).
-
-> degree :: Floating a => Unit DOne a
-> degree = prefix (P.pi P./ 180) radian
-
-Note that all the below time units are "nominal" units, in the sense
-that they represent the given time span provided there was no leap
-second or leap year.
-
-> minute, hour, day, year :: Num a => Unit DTime a
-> minute = prefix 60 second
-> hour   = prefix 60 minute
-> day    = prefix 24 hour
-> year   = prefix 365 day
-
-We continue with units not accepted for use in with the SI, in
-particular the US customary (that is, inch-pound) units.
-
-> inch, foot :: Fractional a => Unit DLength a
-> inch = prefix 2.54 (centi meter)
-> foot = prefix 12 inch     -- 0.3048 m
-> poundMass :: Fractional a => Unit DMass a
-> poundMass = prefix 0.45359237 (kilo gram)
-
-In order to relate pounds mass to pounds force we define the
-questionable unit 'gee' (G) as the gravitational acceleration at
-sea level.
-
-> gee :: Fractional a => Unit DAcceleration a
-> gee = prefix 9.80665 meter / second ^ pos2
-> poundForce :: Fractional a => Unit DForce a
-> poundForce = poundMass * gee  -- 4.4482 N
-
-Other (non inch-pound) units.
-
-> bar :: (Fractional a) => Unit DPressure a
-> bar = prefix 1.0e5 pascal
-> revolution :: (Floating a) => Unit DOne a
-> revolution = prefix 360 degree
-
-
-= Less conformant units =
-
-The unit system we have devised and used above will not work well
-with some non-SI units. In particular units which do not scale
-linearly with respect to the SI units, for example logarithmic units
-(see 8.7 "Logarithmic quantities and units: level, neper, bel" of
-[1]).
-
-Another problematic area is units which increase proportionally to
-the SI units but cross zero at a different point. An example would
-be degrees Celsius. The author feels that it is appropriate to
-define a unit for use with relative quantities (taking only into
-account the proportionality) and complement the unit with functions
-for converting absolute values.
-
-> degreeCelsius :: Num a => Unit DTemperature a
-> degreeCelsius = kelvin
-> fromDegreeCelsiusAbsolute :: Fractional a => a -> Temperature a
-> fromDegreeCelsiusAbsolute x = x *~ degreeCelsius + 273.15 *~ degreeCelsius
-> toDegreeCelsiusAbsolute :: Fractional a => Temperature a -> a
-> toDegreeCelsiusAbsolute x = (x - 273.15 *~ degreeCelsius) /~ degreeCelsius
 
 
 = Conclusion and usage =
