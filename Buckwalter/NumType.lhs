@@ -113,25 +113,25 @@ We define two type classes for incrementing and decrementing NumTypes.
 The 'incr' and 'decr' functions correspond roughly to HList's 'hSucc'
 and 'hPred' respectively.
 
-> class (NumType a, NumType b) => Incr a b | a -> b, b -> a where 
+> class (NumType a, NumType b) => Succ a b | a -> b, b -> a where 
 >   incr :: a -> b
 >   incr _ = undefined
-
-> class (NumType a, NumType b) => Decr a b | a -> b, b -> a where
->   decr :: a -> b
+>   decr :: b -> a
 >   decr _ = undefined
+
+> -- class (NumType a, NumType b) => Decr a b | a -> b, b -> a where
 
 To increment NumTypes we either prepend 'Pos' to numbers greater
 than or equal to Zero or remove a 'Neg' from numbers less than Zero.
 
-> instance Incr Zero (Pos Zero)
-> instance (PosType a) => Incr (Pos a) (Pos (Pos a))
-> instance Incr (Neg Zero) Zero
-> instance (NegType a) => Incr (Neg (Neg a)) (Neg a)
+> instance Succ Zero (Pos Zero)
+> instance (PosType a) => Succ (Pos a) (Pos (Pos a))
+> instance Succ (Neg Zero) Zero
+> instance (NegType a) => Succ (Neg (Neg a)) (Neg a)
 
 Decrementing is the inverse of incrementing. 
 
-> instance (Incr b a) => Decr a b
+> --instance (Incr b a) => Decr a b
 
 
 = Addition and subtraction =
@@ -140,14 +140,16 @@ Now let us move on towards more complex arithmetic operations. We
 define classes for addition and subtraction of NumTypes.
 
 > class (NumType a, NumType b, NumType c) 
->    => Add a b c | a b -> c, a c -> b, b c -> a where 
+>    => Sum a b c | a b -> c, a c -> b, b c -> a where 
 >       (+) :: a -> b -> c
 >       _ + _ = undefined
-
-> class (NumType a, NumType b, NumType c) 
->    => Sub a b c | a b -> c, a c -> b, b c -> a where
->       (-) :: a -> b -> c
+>       (-) :: c -> b -> a
 >       _ - _ = undefined
+
+ class (NumType a, NumType b, NumType c) 
+    => Sub a b c | a b -> c, a c -> b, b c -> a where
+       (-) :: a -> b -> c
+       _ - _ = undefined
 
 In order to provide instances satisfying the functional dependencies
 of 'Add' and 'Sub', in particular the property that any two parameters
@@ -163,8 +165,8 @@ When adding to a non-Zero number our strategy is to "transfer" type
 constructors from the first type to the second type until the first
 type is Zero. We use the 'incr' and 'decr' operators to do this.
 
-> instance (PosType a, Incr b c, Add' a c d) => Add' (Pos a) b d
-> instance (NegType a, Decr b c, Add' a c d) => Add' (Neg a) b d
+> instance (PosType a, Succ b c, Add' a c d) => Add' (Pos a) b d
+> instance (NegType a, Succ c b, Add' a c d) => Add' (Neg a) b d
 
 We define our helper class for subtraction using negation and
 addition.
@@ -176,8 +178,8 @@ Using the helper classes we can provide an instance of 'Add' that
 satisfies its functional dependencies. We provide an instance of
 'Sub' in terms of 'Add'.
 
-> instance (Add' a b c, Sub' c b a) => Add a b c
-> instance (Add c b a) => Sub a b c
+> instance (Add' a b c, Sub' c b a) => Sum a b c
+> -- instance (Add c b a) => Sub a b c
 
 
 = Halving =
@@ -205,13 +207,16 @@ multiplication is too large this error message will be emitted:
     Context reduction stack overflow; size = 20 
     Use -fcontext-stack=N to increase stack size to N
 
-> class (NumType a, NumType b, NumType c) => Mul a b c | a b -> c where 
+> class (NumType a, NumType b, NumType c) => Prod a b c | a b -> c where 
 >   (*) :: a -> b -> c 
 >   _ * _ = undefined
+> --  (/) :: a -> b -> c 
+> --  _ / _ = undefined
 
-> instance (NumType n) => Mul Zero n Zero
-> instance (PosType n, Mul n n' n'', Add n'' n' n''') => Mul (Pos n) n' n'''
-> instance (NegType n, Mul n n' n'', Sub n'' n' n''') => Mul (Neg n) n' n'''
+> instance (NumType n) => Prod Zero n Zero
+> instance (PosType n, Prod n n' n'', Sum n'' n' n''') => Prod (Pos n) n' n'''
+> --instance (NegType n, Prod n n' n'', Sub n'' n' n''') => Mul (Neg n) n' n'''
+> instance (NegType n, Prod n n' n'', Sum n''' n' n'') => Prod (Neg n) n' n'''
 
 
 
@@ -232,7 +237,8 @@ Class for non-zero numbers. This is needed to prohibit divide-by-zero.
 The 'Div' instances are incomplete and only work with positive numbers.
 
 > instance (NonZero n) => Div Zero n Zero
-> instance (Sub (Pos n) (Pos n') n'', PosType n'',  Div n'' (Pos n') n''') 
+> -- instance (Sub (Pos n) (Pos n') n'', PosType n'',  Div n'' (Pos n') n''') 
+> instance (Sum n'' (Pos n') (Pos n), PosType n'',  Div n'' (Pos n') n''') 
 >       => Div (Pos n) (Pos n') (Pos n''')
 > instance (Negate n p, Negate n' p', Div (Pos p) (Pos p') (Pos p''))
 >       => Div (Neg n) (Neg n') (Pos p'')

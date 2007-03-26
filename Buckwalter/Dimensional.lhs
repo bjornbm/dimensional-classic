@@ -56,13 +56,9 @@ extensions.
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
 > import qualified Prelude as P 
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
-> import Buckwalter.NumType (NumType, PosType, NegType, 
+> import Buckwalter.NumType (NumType, PosType, NegType,
 >                            Zero, Pos, Neg, asIntegral,
->                            incr, decr, Add, Sub, Halve, 
->                            zero,
->                            Pos1, Pos2, Pos3, pos1, pos2, pos3, 
->                            Neg1, Neg2, Neg3, neg1, neg2, neg3)
-> import qualified Buckwalter.NumType as N (Mul) 
+>                            Sum, Prod, Halve, Pos1)
 
 We will reuse the operators and function names from the Prelude.
 To prevent unpleasant surprises we give operators the same fixity
@@ -86,8 +82,7 @@ to occasionally cumbersome type classes.
 We call this data type 'Dimensional' to capture the notion that the
 units and quantities it represents have physical dimensions.
 
-> newtype (Variant v, Dims d) 
->      => Dimensional v d a = Dimensional a deriving (Show, Eq, Ord)
+> newtype Dimensional v d a = Dimensional a deriving (Show, Eq, Ord)
 
 The type variable 'a' is the only non-phantom type variable and
 represents the numerical value of a quantity or the scale (w.r.t.
@@ -99,20 +94,13 @@ Since 'a' is the only non-phantom type we were able to define
 'Dimensional' as a newtype, avoiding boxing at runtime.
 
 
-= The variant 'v' of 'Dimensional' =
+= The variety 'v' of 'Dimensional' =
 
 The phantom type variable v is used to distinguish between units
 and quantities. It should be one of the following:
 
 > data DUnit
 > data DQuantity
-
-We enforce this using the (non-exported) type class 'Variant' of
-which 'DUnit' and 'DQuantity' are the only instances.
-
-> class Variant v
-> instance Variant DUnit
-> instance Variant DQuantity
 
 For convenience we define type synonyms for units and quantities.
 
@@ -151,8 +139,7 @@ which can be combined in integer powers to a given physical dimension.
 We represent physical dimensions as the powers of the seven base
 dimensions that make up the given dimension. The powers are represented
 using NumTypes. For convenience we collect all seven base dimensions
-in a data type 'Dim' which is the sole instance of the 'Dims' type
-class.
+in a data type 'Dim'.
 
 > data (NumType l,    -- Length.
 >       NumType m,    -- Mass.
@@ -162,9 +149,6 @@ class.
 >       NumType n,    -- Amount of substance.
 >       NumType j)    -- Luminous intensity.
 >   => Dim l m t i th n j 
-
-> class Dims d
-> instance Dims (Dim l m t i th n j)
 
 We could have chosen to provide type variables for the seven base
 dimensions in 'Dimensional' instead of creating a new data type
@@ -213,13 +197,13 @@ Multiplication of dimensions corresponds to adding of the base
 dimensions' exponents.
 
 > class Mul d d' d'' | d d' -> d'', d d'' -> d', d' d'' -> d
-> instance (Add l  l'  l'',
->           Add m  m'  m'',
->           Add t  t'  t'',
->           Add i  i'  i'',
->           Add th th' th'',
->           Add n  n'  n'',
->           Add j  j'  j'') => Mul (Dim l   m   t   i   th   n   j)
+> instance (Sum l  l'  l'',
+>           Sum m  m'  m'',
+>           Sum t  t'  t'',
+>           Sum i  i'  i'',
+>           Sum th th' th'',
+>           Sum n  n'  n'',
+>           Sum j  j'  j'') => Mul (Dim l   m   t   i   th   n   j)
 >                                  (Dim l'  m'  t'  i'  th'  n'  j')
 >                                  (Dim l'' m'' t'' i'' th'' n'' j'')
 
@@ -227,15 +211,15 @@ Division of dimensions corresponds to subtraction of the base
 dimensions' exponents.
 
 > class Div d d' d'' | d d' -> d'', d d'' -> d', d' d'' -> d
-> instance (Sub l  l'  l'',
->           Sub m  m'  m'',
->           Sub t  t'  t'',
->           Sub i  i'  i'',
->           Sub th th' th'',
->           Sub n  n'  n'',
->           Sub j  j'  j'') => Div (Dim l   m   t   i   th   n   j)
+> instance (Sum l  l'  l'',
+>           Sum m  m'  m'',
+>           Sum t  t'  t'',
+>           Sum i  i'  i'',
+>           Sum th th' th'',
+>           Sum n  n'  n'',
+>           Sum j  j'  j'') => Div (Dim l'' m'' t'' i'' th'' n'' j'')
 >                                  (Dim l'  m'  t'  i'  th'  n'  j')
->                                  (Dim l'' m'' t'' i'' th'' n'' j'')
+>                                  (Dim l   m   t   i   th   n   j)
 
 Taking the square root of a dimension corresponds to halving the
 base dimensions' exponents.
@@ -267,54 +251,83 @@ Multiplication, division and powers apply to both units and quantities.
 >     => Dimensional v d a -> Dimensional v d' a -> Dimensional v d'' a
 > Dimensional x / Dimensional y = Dimensional (x P./ y)
 
+
+= Exponents =
+
 We limit ourselves to integer powers of Dimensionals as fractional
 powers make little physical sense. Since the value of the exponent
 affects the type of the result the value of the exponent must be
 visible to the type system, therefore we will generally represent
-the exponent with a 'NumType'. We must also use a type class to
-capture the different behaviors of positive, zero and negative
-exponents.
+the exponent with a 'NumType'. 
 
-> class Power a d n d' | d n -> d' 
+The following class and single instance would suffice for any
+NumType.  However, it constrains the type 'a' to be a member of the
+'Fractional' class.
+
+> class (NumType n) => Power' d n d' | d n -> d' where 
+>   (^/) :: (Fractional a) => Dimensional v d a -> n -> Dimensional v d' a
+>   Dimensional x ^/ n = Dimensional $ x ^^ asIntegral n
+
+> instance (Prod l  x l',
+>           Prod m  x m',
+>           Prod t  x t',
+>           Prod i  x i',
+>           Prod th x th',
+>           Prod n  x n',
+>           Prod j  x j') => Power' (Dim l   m   t   i   th   n   j) x 
+>                                    (Dim l'  m'  t'  i'  th'  n'  j')
+
+To avoid the unnecessary 'Fractional' constraint for zero or positive
+exponents we need to add 'a' as a class parameter and provide three
+instances; one for zero exponents, one for positive exponents, and
+one for negative exponents. Indeed the 'Fractional' constraint only
+applies to negative exponents.
+
+> class (NumType n) => Power a d n d' | d n -> d' 
 >   where (^) :: Dimensional v d a -> n -> Dimensional v d' a
 
-Anything to the power of zero equals one.
+Using a zero exponent trivially results in dimensionless 1.
 
->-- instance (Num a) => Power a d Zero DOne where _ ^ _ = Dimensional 1
+> instance (Num a) => Power a d Zero DOne where _ ^ _ = Dimensional 1
 
 Positive exponents.
 
-> instance (Num a, NumType x,
->           N.Mul l  x l',
->           N.Mul m  x m',
->           N.Mul t  x t',
->           N.Mul i  x i',
->           N.Mul th x th',
->           N.Mul n  x n',
->           N.Mul j  x j') => Power a (Dim l   m   t   i   th   n   j)
->                                   x (Dim l'  m'  t'  i'  th'  n'  j')
+> instance (Num a, 
+>           Prod l  (Pos x) l',
+>           Prod m  (Pos x) m',
+>           Prod t  (Pos x) t',
+>           Prod i  (Pos x) i',
+>           Prod th (Pos x) th',
+>           Prod n  (Pos x) n',
+>           Prod j  (Pos x) j') 
+>        => Power a       (Dim l   m   t   i   th   n   j)
+>                 (Pos x) (Dim l'  m'  t'  i'  th'  n'  j')
 >   where
 >       (Dimensional x) ^ n = Dimensional $ x P.^ asIntegral n
 
-> {-
-> instance (Num a, PosType n, Power a d n d', Mul d' d d'') 
->       => Power a d (Pos n) d'' where x ^ n = x ^ decr n * x
+Negative exponents. Note that in contrast to the standard Prelude
+we can use '^' for negative exponents too (the standard Prelude
+uses '^^').
 
-Negative exponents.
-
-> instance (Fractional a, NegType n, Power a d n d', Div d' d d'') 
->       => Power a d (Neg n) d'' where x ^ n = x ^ incr n / x
-> -}
+> instance (Fractional a,
+>           Prod l  (Neg x) l',
+>           Prod m  (Neg x) m',
+>           Prod t  (Neg x) t',
+>           Prod i  (Neg x) i',
+>           Prod th (Neg x) th',
+>           Prod n  (Neg x) n',
+>           Prod j  (Neg x) j') 
+>        => Power a       (Dim l   m   t   i   th   n   j)
+>                 (Neg x) (Dim l'  m'  t'  i'  th'  n'  j')
+>   where
+>       (Dimensional x) ^ n = Dimensional $ x ^^ asIntegral n
 
 A special case is that dimensionless quantities are not restricted
-to integer powers. Here we utilize the 'a' type variable of 'Power'
-as well as the fact that the 'n' type variable is not limited to
-NumTypes to allow a dimensionless quantity to be raised to the power
-of any other dimensionless quantity.
+to integer powers. This is accommodated by 'Dimensionless' providing
+an instance of 'Floating' in the Dimensionless module.
 
->-- instance (Floating a) => Power a DOne (Dimensionless a) DOne
->--   where (Dimensional x) ^ (Dimensional y) = Dimensional (x ** y)
 
+= Quantity operations =
 
 Some operations only make sense for quantities. Of these, negation,
 addition and subtraction are particularly simple as they are done
@@ -345,10 +358,6 @@ quantities.
 
 Sine and cosine make sense only for angles (the type synonym 'Angle'
 is defined later).
-
-> --sin, cos :: (Floating a) => Angle a -> Dimensionless a
-> --sin (Dimensional x) = Dimensional (P.sin x)
-> --cos (Dimensional x) = Dimensional (P.cos x)
 
 The exponential function only makes sense for dimensionless quantities.
 
