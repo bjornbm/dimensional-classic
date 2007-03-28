@@ -170,23 +170,6 @@ satisfies its functional dependencies. We provide an instance of
 > instance (Add' a b c, Sub' c b a) => Sum a b c
 
 
-= Halving =
-
-TODO: If we fix division we this class is redundant.
-
-We neglect to provide multiplication and division. However, let us
-define a halving operator which is useful when using NumTypes to
-represent powers (taking the square root requires halving the
-power).
-
-> class (NumType a, NumType b) => Halve a b | a -> b, b -> a where 
->   halve :: a -> b
->   halve _ = undefined
-> instance Halve Zero Zero
-> instance (PosType a, PosType b, Halve a b) => Halve (Pos (Pos a)) (Pos b) 
-> instance (NegType a, NegType b, Halve a b) => Halve (Neg (Neg a)) (Neg b) 
-
-
 = Division =
 
 We will do division on NumTypes before we do multiplication. This
@@ -225,7 +208,9 @@ Going beyond zero numbers we start with a base case with all numbers
 positive.  We recursively subtract the denominator from nominator
 while incrementing the result, until we reach the zero case.
 
-> instance (Sum n'' (Pos n') (Pos n), Div n'' (Pos n') n''', PosType n''') 
+> instance ( Sum n'' (Pos n') (Pos n)
+>          , PosType n''  -- To prevent zero-crossings. TODO: not working!
+>          , Div n'' (Pos n') n''', PosType n''') 
 >       => Div (Pos n) (Pos n') (Pos n''')
 
 Now we tackle cases with negative numbers involved. We trivially

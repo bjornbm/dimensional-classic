@@ -56,9 +56,11 @@ extensions.
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
 > import qualified Prelude as P 
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
-> import Buckwalter.NumType (NumType, PosType, NegType,
+> import Buckwalter.NumType (NumType, PosType, NegType, NonZero,
 >                            Zero, Pos, Neg, asIntegral,
->                            Sum, Prod, Halve, Pos1)
+>                            Sum, Prod, 
+>                            Pos1, Pos2, pos2, Pos3, pos3)
+> import qualified Buckwalter.NumType as N (Div)
 
 We will reuse the operators and function names from the Prelude.
 To prevent unpleasant surprises we give operators the same fixity
@@ -221,19 +223,6 @@ dimensions' exponents.
 >                                  (Dim l'  m'  t'  i'  th'  n'  j')
 >                                  (Dim l   m   t   i   th   n   j)
 
-Taking the square root of a dimension corresponds to halving the
-base dimensions' exponents.
-
-> class Sqrt d d' | d -> d', d' -> d
-> instance (Halve l  l',
->           Halve m  m',
->           Halve t  t',
->           Halve i  i',
->           Halve th th',
->           Halve n  n',
->           Halve j  j') => Sqrt (Dim l  m  t  i  th  n  j)
->                                (Dim l' m' t' i' th' n' j')
-
 
 = Arithmetic on units and quantities =
 
@@ -252,7 +241,7 @@ Multiplication, division and powers apply to both units and quantities.
 > Dimensional x / Dimensional y = Dimensional (x P./ y)
 
 
-= Exponents =
+= Powers =
 
 We limit ourselves to integer powers of Dimensionals as fractional
 powers make little physical sense. Since the value of the exponent
@@ -264,9 +253,26 @@ The following class and single instance would suffice for any
 NumType.  However, it constrains the type 'a' to be a member of the
 'Fractional' class.
 
+> class (NumType n) => Power d n d' | d n -> d' where 
+>   (^) :: (Fractional a) => Dimensional v d a -> n -> Dimensional v d' a
+>   Dimensional x ^ n = Dimensional $ x ^^ asIntegral n
+
+> instance (Prod l  x l',
+>           Prod m  x m',
+>           Prod t  x t',
+>           Prod i  x i',
+>           Prod th x th',
+>           Prod n  x n',
+>           Prod j  x j') => Power (Dim l   m   t   i   th   n   j) x 
+>                                  (Dim l'  m'  t'  i'  th'  n'  j')
+
+In the unlikely case someone needs to use this library with
+non-fractional numbers we provide an alternative restricted to
+positive exponents.
+
 > class (NumType n) => Power' d n d' | d n -> d' where 
->   (^/) :: (Fractional a) => Dimensional v d a -> n -> Dimensional v d' a
->   Dimensional x ^/ n = Dimensional $ x ^^ asIntegral n
+>   (^+) :: (Num a) => Dimensional v d a -> n -> Dimensional v d' a
+>   Dimensional x ^+ n = Dimensional $ x P.^ asIntegral n
 
 > instance (Prod l  x l',
 >           Prod m  x m',
@@ -275,7 +281,9 @@ NumType.  However, it constrains the type 'a' to be a member of the
 >           Prod th x th',
 >           Prod n  x n',
 >           Prod j  x j') => Power' (Dim l   m   t   i   th   n   j) x 
->                                    (Dim l'  m'  t'  i'  th'  n'  j')
+>                                   (Dim l'  m'  t'  i'  th'  n'  j')
+
+> {-
 
 To avoid the unnecessary 'Fractional' constraint for zero or positive
 exponents we need to add 'a' as a class parameter and provide three
@@ -322,9 +330,46 @@ uses '^^').
 >   where
 >       (Dimensional x) ^ n = Dimensional $ x ^^ asIntegral n
 
+> -}
+
 A special case is that dimensionless quantities are not restricted
 to integer powers. This is accommodated by 'Dimensionless' providing
 an instance of 'Floating' in the Dimensionless module.
+
+
+= Roots =
+
+Roots could conceivably be applied to units but valid reasons
+for doing so elude the author, so their use will be limited to
+quantities.
+
+> class (NonZero n) => Root d n d' | d n -> d' where 
+>   nroot :: (Floating a) => n -> Quantity d a -> Quantity d' a
+>   nroot n (Dimensional x) = Dimensional $ x ** (1 P./ (fromIntegral . asIntegral) n)
+
+> instance (N.Div l  x l',
+>           N.Div m  x m',
+>           N.Div t  x t',
+>           N.Div i  x i',
+>           N.Div th x th',
+>           N.Div n  x n',
+>           N.Div j  x j') => Root (Dim l   m   t   i   th   n   j) x 
+>                                  (Dim l'  m'  t'  i'  th'  n'  j')
+
+We provide short-hands for the square and cubic roots.
+
+> sqrt :: (Floating a, Root d Pos2 d') => Quantity d a -> Quantity d' a
+> sqrt = nroot pos2
+> cbrt :: (Floating a, Root d Pos3 d') => Quantity d a -> Quantity d' a
+> cbrt = nroot pos3
+
+We also provide an operator alternative to nroot for those that
+prefer such.
+
+> (^/) :: (Floating a, Root d n d') => Quantity d a -> n -> Quantity d' a
+> (^/) = flip nroot
+
+TODO: investigate non-termination of "sqrt $ (3 *~ meter) ^ pos3"
 
 
 = Quantity operations =
@@ -344,17 +389,6 @@ in a single physical dimension.
 
 
 = Elementary functions (incomplete set) =
-
-It makes little sense to apply elementary functions to units so we
-limit their use to quantities, and in many cases to quantities with
-specific physical dimensions.
-
-Square root could conceivably be applied to units but valid reasons
-for doing so elude the author, so their use will be limited to
-quantities.
-
-> sqrt :: (Floating a, Sqrt d d') => Quantity d a -> Quantity d' a
-> sqrt (Dimensional x) = Dimensional (P.sqrt x)
 
 Sine and cosine make sense only for angles (the type synonym 'Angle'
 is defined later).
