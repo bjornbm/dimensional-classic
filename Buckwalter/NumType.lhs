@@ -109,7 +109,7 @@ leaving 'Zero' unchanged.
 > instance (PosType a, NegType b, Negate a b) => Negate (Pos a) (Neg b)
 > instance (NegType a, PosType b, Negate a b) => Negate (Neg a) (Pos b) 
 
-We define two type classes for incrementing and decrementing NumTypes.
+We define a type class for incrementing and decrementing NumTypes.
 The 'incr' and 'decr' functions correspond roughly to HList's 'hSucc'
 and 'hPred' respectively.
 
@@ -119,8 +119,6 @@ and 'hPred' respectively.
 >   decr :: b -> a
 >   decr _ = undefined
 
-> -- class (NumType a, NumType b) => Decr a b | a -> b, b -> a where
-
 To increment NumTypes we either prepend 'Pos' to numbers greater
 than or equal to Zero or remove a 'Neg' from numbers less than Zero.
 
@@ -128,10 +126,6 @@ than or equal to Zero or remove a 'Neg' from numbers less than Zero.
 > instance (PosType a) => Succ (Pos a) (Pos (Pos a))
 > instance Succ (Neg Zero) Zero
 > instance (NegType a) => Succ (Neg (Neg a)) (Neg a)
-
-Decrementing is the inverse of incrementing. 
-
-> --instance (Incr b a) => Decr a b
 
 
 = Addition and subtraction =
@@ -145,11 +139,6 @@ define classes for addition and subtraction of NumTypes.
 >       _ + _ = undefined
 >       (-) :: c -> b -> a
 >       _ - _ = undefined
-
- class (NumType a, NumType b, NumType c) 
-    => Sub a b c | a b -> c, a c -> b, b c -> a where
-       (-) :: a -> b -> c
-       _ - _ = undefined
 
 In order to provide instances satisfying the functional dependencies
 of 'Add' and 'Sub', in particular the property that any two parameters
@@ -179,7 +168,6 @@ satisfies its functional dependencies. We provide an instance of
 'Sub' in terms of 'Add'.
 
 > instance (Add' a b c, Sub' c b a) => Sum a b c
-> -- instance (Add c b a) => Sub a b c
 
 
 = Halving =
@@ -199,6 +187,65 @@ power).
 > instance (NegType a, NegType b, Halve a b) => Halve (Neg (Neg a)) (Neg b) 
 
 
+= Division =
+
+We will do division on NumTypes before we do multiplication. This
+may be surprising but it will in fact simplify the multiplication.
+The reason for this is that we can have more a "reverse" functional
+dependency for division but not for multiplication.  Consider the
+expressions "x / y = z". If y and z are known we can always determine
+x.  However, in "x * y = z" we can not determine x if y and z are
+zero.
+
+We use a class for non-zero numbers to prohibit divide-by-zero.
+
+> class (NumType n) => NonZero n
+> instance (PosType n) => NonZero (Pos n)
+> instance (NegType n) => NonZero (Neg n)
+
+The 'NonZero' class is used as a constraint on the denominator 'b'
+in our 'Div' class.
+
+> class (NumType a, NonZero b, NumType c) => Div a b c | a b -> c, c b -> a  where 
+>   (/) :: a -> b -> c 
+>   _ / _ = undefined
+
+Zero divided by anything (we don't bother with infinity) equals
+zero.
+
+> instance (NonZero n) => Div Zero n Zero
+
+Note that We could omit the NonZero class completely and instead
+provide the following two instances.
+
+] instance (PosType n) => Div Zero (Pos n) Zero
+] instance (NegType n) => Div Zero (Neg n) Zero
+
+Going beyond zero numbers we start with a base case with all numbers
+positive.  We recursively subtract the denominator from nominator
+while incrementing the result, until we reach the zero case.
+
+> instance (Sum n'' (Pos n') (Pos n), Div n'' (Pos n') n''', PosType n''') 
+>       => Div (Pos n) (Pos n') (Pos n''')
+
+Now we tackle cases with negative numbers involved. We trivially
+convert these to the all-positive case and negate the result if
+appropriate.
+
+> instance ( NegType n, NegType n'
+>          , Negate n p, Negate n' p'
+>          , Div (Pos p) (Pos p') (Pos p''))
+>       => Div (Neg n) (Neg n') (Pos p'')
+> instance ( NegType n, Negate n p'
+>          , Div (Pos p) (Pos p') (Pos p'')
+>          , Negate (Pos p'') (Neg n''))
+>       => Div (Pos p) (Neg n) (Neg n'')
+> instance ( NegType n, Negate n p'
+>          , Div (Pos p') (Pos p) (Pos p'')
+>          , Negate (Pos p'') (Neg n''))
+>       => Div (Neg n) (Pos p) (Neg n'')
+
+
 = Multiplication =
 
 Class for multiplication. Limited by the type checker stack. If the
@@ -210,44 +257,13 @@ multiplication is too large this error message will be emitted:
 > class (NumType a, NumType b, NumType c) => Prod a b c | a b -> c where 
 >   (*) :: a -> b -> c 
 >   _ * _ = undefined
-> --  (/) :: a -> b -> c 
-> --  _ / _ = undefined
 
-> instance (NumType n) => Prod Zero n Zero
-> instance (PosType n, Prod n n' n'', Sum n'' n' n''') => Prod (Pos n) n' n'''
-> --instance (NegType n, Prod n n' n'', Sub n'' n' n''') => Mul (Neg n) n' n'''
-> instance (NegType n, Prod n n' n'', Sum n''' n' n'') => Prod (Neg n) n' n'''
+Providing instances for the 'Prod' class is really easy thanks to
+the 'Div' class having the functional dependency "c b -> a".
 
-
-
-
-= Division =
-
-Class for non-zero numbers. This is needed to prohibit divide-by-zero.
-
-> class NonZero n
-> instance NonZero (Pos n)
-> instance NonZero (Neg n)
-
-> -- class (NumType a, NumType b, NumType c) => Div a b c | a b -> c where 
-> class Div a b c | a b -> c where 
->   (/) :: a -> b -> c 
->   _ / _ = undefined
-
-The 'Div' instances are incomplete and only work with positive numbers.
-
-> instance (NonZero n) => Div Zero n Zero
-> -- instance (Sub (Pos n) (Pos n') n'', PosType n'',  Div n'' (Pos n') n''') 
-> instance (Sum n'' (Pos n') (Pos n), PosType n'',  Div n'' (Pos n') n''') 
->       => Div (Pos n) (Pos n') (Pos n''')
-> instance (Negate n p, Negate n' p', Div (Pos p) (Pos p') (Pos p''))
->       => Div (Neg n) (Neg n') (Pos p'')
-> --instance (Sub (Neg n) (Neg n') n'', NegType n'', Div n'' (Neg n') n''') => 
-> --  Div (Neg n) (Neg n') (Pos n''')
-
-
-
-> --instance (NonZero n', Div' n n' n'') => Div n n' n''
+> instance (NumType n) => Prod n Zero Zero
+> instance (PosType p, Div c (Pos p) a) => Prod a (Pos p) c
+> instance (NegType n, Div c (Neg n) a) => Prod a (Neg n) c
 
 
 = Convenince types and values =

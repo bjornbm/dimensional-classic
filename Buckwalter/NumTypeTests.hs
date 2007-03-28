@@ -99,9 +99,11 @@ testMultiplication = TestLabel "Multiplication tests" $ TestList
 testDivision = TestLabel "Division tests" $ TestList
     [ binaryTest (/) (P./) pos4 pos2
     , binaryTest (/) (P./) zero pos5
-    --, binaryTest (/) (P./) neg4 pos2
-    --, binaryTest (/) (P./) pos4 neg2
-    --, binaryTest (/) (P./) neg4 neg2
+    , binaryTest (/) (P./) zero neg3
+    , binaryTest (/) (P./) neg4 pos2
+    , binaryTest (/) (P./) pos4 neg2
+    , binaryTest (/) (P./) neg4 neg2
+    , binaryTest (/) (P./) pos5 pos5
     ]
 
 
@@ -114,6 +116,7 @@ tests = TestList
     , testAddition
     , testSubtraction
     , testMultiplication
+    , testDivision
     ]
 
 main = runTestTT tests
