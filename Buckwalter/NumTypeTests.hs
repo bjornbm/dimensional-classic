@@ -28,7 +28,8 @@ binaryTest f f' x y = TestCase $ assertEqual
     (f' ((fromIntegral . asIntegral) x) ((fromIntegral . asIntegral) y)) 
     ((fromIntegral . asIntegral) (f x y))
 
--- Test that conversion to 'Integral' works as expected.
+-- Test that conversion to 'Integral' works as expected. This is sort of a
+-- prerequisite for the other tests.
 testAsIntegral = TestLabel "Integral equivalence tests" $ TestList 
     [ TestCase $ -2 @=? asIntegral neg2
     , TestCase $ -1 @=? asIntegral neg1
@@ -56,15 +57,6 @@ testNegate = TestLabel "Negation tests" $ TestList
     , unaryTest negate P.negate zero
     , unaryTest negate P.negate pos1
     , unaryTest negate P.negate pos1
-    ]
-
--- Test halving.
-testHalve = TestLabel "Halving tests" $ TestList
-    [ unaryTest halve (P./ 2) neg4
-    , unaryTest halve (P./ 2) neg2
-    , unaryTest halve (P./ 2) zero
-    , unaryTest halve (P./ 2) neg2
-    , unaryTest halve (P./ 2) neg4
     ]
 
 -- Test addition.
@@ -112,7 +104,6 @@ tests = TestList
     [ testAsIntegral
     , testIncrDecr
     , testNegate
-    , testHalve
     , testAddition
     , testSubtraction
     , testMultiplication
