@@ -208,16 +208,9 @@ Going beyond zero numbers we start with a base case with all numbers
 positive.  We recursively subtract the denominator from nominator
 while incrementing the result, until we reach the zero case.
 
-> instance ( Sum (Pos n') (Pos n'') (Pos (Pos n))
->          , PosType n, PosType n''  -- To prevent zero-crossings.
+> instance ( Sum n' (Pos n'') (Pos n)
 >          , Div n'' (Pos n') n''', PosType n''') 
 >       => Div (Pos n) (Pos n') (Pos n''')
-
-(It is not clear to me why the context "Sum n'' (Pos n') (Pos n),
-PosType n''" isn't sufficient to replace the first two lines of the
-preceeding 'Div' instance. The "PosType n''" is necessary to prevent
-traversing zero and just flipping back and forth from positive to
-negative forever.)
 
 Now we tackle cases with negative numbers involved. We trivially
 convert these to the all-positive case and negate the result if
