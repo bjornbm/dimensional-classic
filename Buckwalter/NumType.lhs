@@ -57,11 +57,14 @@ value-level 'Integral'.
 > toIntegral :: (NumType n, Integral a) => n -> a
 > toIntegral = toIntegral'
 
-Then we define classes encompassing all positive and negative integers
-respectively. The 'PosType' class corresponds to HList's 'HNat'.
+Then we define classes encompassing all positive and negative
+integers respectively. The 'PosType' class corresponds to HList's
+'HNat'.  We also define a class for non-zero numbers (used to
+prohibit division by zero).
 
-> class NumType n => PosType n
-> class NumType n => NegType n
+> class (NumType n) => PosType n
+> class (NumType n) => NegType n
+> class (NumType n) => NonZero n
 
 Now we Define the data types used to represent integers. We begin
 with 'Zero', which we allow to be used as both a positive and a
@@ -80,6 +83,7 @@ to HList's 'HSucc').
 > instance (PosType n) => NumType (Pos n) where 
 >   toIntegral' _ = toIntegral' (undefined :: n) P.+ 1 
 > instance (PosType n) => PosType (Pos n)
+> instance (PosType n) => NonZero (Pos n)
 
 We could be more restrictive using "data (PosType n) => Pos n" but
 this constraint will not be checked (by GHC) anyway when 'Pos' is
@@ -92,6 +96,7 @@ numbers.
 > instance (NegType n) => NumType (Neg n) where
 >   toIntegral' _ = toIntegral' (undefined :: n) P.- 1 
 > instance (NegType n) => NegType (Neg n)
+> instance (NegType n) => NonZero (Neg n)
  
 
 = Show instances =
@@ -109,25 +114,17 @@ We start off with some basic building blocks. Negation is a simple
 matter of recursively changing 'Pos' to 'Neg' or vice versa while
 leaving 'Zero' unchanged.
 
-> class (NumType a, NumType b) => Negate a b | a -> b, b -> a --where 
-> --  negate :: a -> b
-> --  negate _ = undefined
+> class (NumType a, NumType b) => Negate a b | a -> b, b -> a
+
 > instance Negate Zero Zero
 > instance (PosType a, NegType b, Negate a b) => Negate (Pos a) (Neg b)
 > instance (NegType a, PosType b, Negate a b) => Negate (Neg a) (Pos b) 
-
-> negate :: (Negate a b) => a -> b
-> negate _ = undefined
 
 We define a type class for incrementing and decrementing NumTypes.
 The 'incr' and 'decr' functions correspond roughly to HList's 'hSucc'
 and 'hPred' respectively.
 
-> class (NumType a, NumType b) => Succ a b | a -> b, b -> a where 
->   incr :: a -> b
->   incr _ = undefined
->   decr :: b -> a
->   decr _ = undefined
+> class (NumType a, NumType b) => Succ a b | a -> b, b -> a
 
 To increment NumTypes we either prepend 'Pos' to numbers greater
 than or equal to Zero or remove a 'Neg' from numbers less than Zero.
@@ -144,11 +141,7 @@ Now let us move on towards more complex arithmetic operations. We
 define classes for addition and subtraction of NumTypes.
 
 > class (NumType a, NumType b, NumType c) 
->    => Sum a b c | a b -> c, a c -> b, b c -> a where 
->       (+) :: a -> b -> c
->       _ + _ = undefined
->       (-) :: c -> b -> a
->       _ - _ = undefined
+>    => Sum a b c | a b -> c, a c -> b, b c -> a
 
 In order to provide instances satisfying the functional dependencies
 of 'Add' and 'Sub', in particular the property that any two parameters
@@ -190,18 +183,10 @@ expressions "x / y = z". If y and z are known we can always determine
 x.  However, in "x * y = z" we can not determine x if y and z are
 zero.
 
-We use a class for non-zero numbers to prohibit divide-by-zero.
-
-> class (NumType n) => NonZero n
-> instance (PosType n) => NonZero (Pos n)
-> instance (NegType n) => NonZero (Neg n)
-
 The 'NonZero' class is used as a constraint on the denominator 'b'
 in our 'Div' class.
 
-> class (NumType a, NonZero b, NumType c) => Div a b c | a b -> c, c b -> a  where 
->   (/) :: a -> b -> c 
->   _ / _ = undefined
+> class (NumType a, NonZero b, NumType c) => Div a b c | a b -> c, c b -> a
 
 Zero divided by anything (we don't bother with infinity) equals
 zero.
@@ -248,9 +233,7 @@ multiplication is too large this error message will be emitted:
     Context reduction stack overflow; size = 20 
     Use -fcontext-stack=N to increase stack size to N
 
-> class (NumType a, NumType b, NumType c) => Mul a b c | a b -> c where 
->   (*) :: a -> b -> c 
->   _ * _ = undefined
+> class (NumType a, NumType b, NumType c) => Mul a b c | a b -> c
 
 Providing instances for the 'Mul' class is really easy thanks to
 the 'Div' class having the functional dependency "c b -> a".
@@ -258,6 +241,37 @@ the 'Div' class having the functional dependency "c b -> a".
 > instance (NumType n) => Mul n Zero Zero
 > instance (PosType p, Div c (Pos p) a) => Mul a (Pos p) c
 > instance (NegType n, Div c (Neg n) a) => Mul a (Neg n) c
+
+
+= Functions =
+
+Based on the above type classes we can define functions for various
+arithmetic operations on NumTypes. All functions are undefined and
+only operate on the type level. Their main contribution is that
+they permit NumType arithmetic without explicit (and tedious) type
+declarations.
+
+The main reason to collect all functions here is to keep the
+preceeding sections free from distraction.
+
+> negate :: (Negate a b) => a -> b
+> negate _ = undefined
+
+> incr :: (Succ a b) => a -> b
+> incr _ = undefined
+> decr :: (Succ a b) => b -> a
+> decr _ = undefined
+
+> (+) :: (Sum a b c) => a -> b -> c
+> _ + _ = undefined
+> (-) :: (Sum a b c) => c -> b -> a
+> _ - _ = undefined
+
+> (/) :: (Div a b c) => a -> b -> c 
+> _ / _ = undefined
+
+> (*) :: (Mul a b c) => a -> b -> c 
+> _ * _ = undefined
 
 
 = Convenince types and values =
