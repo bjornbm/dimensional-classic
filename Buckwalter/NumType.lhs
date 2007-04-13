@@ -32,9 +32,11 @@ instances (and possibly additional unidentified GHC extensions).
 >   , Succ, Negate, Sum, Div, Mul
 >   -- Functions.
 >   , toIntegral, incr, decr, negate, (+), (-), (*), (/)
->   -- Types.
-> 	, Zero, Pos1, Pos2, Pos3, Neg1, Neg2, Neg3
->   -- Values.
+>   -- Data types.
+>   , Zero, Pos, Neg
+>   -- Type synonyms for convenience.
+> 	, Pos1, Pos2, Pos3, Neg1, Neg2, Neg3
+>   -- Values for convenience.
 > 	, zero, pos1, pos2, pos3, pos4, pos5, neg1, neg2, neg3, neg4, neg5
 >   ) where
 
@@ -52,10 +54,7 @@ We start by defining a class encompassing all integers with the
 class function 'toIntegral' that converts from the type-level to a
 value-level 'Integral'.
 
-> class NumType n where toIntegral' :: (Integral a) => n -> a
-
-> toIntegral :: (NumType n, Integral a) => n -> a
-> toIntegral = toIntegral'
+> class NumType n where toIntegral :: (Integral a) => n -> a
 
 Then we define classes encompassing all positive and negative
 integers respectively. The 'PosType' class corresponds to HList's
@@ -66,13 +65,52 @@ prohibit division by zero).
 > class (NumType n) => NegType n
 > class (NumType n) => NonZero n
 
+Now we use a trick from Oleg Kiselyov and Chung-chieh Shan [2]:
+
+    -- The well-formedness condition, the kind predicate
+    class Nat0 a where toInt :: a -> Int
+    class Nat0 a => Nat a           -- (positive) naturals
+
+    -- To prevent the user from adding new instances to Nat0 and especially
+    -- to Nat (e.g., to prevent the user from adding the instance |Nat B0|)
+    -- we do NOT export Nat0 and Nat. Rather, we export the following proxies.
+    -- The proxies entail Nat and Nat0 and so can be used to add Nat and Nat0
+    -- constraints in the signatures. However, all the constraints below
+    -- are expressed in terms of Nat0 and Nat rather than proxies. Thus,
+    -- even if the user adds new instances to proxies, it would not matter.
+    -- Besides, because the following proxy instances are most general,
+    -- one may not add further instances without overlapping instance extension.
+    class    Nat0 n => Nat0E n
+    instance Nat0 n => Nat0E n
+    class    Nat n => NatE n
+    instance Nat n => NatE n
+
+We apply this trick to our classes.
+
+> class    (NumType n) => NumTypeE n
+> instance (NumType n) => NumTypeE n
+> class    (PosType n) => PosTypeE n
+> instance (PosType n) => PosTypeE n
+> class    (NegType n) => NegTypeE n
+> instance (NegType n) => NegTypeE n
+> class    (NonZero n) => NonZeroE n
+> instance (NonZero n) => NonZeroE n
+
+TODO: actually change the export or internal instance names. I'm
+inclined to change the internal names a retain the external ones.
+
+We do not have to do this for our other classes. They have the above
+classes in their constraints and since the instances are complete
+(not proven) a new instance cannot be defined (actually used in the
+case of GHC) without overlapping instances.
+
 Now we Define the data types used to represent integers. We begin
 with 'Zero', which we allow to be used as both a positive and a
 negative number in the sense of the previously defined type classes.
 'Zero' corresponds to HList's 'HZero'.
 
 > data Zero
-> instance NumType Zero where toIntegral' _ = 0
+> instance NumType Zero where toIntegral _ = 0
 > instance PosType Zero
 > instance NegType Zero
 
@@ -81,7 +119,7 @@ to HList's 'HSucc').
 
 > data Pos n
 > instance (PosType n) => NumType (Pos n) where 
->   toIntegral' _ = toIntegral' (undefined :: n) P.+ 1 
+>   toIntegral' _ = toIntegral (undefined :: n) P.+ 1 
 > instance (PosType n) => PosType (Pos n)
 > instance (PosType n) => NonZero (Pos n)
 
@@ -94,14 +132,14 @@ numbers.
 
 > data Neg n
 > instance (NegType n) => NumType (Neg n) where
->   toIntegral' _ = toIntegral' (undefined :: n) P.- 1 
+>   toIntegral' _ = toIntegral (undefined :: n) P.- 1 
 > instance (NegType n) => NegType (Neg n)
 > instance (NegType n) => NonZero (Neg n)
  
 
 = Show instances =
 
-We create show instances for the defines NumTypes for convenience.
+For convenience we create show instances for the defined NumTypes.
 
 > instance Show Zero where show _ = "NumType 0"
 > instance (PosType n) => Show (Pos n) where show x = "NumType " ++ show (toIntegral x)
