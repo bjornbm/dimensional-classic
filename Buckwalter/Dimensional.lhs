@@ -56,11 +56,11 @@ extensions.
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
 > import qualified Prelude as P 
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
-> import Buckwalter.NumType (NumType, PosType, NegType, NonZero,
->                            Zero, Pos, Neg, asIntegral,
->                            Sum, Prod, 
->                            Pos1, Pos2, pos2, Pos3, pos3)
-> import qualified Buckwalter.NumType as N (Div)
+> import Buckwalter.NumType (NumType, NonZero, PosType,
+>                            Zero, toIntegral,
+>                            Sum, 
+>                            Pos1, Pos2, pos2, Pos3, pos3, neg3)
+> import qualified Buckwalter.NumType as N (Mul, Div)
 
 We will reuse the operators and function names from the Prelude.
 To prevent unpleasant surprises we give operators the same fixity
@@ -255,86 +255,39 @@ NumType.  However, it constrains the type 'a' to be a member of the
 
 > class (NumType n) => Power d n d' | d n -> d' where 
 >   (^) :: (Fractional a) => Dimensional v d a -> n -> Dimensional v d' a
->   Dimensional x ^ n = Dimensional $ x ^^ asIntegral n
+>   Dimensional x ^ n = Dimensional $ x ^^ toIntegral n
 
-> instance (Prod l  x l',
->           Prod m  x m',
->           Prod t  x t',
->           Prod i  x i',
->           Prod th x th',
->           Prod n  x n',
->           Prod j  x j') => Power (Dim l   m   t   i   th   n   j) x 
->                                  (Dim l'  m'  t'  i'  th'  n'  j')
+> instance (N.Mul l  x l',
+>           N.Mul m  x m',
+>           N.Mul t  x t',
+>           N.Mul i  x i',
+>           N.Mul th x th',
+>           N.Mul n  x n',
+>           N.Mul j  x j') => Power (Dim l   m   t   i   th   n   j) x 
+>                                   (Dim l'  m'  t'  i'  th'  n'  j')
 
 In the unlikely case someone needs to use this library with
 non-fractional numbers we provide an alternative restricted to
 positive exponents.
 
-> class (NumType n) => Power' d n d' | d n -> d' where 
+> class (PosType n) => Power' d n d' | d n -> d' where 
 >   (^+) :: (Num a) => Dimensional v d a -> n -> Dimensional v d' a
->   Dimensional x ^+ n = Dimensional $ x P.^ asIntegral n
+>   Dimensional x ^+ n = Dimensional $ x P.^ toIntegral n
 
-> instance (Prod l  x l',
->           Prod m  x m',
->           Prod t  x t',
->           Prod i  x i',
->           Prod th x th',
->           Prod n  x n',
->           Prod j  x j') => Power' (Dim l   m   t   i   th   n   j) x 
->                                   (Dim l'  m'  t'  i'  th'  n'  j')
-
-> {-
-
-To avoid the unnecessary 'Fractional' constraint for zero or positive
-exponents we need to add 'a' as a class parameter and provide three
-instances; one for zero exponents, one for positive exponents, and
-one for negative exponents. Indeed the 'Fractional' constraint only
-applies to negative exponents.
-
-> class (NumType n) => Power a d n d' | d n -> d' 
->   where (^) :: Dimensional v d a -> n -> Dimensional v d' a
-
-Using a zero exponent trivially results in dimensionless 1.
-
-> instance (Num a) => Power a d Zero DOne where _ ^ _ = Dimensional 1
-
-Positive exponents.
-
-> instance (Num a, 
->           Prod l  (Pos x) l',
->           Prod m  (Pos x) m',
->           Prod t  (Pos x) t',
->           Prod i  (Pos x) i',
->           Prod th (Pos x) th',
->           Prod n  (Pos x) n',
->           Prod j  (Pos x) j') 
->        => Power a       (Dim l   m   t   i   th   n   j)
->                 (Pos x) (Dim l'  m'  t'  i'  th'  n'  j')
->   where
->       (Dimensional x) ^ n = Dimensional $ x P.^ asIntegral n
-
-Negative exponents. Note that in contrast to the standard Prelude
-we can use '^' for negative exponents too (the standard Prelude
-uses '^^').
-
-> instance (Fractional a,
->           Prod l  (Neg x) l',
->           Prod m  (Neg x) m',
->           Prod t  (Neg x) t',
->           Prod i  (Neg x) i',
->           Prod th (Neg x) th',
->           Prod n  (Neg x) n',
->           Prod j  (Neg x) j') 
->        => Power a       (Dim l   m   t   i   th   n   j)
->                 (Neg x) (Dim l'  m'  t'  i'  th'  n'  j')
->   where
->       (Dimensional x) ^ n = Dimensional $ x ^^ asIntegral n
-
-> -}
+> instance (PosType x,
+>           N.Mul l  x l',
+>           N.Mul m  x m',
+>           N.Mul t  x t',
+>           N.Mul i  x i',
+>           N.Mul th x th',
+>           N.Mul n  x n',
+>           N.Mul j  x j') => Power' (Dim l   m   t   i   th   n   j) x 
+>                                    (Dim l'  m'  t'  i'  th'  n'  j')
 
 A special case is that dimensionless quantities are not restricted
 to integer powers. This is accommodated by 'Dimensionless' providing
-an instance of 'Floating' in the Dimensionless module.
+an instance of 'Floating' (and the '**' operator) in the Dimensionless
+module.
 
 
 = Roots =
@@ -345,7 +298,7 @@ quantities.
 
 > class (NonZero n) => Root d n d' | d n -> d' where 
 >   nroot :: (Floating a) => n -> Quantity d a -> Quantity d' a
->   nroot n (Dimensional x) = Dimensional $ x ** (1 P./ (fromIntegral . asIntegral) n)
+>   nroot n (Dimensional x) = Dimensional $ x ** (1 P./ (fromIntegral . toIntegral) n)
 
 > instance (N.Div l  x l',
 >           N.Div m  x m',

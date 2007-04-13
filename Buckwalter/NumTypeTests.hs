@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -fno-monomorphism-restriction #-}
 
-module NumTypeTests where
+module Buckwalter.NumTypeTests where
 
 import Buckwalter.NumType
 import Prelude hiding ((*), (/), (+), (-), negate) -- (undefined, Integral)
@@ -9,33 +9,33 @@ import Test.HUnit
 
 
 -- Compares a type level unary function with a value level unary function 
--- by converting 'NumType' to 'Integral'. This assumes that the 'asIntegral'
+-- by converting 'NumType' to 'Integral'. This assumes that the 'toIntegral'
 -- function is solid.
 unaryTest :: (NumType n, NumType n', Num a) 
           => (n -> n') -> (a -> a) -> n -> Test
 unaryTest f f' x = TestCase $ assertEqual 
     "Unary function Integral equivalence" 
-    (f' ((fromIntegral . asIntegral) x)) 
-    ((fromIntegral . asIntegral) (f x))
+    (f' ((fromIntegral . toIntegral) x)) 
+    ((fromIntegral . toIntegral) (f x))
 
 -- Compares a type level binary function with a value level binary function 
--- by converting 'NumType' to 'Integral'. This assumes that the 'asIntegral'
+-- by converting 'NumType' to 'Integral'. This assumes that the 'toIntegral'
 -- function is solid.
 binaryTest :: (NumType n, NumType n', NumType n'', Num a) 
            => (n -> n' -> n'') -> (a -> a -> a) -> n -> n' -> Test
 binaryTest f f' x y = TestCase $ assertEqual 
     "Binary function Integral equivalence" 
-    (f' ((fromIntegral . asIntegral) x) ((fromIntegral . asIntegral) y)) 
-    ((fromIntegral . asIntegral) (f x y))
+    (f' ((fromIntegral . toIntegral) x) ((fromIntegral . toIntegral) y)) 
+    ((fromIntegral . toIntegral) (f x y))
 
 -- Test that conversion to 'Integral' works as expected. This is sort of a
 -- prerequisite for the other tests.
 testAsIntegral = TestLabel "Integral equivalence tests" $ TestList 
-    [ TestCase $ -2 @=? asIntegral neg2
-    , TestCase $ -1 @=? asIntegral neg1
-    , TestCase $  0 @=? asIntegral zero
-    , TestCase $  1 @=? asIntegral pos1
-    , TestCase $  2 @=? asIntegral pos2
+    [ TestCase $ -2 @=? toIntegral neg2
+    , TestCase $ -1 @=? toIntegral neg1
+    , TestCase $  0 @=? toIntegral zero
+    , TestCase $  1 @=? toIntegral pos1
+    , TestCase $  2 @=? toIntegral pos2
     ] -- By induction all other NumTypes should be good if these are.
 
 -- Test increment and decrement for a bunch of 'NumTypes'.

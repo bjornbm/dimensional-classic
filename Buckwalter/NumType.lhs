@@ -25,14 +25,18 @@ instances (and possibly additional unidentified GHC extensions).
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module Buckwalter.NumType {- (
-> 	Zero, Pos, Neg,
-> 	NumType, PosType, NegType, asIntegral,
-> 	Negate, negate, Incr, incr, Decr, decr, 
->   Add, (+), Sub, (-), (*), (/), Halve, halve,
-> 	Pos1, Pos2, Pos3, Neg1, Neg2, Neg3,
-> 	zero, pos1, pos2, pos3, pos4, pos5, neg1, neg2, neg3, neg4, neg5
->   ) -} where
+> module Buckwalter.NumType 
+>   -- Basic classes.
+>   ( NumType, PosType, NegType, NonZero
+>   -- Arithmetic classes.
+>   , Succ, Negate, Sum, Div, Mul
+>   -- Functions.
+>   , toIntegral, incr, decr, negate, (+), (-), (*), (/)
+>   -- Types.
+> 	, Zero, Pos1, Pos2, Pos3, Neg1, Neg2, Neg3
+>   -- Values.
+> 	, zero, pos1, pos2, pos3, pos4, pos5, neg1, neg2, neg3, neg4, neg5
+>   ) where
 
 > import Prelude hiding ((*), (/), (+), (-), negate) -- (undefined, Integral)
 > import qualified Prelude as P ((+), (-))
@@ -45,10 +49,13 @@ Use the same fixity for operators as the Prelude.
 = NumTypes =
 
 We start by defining a class encompassing all integers with the
-class function 'asIntegral' that converts from the type-level to a
+class function 'toIntegral' that converts from the type-level to a
 value-level 'Integral'.
 
-> class NumType n where asIntegral :: (Integral a) => n -> a
+> class NumType n where toIntegral' :: (Integral a) => n -> a
+
+> toIntegral :: (NumType n, Integral a) => n -> a
+> toIntegral = toIntegral'
 
 Then we define classes encompassing all positive and negative integers
 respectively. The 'PosType' class corresponds to HList's 'HNat'.
@@ -62,7 +69,7 @@ negative number in the sense of the previously defined type classes.
 'Zero' corresponds to HList's 'HZero'.
 
 > data Zero
-> instance NumType Zero where asIntegral _ = 0
+> instance NumType Zero where toIntegral' _ = 0
 > instance PosType Zero
 > instance NegType Zero
 
@@ -71,7 +78,7 @@ to HList's 'HSucc').
 
 > data Pos n
 > instance (PosType n) => NumType (Pos n) where 
->   asIntegral _ = asIntegral (undefined :: n) P.+ 1 
+>   toIntegral' _ = toIntegral' (undefined :: n) P.+ 1 
 > instance (PosType n) => PosType (Pos n)
 
 We could be more restrictive using "data (PosType n) => Pos n" but
@@ -83,7 +90,7 @@ numbers.
 
 > data Neg n
 > instance (NegType n) => NumType (Neg n) where
->   asIntegral _ = asIntegral (undefined :: n) P.- 1 
+>   toIntegral' _ = toIntegral' (undefined :: n) P.- 1 
 > instance (NegType n) => NegType (Neg n)
  
 
@@ -92,8 +99,8 @@ numbers.
 We create show instances for the defines NumTypes for convenience.
 
 > instance Show Zero where show _ = "NumType 0"
-> instance (PosType n) => Show (Pos n) where show x = "NumType " ++ show (asIntegral x)
-> instance (NegType n) => Show (Neg n) where show x = "NumType " ++ show (asIntegral x)
+> instance (PosType n) => Show (Pos n) where show x = "NumType " ++ show (toIntegral x)
+> instance (NegType n) => Show (Neg n) where show x = "NumType " ++ show (toIntegral x)
 
  
 = Negation, incrementing and decrementing =
@@ -102,12 +109,15 @@ We start off with some basic building blocks. Negation is a simple
 matter of recursively changing 'Pos' to 'Neg' or vice versa while
 leaving 'Zero' unchanged.
 
-> class (NumType a, NumType b) => Negate a b | a -> b, b -> a where 
->   negate :: a -> b
->   negate _ = undefined
+> class (NumType a, NumType b) => Negate a b | a -> b, b -> a --where 
+> --  negate :: a -> b
+> --  negate _ = undefined
 > instance Negate Zero Zero
 > instance (PosType a, NegType b, Negate a b) => Negate (Pos a) (Neg b)
 > instance (NegType a, PosType b, Negate a b) => Negate (Neg a) (Pos b) 
+
+> negate :: (Negate a b) => a -> b
+> negate _ = undefined
 
 We define a type class for incrementing and decrementing NumTypes.
 The 'incr' and 'decr' functions correspond roughly to HList's 'hSucc'
@@ -238,16 +248,16 @@ multiplication is too large this error message will be emitted:
     Context reduction stack overflow; size = 20 
     Use -fcontext-stack=N to increase stack size to N
 
-> class (NumType a, NumType b, NumType c) => Prod a b c | a b -> c where 
+> class (NumType a, NumType b, NumType c) => Mul a b c | a b -> c where 
 >   (*) :: a -> b -> c 
 >   _ * _ = undefined
 
-Providing instances for the 'Prod' class is really easy thanks to
+Providing instances for the 'Mul' class is really easy thanks to
 the 'Div' class having the functional dependency "c b -> a".
 
-> instance (NumType n) => Prod n Zero Zero
-> instance (PosType p, Div c (Pos p) a) => Prod a (Pos p) c
-> instance (NegType n, Div c (Neg n) a) => Prod a (Neg n) c
+> instance (NumType n) => Mul n Zero Zero
+> instance (PosType p, Div c (Pos p) a) => Mul a (Pos p) c
+> instance (NegType n, Div c (Neg n) a) => Mul a (Neg n) c
 
 
 = Convenince types and values =
@@ -282,4 +292,5 @@ but with the expected types).
 = References =
 
 [1] http://homepages.cwi.nl/~ralf/HList/
+[2] http://okmij.org/ftp/Computation/resource-aware-prog/BinaryNumber.hs
 
