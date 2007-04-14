@@ -15,13 +15,16 @@ functions for free.
 
 > {-# OPTIONS_GHC -fglasgow-exts #-}
 
+TODO: Should/can we use the empty export list?
+
 > module Buckwalter.Dimensional.Dimensionless where
 
 > import Prelude hiding (negate, (+), (-), (*), (/))
 > import qualified Prelude
-> import Buckwalter.Dimensional ( Dimensionless, one, negate
->                               , (+), (-), (*), (/), (*~)
->                               )
+> import Buckwalter.Dimensional 
+>   ( Dimensionless, one, negate
+>   , (+), (-), (*), (/), (*~), (/~)
+>   )
 
 
 = 'Num' instance =
@@ -65,4 +68,40 @@ We define all unary functions and let the binary functions default.
 >   asinh = fmap asinh
 >   acosh = fmap acosh
 >   atanh = fmap atanh
+
+
+= Real instance =
+
+Relies on 'Fractional'. The primary purpose of this instance is to
+facilitate 'RealFloat'.
+
+> instance (Real a, Fractional a) => Real (Dimensionless a) where
+>   toRational = toRational . (/~ one)
+
+
+= RealFrac instance =
+
+The primary purpose of this instance is to facilitate 'RealFloat'.
+
+> instance (RealFrac a) => RealFrac (Dimensionless a) where
+>   properFraction x = (xi, xf *~ one) where (xi, xf) = properFraction (x /~ one)
+
+
+= RealFloat instance =
+
+The motivator behind providing a 'RealFloat' instance (and the
+prerequisite 'Real' and 'RealFrac' instances) was the atan2 function
+(which has a default implementation).
+
+> instance (RealFloat a) => RealFloat (Dimensionless a) where
+>   floatRadix     = floatRadix     . (/~ one)
+>   floatDigits    = floatDigits    . (/~ one)
+>   floatRange     = floatRange     . (/~ one)
+>   isNaN          = isNaN          . (/~ one)
+>   isInfinite     = isInfinite     . (/~ one)
+>   isDenormalized = isDenormalized . (/~ one)
+>   isNegativeZero = isNegativeZero . (/~ one)
+>   isIEEE         = isIEEE         . (/~ one)
+>   decodeFloat    = decodeFloat    . (/~ one)
+>   encodeFloat i j = (encodeFloat i j) *~ one
 
