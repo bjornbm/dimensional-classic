@@ -66,7 +66,7 @@ We will reuse the operators and function names from the Prelude.
 To prevent unpleasant surprises we give operators the same fixity
 as the Prelude.
 
-> infixr 8  ^
+> infixr 8  ^, ^+, ^/
 > infixl 7  *, /
 > infixl 6  +, -
 
@@ -321,8 +321,6 @@ prefer such.
 
 > (^/) :: (Floating a, Root d n d') => Quantity d a -> n -> Quantity d' a
 > (^/) = flip nroot
-
-TODO: investigate non-termination of "sqrt $ (3 *~ meter) ^ pos3"
 
 
 = Quantity operations =
