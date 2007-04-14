@@ -119,7 +119,7 @@ to HList's 'HSucc').
 
 > data Pos n
 > instance (PosType n) => NumType (Pos n) where 
->   toIntegral' _ = toIntegral (undefined :: n) P.+ 1 
+>   toIntegral _ = toIntegral (undefined :: n) P.+ 1 
 > instance (PosType n) => PosType (Pos n)
 > instance (PosType n) => NonZero (Pos n)
 
@@ -132,7 +132,7 @@ numbers.
 
 > data Neg n
 > instance (NegType n) => NumType (Neg n) where
->   toIntegral' _ = toIntegral (undefined :: n) P.- 1 
+>   toIntegral _ = toIntegral (undefined :: n) P.- 1 
 > instance (NegType n) => NegType (Neg n)
 > instance (NegType n) => NonZero (Neg n)
  

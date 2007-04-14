@@ -1,17 +1,11 @@
-{-# OPTIONS_GHC -fglasgow-exts -fno-monomorphism-restriction #-}
+{-# OPTIONS_GHC -fno-monomorphism-restriction #-}
 
 module Buckwalter.NumTypeTests where
 
 import Buckwalter.NumType
-import Prelude hiding ((*), (/), (+), (-), negate) -- (undefined, Integral)
+import Prelude hiding ((*), (/), (+), (-), negate)
 import qualified Prelude as P ((*), (/), (+), (-), negate)
 import Test.HUnit
-
-
--- TODO this should be impossible!
-instance NumType Pos1
-instance Mul Pos2 Pos2 Pos3
-instance Mul Pos2 Zero Pos3
 
 
 -- Compares a type level unary function with a value level unary function 
