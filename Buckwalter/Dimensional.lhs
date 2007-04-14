@@ -339,18 +339,17 @@ in a single physical dimension.
 > x - y = x + negate y
 
 
-= Elementary functions (incomplete set) =
+= Dimensionless =
 
-Sine and cosine make sense only for angles (the type synonym 'Angle'
-is defined later).
-
-The exponential function only makes sense for dimensionless quantities.
-
-> exp :: (Floating a) => Dimensionless a -> Dimensionless a
-> exp (Dimensional x) = Dimensional (P.exp x)
+For dimensionless quantities pretty much any operation is applicable.
+We provide this freedom by making 'Dimensionless' and instance of
+'Functor'.
 
 > instance Functor Dimensionless where
 >   fmap f (Dimensional x) = Dimensional (f x)
+
+Elementary functions on 'Dimensionless' are provided by instances
+of e.g. 'Floating' defined in the 'Dimensionless' module.
 
 
 = Unit prefixes =
