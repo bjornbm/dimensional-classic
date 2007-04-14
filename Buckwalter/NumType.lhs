@@ -1,6 +1,6 @@
 Buckwalter.NumType -- Type level integers
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
-License: Public domain
+License: BSD3
 
 
 = Summary =
