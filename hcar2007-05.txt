@@ -1,0 +1,25 @@
+\begin{hcarentry}{dimensional}
+\report{Bjorn Buckwalter}
+\status{Active, unstable}
+\makeheader
+
+Dimensional is a library providing data types for performing
+arithmetic with physical quantities and units. Information about
+the physical dimensions of the quantities/units is embedded in their
+types and the validity of operations is verified by the type checker
+at compile time. The boxing and unboxing of numerical values as
+quantities is done by multiplication and division of units. The
+library is designed to, as far as is practical, enforce/encourage
+best practices of unit usage.
+
+Dimensional is currently in a pre-1.0 state and is being actively
+developed. the most recent release can be downloaded from the project
+web site (follow url below). Immediate plans include adding more
+units, tightening exports and getting the library in shape for a
+1.0 release (patches are welcome). The library name and module
+hierarcy are likely to change before the 1.0 release. For more
+details see the "Issues" section of the project web site.
+
+\FurtherReading
+  \url{http://code.google.com/p/dimensional/}
+\end{hcarentry}

@@ -53,9 +53,9 @@ extensions.
 >   where
 
 > import Prelude hiding
->   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
+>   ((*), (/), (+), (-), (^), sqrt, negate)
 > import qualified Prelude as P 
->   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
+>   ((*), (/), (+), (-), (^), negate)
 > import Buckwalter.NumType (NumType, NonZero, PosType,
 >                            Zero, toIntegral,
 >                            Sum, 

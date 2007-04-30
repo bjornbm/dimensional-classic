@@ -3,6 +3,15 @@ Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
 
+= WARNING =
+
+This module was broken by the 0.3 release -- in particular the full
+functional dependencies of the 'Mul' and 'Div' classes of the
+'Dimensional' module.  I don't know of a straight forward way of
+fixing this module so I will leave it broken for now. I probably
+need to expand my repertoire of type-hacking tricks.
+
+
 = Summary =
 
 On January 3 Mike Gunter asked[1]:
@@ -33,19 +42,18 @@ Similarly with 'Buckwalter.Dimensional' this module requires GHC
 > import Prelude hiding
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
 > import qualified Prelude as P ((*), (/), (+), (-), sin, cos, exp)
-> import Buckwalter.NumType (NumType, Add, Sub, Halve, Negate, Zero, Pos, Neg) 
-> import Buckwalter.Dimensional hiding ((/~), (+), (-), square, cubic, sin, cos, exp)
+> import Buckwalter.NumType (NumType, Sum, Negate, Zero, Pos, Neg) 
+> import qualified Buckwalter.NumType as N (Div, Mul)
+> import Buckwalter.Dimensional (Dim, Mul, Div, Power, Root)
 
 
 = 'DExt', 'Apples' and 'Oranges' =
 
 We define the datatype 'DExt' which we will use to increase the
 number of dimensions from the seven SI base dimensions to an arbitrary
-number of dimensions. We make 'DExt' an instance of 'Dims' allowing
-us to use the 'Dimensional' type without change.
+number of dimensions.
 
-> data (NumType n, Dims d) => DExt n d
-> instance Dims (DExt n d)
+> data DExt n d
 
 Using 'DExt' we can define type synonyms for extended dimensions
 applicable to our problem domain. For example, Mike Gunter could
@@ -81,7 +89,7 @@ simple interoperability with base dimensions. In particular it lets
 us drop any dimensions with zero extent adjacent to the terminating
 'Dim'. To capture this property we define the 'DropZero' class.
 
-> class (Dims d, Dims d') => DropZero d d' | d -> d'
+> class DropZero d d' | d -> d'
 
 The following 'DropZero' instances say that when an extended dimension
 with zero extent is next to a 'Dim' the extended dimension can be
@@ -113,7 +121,7 @@ no need to minimize.
 
 If both of the factors are extended the product must be minimized.
 
-> instance (Add n n' n'', Mul d d' d'', DropZero (DExt n'' d'') d''') 
+> instance (Sum n n' n'', Mul d d' d'', DropZero (DExt n'' d'') d''') 
 >       => Mul (DExt n d) (DExt n' d') d'''
 
 Analogously for 'Div'.
@@ -123,13 +131,8 @@ Analogously for 'Div'.
 > instance (Div (Dim l m t i th n j) d d', Negate x x') 
 >       => Div (Dim l m t i th n j) (DExt x d) (DExt x' d')
 
-> instance (Sub n n' n'', Div d d' d'', DropZero (DExt n'' d'') d''') 
+> instance (Sum n'' n' n, Div d d' d'', DropZero (DExt n'' d'') d''') 
 >       => Div (DExt n d) (DExt n' d') d'''
-
-The 'sqrt' function is straight-forward since it cannot eliminate
-any dimensions.
-
-> instance (Halve n n', Sqrt d d') => Sqrt (DExt n d) (DExt n' d')
 
 
 = References =
