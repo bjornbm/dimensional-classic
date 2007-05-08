@@ -1,5 +1,5 @@
 #summary Discussion of making 'Dimensionless' and instance of 'Num' et al.
-#labels Phase-Design,Inprogress
+#labels Phase-Design,Incomplete
 
 
 
@@ -65,5 +65,4 @@ Type constraint signature, not valid in Haskell 98:
 = The upside =
 
 Apart from the lessons learned the 'NumType' module came out significantly stronger. The most important improvements are 'Div' and 'Mul' classes as well as full functional dependencies for the 'Sum' class.
-
 
