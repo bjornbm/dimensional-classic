@@ -43,9 +43,9 @@ It is permissible to express powers of length units by prefixing
 of [1]).
 
 > square :: (Num a) => Unit DLength a -> Unit DArea a
-> square x = x * x
+> square x = x ^+ pos2
 > cubic  :: (Num a) => Unit DLength a -> Unit DVolume a
-> cubic  x = square x * x
+> cubic  x = x ^+ pos3
 
 
 Now we go on to define (a limited set of) the SI derived units in

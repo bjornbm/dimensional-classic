@@ -52,14 +52,15 @@ extensions.
 >       -- TODO discriminate exports, in particular Variants and Dims.
 >   where
 
-> import Prelude hiding
->   ((*), (/), (+), (-), (^), sqrt, negate)
-> import qualified Prelude as P 
->   ((*), (/), (+), (-), (^), negate)
-> import Buckwalter.NumType (NumType, NonZero, PosType,
->                            Zero, toIntegral,
->                            Sum, 
->                            Pos1, Pos2, pos2, Pos3, pos3, neg3)
+> import Prelude 
+>   ( Show, Eq, Ord, Num, Fractional, Floating, RealFloat, Functor, fmap
+>   , (.), flip 
+>   )
+> import qualified Prelude 
+> import Buckwalter.NumType 
+>   ( NumType, NonZero, PosType, Zero, toNum, Sum
+>   , Pos1, Pos2, pos2, Pos3, pos3, neg3
+>   )
 > import qualified Buckwalter.NumType as N (Mul, Div)
 
 We will reuse the operators and function names from the Prelude.
@@ -116,7 +117,7 @@ number and a 'Unit'. We define the '(*~)' operator as a convenient
 way to declare quantities as such a product.
 
 > (*~) :: Num a => a -> Unit d a -> Quantity d a
-> x *~ Dimensional y = Dimensional (x P.* y)
+> x *~ Dimensional y = Dimensional (x Prelude.* y)
 
 Conversely, the numerical value of a 'Quantity' is obtained by
 dividing the 'Quantity' by its 'Unit' (any unit with the same
@@ -124,7 +125,7 @@ physical dimension). The '(/~)' operator provides a convenient way
 of obtaining the numerical value of a quantity.
 
 > (/~) :: Fractional a => Quantity d a -> Unit d a -> a
-> Dimensional x /~ Dimensional y = x P./ y
+> Dimensional x /~ Dimensional y = x Prelude./ y
 
 We give '*~' and '/~' the same fixity as '*' and '/' defined below.
 Note that this necessitates the use of parenthesis when composing 
@@ -143,14 +144,18 @@ dimensions that make up the given dimension. The powers are represented
 using NumTypes. For convenience we collect all seven base dimensions
 in a data type 'Dim'.
 
-> data (NumType l,    -- Length.
->       NumType m,    -- Mass.
->       NumType t,    -- Time.
->       NumType i,    -- Electric current.
->       NumType th,   -- Thermodynamic temperature.
->       NumType n,    -- Amount of substance.
->       NumType j)    -- Luminous intensity.
->   => Dim l m t i th n j 
+> data Dim l m t i th n j 
+
+where the respective dimensions are represented by type variables
+using the following convention.
+
+    l  -- Length
+    m  -- Mass
+    t  -- Time
+    i  -- Electric current
+    th -- Thermodynamic temperature
+    n  -- Amount of substance
+    j  -- Luminous intensity
 
 We could have chosen to provide type variables for the seven base
 dimensions in 'Dimensional' instead of creating a new data type
@@ -198,7 +203,7 @@ and functional dependences.
 Multiplication of dimensions corresponds to adding of the base
 dimensions' exponents.
 
-> class Mul d d' d'' | d d' -> d'', d d'' -> d', d' d'' -> d
+> class Mul d d' d'' | d d' -> d''
 > instance (Sum l  l'  l'',
 >           Sum m  m'  m'',
 >           Sum t  t'  t'',
@@ -212,7 +217,7 @@ dimensions' exponents.
 Division of dimensions corresponds to subtraction of the base
 dimensions' exponents.
 
-> class Div d d' d'' | d d' -> d'', d d'' -> d', d' d'' -> d
+> class Div d d' d'' | d d' -> d''
 > instance (Sum l  l'  l'',
 >           Sum m  m'  m'',
 >           Sum t  t'  t'',
@@ -222,6 +227,44 @@ dimensions' exponents.
 >           Sum j  j'  j'') => Div (Dim l'' m'' t'' i'' th'' n'' j'')
 >                                  (Dim l'  m'  t'  i'  th'  n'  j')
 >                                  (Dim l   m   t   i   th   n   j)
+
+We could provide the 'Mul' and 'Div' classes with full functional
+dependencies but that would be of limited utility as there is no
+obvious use for "backwards" type inference and would also limit
+what we can achieve overlapping instances. (In particular, it breaks
+the 'Extensible' module.)
+
+We limit ourselves to integer powers of Dimensionals as fractional
+powers make little physical sense. Since the value of the exponent
+affects the type of the result the value of the exponent must be
+visible to the type system, therefore we will generally represent
+the exponent with a 'NumType'. 
+
+Powers of dimensions corresponds to multiplication of the base
+dimensions' exponents by the exponent.
+
+> class (NumType n) => Power d n d' | d n -> d'
+> instance (N.Mul l  x l',
+>           N.Mul m  x m',
+>           N.Mul t  x t',
+>           N.Mul i  x i',
+>           N.Mul th x th',
+>           N.Mul n  x n',
+>           N.Mul j  x j') => Power (Dim l   m   t   i   th   n   j) x 
+>                                   (Dim l'  m'  t'  i'  th'  n'  j')
+
+Roots of dimensions corresponds to division of the base dimensions'
+exponents by order(?) of the root.
+
+> class (NonZero n) => Root d n d' | d n -> d'
+> instance (N.Div l  x l',
+>           N.Div m  x m',
+>           N.Div t  x t',
+>           N.Div i  x i',
+>           N.Div th x th',
+>           N.Div n  x n',
+>           N.Div j  x j') => Root (Dim l   m   t   i   th   n   j) x 
+>                                  (Dim l'  m'  t'  i'  th'  n'  j')
 
 
 = Arithmetic on units and quantities =
@@ -234,80 +277,50 @@ Multiplication, division and powers apply to both units and quantities.
 
 > (*) :: (Num a, Mul d d' d'') 
 >     => Dimensional v d a -> Dimensional v d' a -> Dimensional v d'' a
-> Dimensional x * Dimensional y = Dimensional (x P.* y)
+> Dimensional x * Dimensional y = Dimensional (x Prelude.* y)
 
 > (/) :: (Fractional a, Div d d' d'') 
 >     => Dimensional v d a -> Dimensional v d' a -> Dimensional v d'' a
-> Dimensional x / Dimensional y = Dimensional (x P./ y)
+> Dimensional x / Dimensional y = Dimensional (x Prelude./ y)
 
-
-= Powers =
-
-We limit ourselves to integer powers of Dimensionals as fractional
-powers make little physical sense. Since the value of the exponent
-affects the type of the result the value of the exponent must be
-visible to the type system, therefore we will generally represent
-the exponent with a 'NumType'. 
-
-The following class and single instance would suffice for any
-NumType.  However, it constrains the type 'a' to be a member of the
-'Fractional' class.
-
-> class (NumType n) => Power d n d' | d n -> d' where 
->   (^) :: (Fractional a) => Dimensional v d a -> n -> Dimensional v d' a
->   Dimensional x ^ n = Dimensional $ x ^^ toIntegral n
-
-> instance (N.Mul l  x l',
->           N.Mul m  x m',
->           N.Mul t  x t',
->           N.Mul i  x i',
->           N.Mul th x th',
->           N.Mul n  x n',
->           N.Mul j  x j') => Power (Dim l   m   t   i   th   n   j) x 
->                                   (Dim l'  m'  t'  i'  th'  n'  j')
+> (^) :: (Fractional a, Power d n d')
+>     => Dimensional v d a -> n -> Dimensional v d' a
+> Dimensional x ^ n = Dimensional (x Prelude.^^ toNum n)
 
 In the unlikely case someone needs to use this library with
-non-fractional numbers we provide an alternative restricted to
-positive exponents.
+non-fractional numbers we provide the alternative power operator
+'^+' that is restricted to positive exponents.
 
-> class (PosType n) => Power' d n d' | d n -> d' where 
->   (^+) :: (Num a) => Dimensional v d a -> n -> Dimensional v d' a
->   Dimensional x ^+ n = Dimensional $ x P.^ toIntegral n
-
-> instance (PosType x,
->           N.Mul l  x l',
->           N.Mul m  x m',
->           N.Mul t  x t',
->           N.Mul i  x i',
->           N.Mul th x th',
->           N.Mul n  x n',
->           N.Mul j  x j') => Power' (Dim l   m   t   i   th   n   j) x 
->                                    (Dim l'  m'  t'  i'  th'  n'  j')
+> (^+) :: (Num a, PosType n, Power d n d')
+>      => Dimensional v d a -> n -> Dimensional v d' a
+> Dimensional x ^+ n = Dimensional (x Prelude.^ toNum n)
 
 A special case is that dimensionless quantities are not restricted
-to integer powers. This is accommodated by 'Dimensionless' providing
-an instance of 'Floating' (and the '**' operator) in the Dimensionless
-module.
+to integer exponents. This is accommodated by the '**' operator
+defined later.
 
 
-= Roots =
+= Quantity operations =
+
+Some additional operations obviously only make sense for quantities.
+Of these, negation, addition and subtraction are particularly simple
+as they are done in a single physical dimension.
+
+> negate :: (Num a) => Quantity d a -> Quantity d a
+> negate (Dimensional x) = Dimensional (Prelude.negate x)
+
+> (+) :: (Num a) => Quantity d a -> Quantity d a -> Quantity d a
+> Dimensional x + Dimensional y = Dimensional (x Prelude.+ y)
+
+> (-) :: (Num a) => Quantity d a -> Quantity d a -> Quantity d a
+> x - y = x + negate y
 
 Roots could conceivably be applied to units but valid reasons
 for doing so elude the author, so their use will be limited to
 quantities.
 
-> class (NonZero n) => Root d n d' | d n -> d' where 
->   nroot :: (Floating a) => n -> Quantity d a -> Quantity d' a
->   nroot n (Dimensional x) = Dimensional $ x ** (1 P./ (fromIntegral . toIntegral) n)
-
-> instance (N.Div l  x l',
->           N.Div m  x m',
->           N.Div t  x t',
->           N.Div i  x i',
->           N.Div th x th',
->           N.Div n  x n',
->           N.Div j  x j') => Root (Dim l   m   t   i   th   n   j) x 
->                                  (Dim l'  m'  t'  i'  th'  n'  j')
+> nroot :: (Floating a, Root d n d') => n -> Quantity d a -> Quantity d' a
+> nroot n (Dimensional x) = Dimensional (x Prelude.** (1 Prelude./ toNum n))
 
 We provide short-hands for the square and cubic roots.
 
@@ -323,22 +336,6 @@ prefer such.
 > (^/) = flip nroot
 
 
-= Quantity operations =
-
-Some operations only make sense for quantities. Of these, negation,
-addition and subtraction are particularly simple as they are done
-in a single physical dimension.
-
-> negate :: (Num a) => Quantity d a -> Quantity d a
-> negate (Dimensional x) = Dimensional (P.negate x)
-
-> (+) :: (Num a) => Quantity d a -> Quantity d a -> Quantity d a
-> Dimensional x + Dimensional y = Dimensional (x P.+ y)
-
-> (-) :: (Num a) => Quantity d a -> Quantity d a -> Quantity d a
-> x - y = x + negate y
-
-
 = Dimensionless =
 
 For dimensionless quantities pretty much any operation is applicable.
@@ -348,8 +345,45 @@ We provide this freedom by making 'Dimensionless' and instance of
 > instance Functor Dimensionless where
 >   fmap f (Dimensional x) = Dimensional (f x)
 
-Elementary functions on 'Dimensionless' are provided by instances
-of e.g. 'Floating' defined in the 'Dimensionless' module.
+We continue by defining elementary functions on 'Dimensionless'
+that may be obviously useful. 
+
+> exp, log, sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh 
+>   :: (Floating a) => Dimensionless a -> Dimensionless a
+> exp   = fmap Prelude.exp
+> log   = fmap Prelude.log
+> sin   = fmap Prelude.sin
+> cos   = fmap Prelude.cos
+> tan   = fmap Prelude.tan
+> asin  = fmap Prelude.asin
+> acos  = fmap Prelude.acos
+> atan  = fmap Prelude.atan
+> sinh  = fmap Prelude.sinh
+> cosh  = fmap Prelude.cosh
+> tanh  = fmap Prelude.tanh
+> asinh = fmap Prelude.asinh
+> acosh = fmap Prelude.acosh
+> atanh = fmap Prelude.atanh
+
+> (**) :: (Floating a) 
+>      => Dimensionless a -> Dimensionless a -> Dimensionless a
+> Dimensional x ** Dimensional y = Dimensional (x Prelude.** y)
+
+> atan2 :: (RealFloat a) 
+>       => Dimensionless a -> Dimensionless a -> Dimensionless a
+> atan2 (Dimensional y) (Dimensional x) = Dimensional (Prelude.atan2 y x)
+
+We define some constants for small integer values that often show
+up in formulae. We also throw in 'pi' for good measure.
+
+> _1, _2, _3, _4 :: (Num a) => Dimensionless a
+> _1 = 1 *~ one
+> _2 = 2 *~ one
+> _3 = 3 *~ one
+> _4 = 4 *~ one
+
+> pi :: (Floating a) => Dimensionless a
+> pi = Prelude.pi *~ one
 
 
 = Unit prefixes =
@@ -361,7 +395,7 @@ unit. (The 'prefix' function will also be used to define non-SI
 units.)
 
 > prefix :: (Num a) => a -> Unit d a -> Unit d a
-> prefix x (Dimensional y) = Dimensional (x P.* y)
+> prefix x (Dimensional y) = Dimensional (x Prelude.* y)
 
 We define all SI prefixes, from Table 5 in [1]. Multiples first.
 

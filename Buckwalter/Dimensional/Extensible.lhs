@@ -41,7 +41,7 @@ Similarly with 'Buckwalter.Dimensional' this module requires GHC
 
 > import Prelude hiding
 >   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
-> import qualified Prelude as P ((*), (/), (+), (-), sin, cos, exp)
+> import qualified Prelude 
 > import Buckwalter.NumType (NumType, Sum, Negate, Zero, Pos, Neg) 
 > import qualified Buckwalter.NumType as N (Div, Mul)
 > import Buckwalter.Dimensional (Dim, Mul, Div, Power, Root)

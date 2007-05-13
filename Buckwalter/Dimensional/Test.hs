@@ -3,9 +3,9 @@
 module Buckwalter.Dimensional.Test where
 
 import Buckwalter.Dimensional
-import Buckwalter.Dimensional.Dimensionless
 import Buckwalter.NumType (zero, pos1, pos2, neg1, neg2)
-import Prelude (($), (**))
+import Prelude (($))
+import qualified Prelude
 import Test.HUnit
 
 testPower = TestLabel "Power test" $ TestList
@@ -15,9 +15,7 @@ testPower = TestLabel "Power test" $ TestList
     ]
 
 testDimensionless = TestLabel "Dimensionless test" $ TestList
-    [ TestCase $ (3 ** 2) @=? (3 *~ one) ** (2 *~ one)
-    , TestCase $ (3 ** 2) @=? (3 *~ one) ** 2
-    , TestCase $ (3 ** 2) @=? 3 ** (2 *~ one)
+    [ TestCase $ (3 Prelude.** 2) *~ one @=? (3 *~ one) ** (2 *~ one)
     ]
 
 -- Collect the test cases.
