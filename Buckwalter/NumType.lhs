@@ -42,7 +42,7 @@ instances (and possibly additional unidentified GHC extensions).
 >   -- Arithmetic classes.
 >   , Succ, Negate, Sum, Div, Mul
 >   -- Functions.
->   , toIntegral, incr, decr, negate, (+), (-), (*), (/)
+>   , toNum, incr, decr, negate, (+), (-), (*), (/)
 >   -- Data types.
 >   , Zero, Pos, Neg
 >   -- Type synonyms for convenience.
@@ -52,7 +52,7 @@ instances (and possibly additional unidentified GHC extensions).
 >   ) where
 
 > import Prelude hiding ((*), (/), (+), (-), negate)
-> import qualified Prelude as P ((+), (-))
+> import qualified Prelude ((+), (-))
 
 Use the same fixity for operators as the Prelude.
 
@@ -63,10 +63,10 @@ Use the same fixity for operators as the Prelude.
 = NumTypes =
 
 We start by defining a class encompassing all integers with the
-class function 'toIntegral' that converts from the type-level to a
-value-level 'Integral'.
+class function 'toNum' that converts from the type-level to a
+value-level 'Num'.
 
-> class NumTypeI n where toIntegral :: (Integral a) => n -> a
+> class NumTypeI n where toNum :: (Num a) => n -> a
 
 Then we define classes encompassing all positive and negative
 integers respectively. The 'PosTypeI' class corresponds to HList's
@@ -121,7 +121,7 @@ negative number in the sense of the previously defined type classes.
 'Zero' corresponds to HList's 'HZero'.
 
 > data Zero
-> instance NumTypeI Zero where toIntegral _ = 0
+> instance NumTypeI Zero where toNum _ = 0
 > instance PosTypeI Zero
 > instance NegTypeI Zero
 
@@ -130,7 +130,7 @@ to HList's 'HSucc').
 
 > data Pos n
 > instance (PosTypeI n) => NumTypeI (Pos n) where 
->   toIntegral _ = toIntegral (undefined :: n) P.+ 1 
+>   toNum _ = toNum (undefined :: n) Prelude.+ 1 
 > instance (PosTypeI n) => PosTypeI (Pos n)
 > instance (PosTypeI n) => NonZeroI (Pos n)
 
@@ -143,7 +143,7 @@ numbers.
 
 > data Neg n
 > instance (NegTypeI n) => NumTypeI (Neg n) where
->   toIntegral _ = toIntegral (undefined :: n) P.- 1 
+>   toNum _ = toNum (undefined :: n) Prelude.- 1 
 > instance (NegTypeI n) => NegTypeI (Neg n)
 > instance (NegTypeI n) => NonZeroI (Neg n)
  
@@ -152,9 +152,9 @@ numbers.
 
 For convenience we create show instances for the defined NumTypes.
 
-> instance Show Zero where show _ = "NumTypeI 0"
-> instance (PosTypeI n) => Show (Pos n) where show x = "NumTypeI " ++ show (toIntegral x)
-> instance (NegTypeI n) => Show (Neg n) where show x = "NumTypeI " ++ show (toIntegral x)
+> instance Show Zero where show _ = "NumType 0"
+> instance (PosTypeI n) => Show (Pos n) where show x = "NumType " ++ show (toNum x)
+> instance (NegTypeI n) => Show (Neg n) where show x = "NumType " ++ show (toNum x)
 
  
 = Negation, incrementing and decrementing =

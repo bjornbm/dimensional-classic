@@ -15,8 +15,7 @@ unaryTest :: (NumType n, NumType n', Num a)
           => (n -> n') -> (a -> a) -> n -> Test
 unaryTest f f' x = TestCase $ assertEqual 
     "Unary function Integral equivalence" 
-    (f' ((fromIntegral . toIntegral) x)) 
-    ((fromIntegral . toIntegral) (f x))
+    (f' (toNum x)) (toNum (f x))
 
 -- Compares a type level binary function with a value level binary function 
 -- by converting 'NumType' to 'Integral'. This assumes that the 'toIntegral'
@@ -25,17 +24,16 @@ binaryTest :: (NumType n, NumType n', NumType n'', Num a)
            => (n -> n' -> n'') -> (a -> a -> a) -> n -> n' -> Test
 binaryTest f f' x y = TestCase $ assertEqual 
     "Binary function Integral equivalence" 
-    (f' ((fromIntegral . toIntegral) x) ((fromIntegral . toIntegral) y)) 
-    ((fromIntegral . toIntegral) (f x y))
+    (f' (toNum x) (toNum y)) (toNum (f x y))
 
 -- Test that conversion to 'Integral' works as expected. This is sort of a
 -- prerequisite for the other tests.
 testAsIntegral = TestLabel "Integral equivalence tests" $ TestList 
-    [ TestCase $ -2 @=? toIntegral neg2
-    , TestCase $ -1 @=? toIntegral neg1
-    , TestCase $  0 @=? toIntegral zero
-    , TestCase $  1 @=? toIntegral pos1
-    , TestCase $  2 @=? toIntegral pos2
+    [ TestCase $ -2 @=? toNum neg2
+    , TestCase $ -1 @=? toNum neg1
+    , TestCase $  0 @=? toNum zero
+    , TestCase $  1 @=? toNum pos1
+    , TestCase $  2 @=? toNum pos2
     ] -- By induction all other NumTypes should be good if these are.
 
 -- Test increment and decrement for a bunch of 'NumTypes'.
