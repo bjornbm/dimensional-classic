@@ -33,7 +33,8 @@ For example, the type of '2' below cannot be inferred without explicit type sign
 {{{
 > kineticEnergy = m * v ^ pos2 / 2
 }}}
-TODO: Show the of compiler error message.
+TODO: Show the compiler error message.
+
 We add the type signature.
 {{{
 > kineticEnergy :: Num a => Mass a -> Velocity a -> Energy a
@@ -42,7 +43,7 @@ We add the type signature.
 
 == Inference is often impossible ==
 
-
+TODO: Add example.
 
 
 = Problems =
@@ -50,7 +51,7 @@ We add the type signature.
 
 == Type constraints for polymorphic functions ==
 
-Type constraint signature, not valid in Haskell 98:
+Type constraints with MPTC or type synonyms not valid in Haskell 98:
 {{{
 > f :: (Num a, Num (Dimensionless a)) => Quantity d a -> Quantity d a
 > f x = x + 2 * sin x
