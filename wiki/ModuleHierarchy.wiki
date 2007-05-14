@@ -1,4 +1,5 @@
-#summary The module hierarchy of 'Dimensional'.
+#summary The module hierarchy of the 'dimensional' library.
+
 
 = Introduction =
 
@@ -16,6 +17,7 @@ The module hierarchy of 'Dimensional' is an open question (as is the name). This
 
 
 = Module summaries =
+
 
 == Dimensional ==
 
@@ -44,20 +46,13 @@ The following modules will have a subset of their contents re-exported through '
  * Dimensional.SIUnits (will be re-exported in its entirety)
  * Prelude (will be re-exported in its entirety with the exception of definitions conflicting with those in 'Dimensional')
 
-== Experimental modules ==
 
-The following modules are experimental and 
+== Experimental modules ==
 
 === Dimensional.Extensible ===
 
+Facilitates the use of custom dimensions (e.g. apples and oranges) in addition to the seven base dimensions.
 
-=== Dimensional.ForwardAD  ===
+=== Dimensional.ForwardAD (planned) ===
 
-
-
-
-
-
-
-
-
+Will provide forward-mode automatic differentiation (in one variable) on functions of physical quantities. The intent is to provide at least a differentiation operator together with a lifting function to prevent [http://www.bcl.hamilton.ie/~qobi/nesting/papers/ifl2005.pdf perturbation confusion].
