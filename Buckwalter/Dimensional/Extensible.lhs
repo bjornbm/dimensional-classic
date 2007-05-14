@@ -3,15 +3,6 @@ Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
 
-= WARNING =
-
-This module was broken by the 0.3 release -- in particular the full
-functional dependencies of the 'Mul' and 'Div' classes of the
-'Dimensional' module.  I don't know of a straight forward way of
-fixing this module so I will leave it broken for now. I probably
-need to expand my repertoire of type-hacking tricks.
-
-
 = Summary =
 
 On January 3 Mike Gunter asked[1]:
@@ -39,12 +30,9 @@ Similarly with 'Buckwalter.Dimensional' this module requires GHC
 
 > module Buckwalter.Dimensional.Extensible (DExt) where
 
-> import Prelude hiding
->   ((*), (/), (+), (-), (^), sqrt, negate, pi, sin, cos, exp)
-> import qualified Prelude 
-> import Buckwalter.NumType (NumType, Sum, Negate, Zero, Pos, Neg) 
-> import qualified Buckwalter.NumType as N (Div, Mul)
-> import Buckwalter.Dimensional (Dim, Mul, Div, Power, Root)
+> import Buckwalter.Dimensional ( Dim, Mul, Div, Power, Root )
+> import Buckwalter.NumType ( NumType, Sum, Negate, Zero, Pos, Neg ) 
+> import qualified Buckwalter.NumType as N ( Div, Mul )
 
 
 = 'DExt', 'Apples' and 'Oranges' =
@@ -104,8 +92,8 @@ dropped. In all other cases the dimensions are retained as is.
 = Classes from 'Buckwalter.Dimensional' = 
 
 We get negation, addition and subtraction for free with extended
-Dimensionals. However, we will need instances of the 'Mul', 'Div'
-and 'Sqrt' classes for the corresponding operations to work.
+Dimensionals. However, we will need instances of the 'Mul', 'Div',
+'Power' and 'Root' classes for the corresponding operations to work.
 
 Multiplication and division can cause dimensions to be eliminated.
 We use the 'DropZero' type class to guarantee that the result of a
@@ -133,6 +121,12 @@ Analogously for 'Div'.
 
 > instance (Sum n'' n' n, Div d d' d'', DropZero (DExt n'' d'') d''') 
 >       => Div (DExt n d) (DExt n' d') d'''
+
+The instances for 'Power' and 'Root' are simpler since they can not
+change any previously non-zero to be eliminated.
+
+> instance (N.Mul n x n', Power d x d') => Power (DExt n d) x (DExt n' d')
+> instance (N.Div n x n', Root  d x d') => Root  (DExt n d) x (DExt n' d')
 
 
 = References =

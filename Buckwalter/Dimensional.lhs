@@ -243,7 +243,7 @@ the exponent with a 'NumType'.
 Powers of dimensions corresponds to multiplication of the base
 dimensions' exponents by the exponent.
 
-> class (NumType n) => Power d n d' | d n -> d'
+> class (NumType x) => Power d x d' | d x -> d'
 > instance (N.Mul l  x l',
 >           N.Mul m  x m',
 >           N.Mul t  x t',
@@ -256,7 +256,7 @@ dimensions' exponents by the exponent.
 Roots of dimensions corresponds to division of the base dimensions'
 exponents by order(?) of the root.
 
-> class (NonZero n) => Root d n d' | d n -> d'
+> class (NonZero x) => Root d x d' | d x -> d'
 > instance (N.Div l  x l',
 >           N.Div m  x m',
 >           N.Div t  x t',
