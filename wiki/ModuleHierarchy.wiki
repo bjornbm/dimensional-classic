@@ -1,9 +1,11 @@
-#summary The module hierarchy of the 'dimensional' library.
+#summary The module hierarchy of the dimensional library.
 
 
 = Introduction =
 
-The module hierarchy of 'Dimensional' is an open question (as is the name). This page describes the current vision of the modules.
+The module hierarchy of dimensional library is an open question (as is the name). This page describes the current vision of the modules.
+
+Note that the heirarchy and functionality described below is not reflected in the currently released version (0.3) of the library.
 
 
 = Hierarchy =
@@ -13,7 +15,7 @@ The module hierarchy of 'Dimensional' is an open question (as is the name). This
  * Dimensional.NonSI
  * Dimensional.Prelude
  * Dimensional.Extensible (experimental)
- * Dimensional.ForwardAD (experimental)
+ * Dimensional.ForwardAD (experimental, planned)
 
 
 = Module summaries =
