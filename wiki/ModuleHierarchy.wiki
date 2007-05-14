@@ -15,7 +15,7 @@ The module hierarchy of 'Dimensional' is an open question (as is the name). This
  * Dimensional.ForwardAD (experimental)
 
 
-= Module details =
+= Module summaries =
 
 == Dimensional ==
 
@@ -36,7 +36,7 @@ Defines units outside of SI. Will never be "complete" but units will be added on
 
 == Dimensional.Prelude ==
 
-Contains no definition -- only re-exports other modules for users' convenience. More often than not this will be the only module imported by users.
+Contains no definition -- only re-exports other modules for users' convenience. More often than not this will be the only module users need to import.
 
 The following modules will have a subset of their contents re-exported through 'Dimensional.Prelude':
 
@@ -45,6 +45,8 @@ The following modules will have a subset of their contents re-exported through '
  * Prelude (will be re-exported in its entirety with the exception of definitions conflicting with those in 'Dimensional')
 
 == Experimental modules ==
+
+The following modules are experimental and 
 
 === Dimensional.Extensible ===
 
