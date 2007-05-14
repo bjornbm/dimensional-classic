@@ -53,7 +53,7 @@ We add the type signature.
 Type constraint signature, not valid in Haskell 98:
 {{{
 > f :: (Num a, Num (Dimensionless a)) => Quantity d a -> Quantity d a
-> f x = x + 2 * x
+> f x = x + 2 * sin x
 }}}
 
 
@@ -65,4 +65,3 @@ Type constraint signature, not valid in Haskell 98:
 = The upside =
 
 Apart from the lessons learned the 'NumType' module came out significantly stronger. The most important improvements are 'Div' and 'Mul' classes as well as full functional dependencies for the 'Sum' class.
-
