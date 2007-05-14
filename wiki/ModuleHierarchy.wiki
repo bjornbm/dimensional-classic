@@ -3,7 +3,7 @@
 
 = Introduction =
 
-The module hierarchy of dimensional library is an open question (as is the name). This page describes the current vision for the modules. Note that *the heirarchy and functionality described below is not reflected in the currently released version* of the library.
+The module hierarchy of dimensional library is an open question (as is the name). This page describes the current vision for the modules. Note that *the hierarchy and functionality described below is not reflected in the currently released version* of the library.
 
 
 = Hierarchy =
@@ -56,4 +56,3 @@ Facilitates the use of custom dimensions (e.g. apples and oranges) in addition t
 === Dimensional.ForwardAD (planned) ===
 
 Will provide forward-mode automatic differentiation (in one variable) on functions of physical quantities. The intent is to provide at least a differentiation operator together with a lifting function to prevent [http://www.bcl.hamilton.ie/~qobi/nesting/papers/ifl2005.pdf perturbation confusion].
-
