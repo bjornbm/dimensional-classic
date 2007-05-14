@@ -63,10 +63,9 @@ Type constraints with MPTC or type synonyms not valid in Haskell 98:
 
 = Final call =
 
-In Dimensional 0.4 the 'Num' et al instances of 'Dimensionless' were removed. Relevant elementary functions where redefined instead of overloaded. For convienience, constants (`\_1`, `\_2`, ...) where defined for small natural numbers that typically appear in physical formulae.
+In Dimensional 0.4 the 'Num' et al instances of 'Dimensionless' were removed. Relevant elementary functions where redefined instead of overloaded. For convienience, shorthands (`_1`, `_2`, ...) where defined for small natural numbers that appear naturally in physical formulae.
 
 
 = The upside =
 
 Apart from the lessons learned the 'NumType' module came out significantly stronger. The most important improvements are 'Div' and 'Mul' classes as well as full functional dependencies for the 'Sum' class.
-
