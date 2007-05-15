@@ -2,11 +2,12 @@
 > module Buckwalter.Dimensional.Units where
 
 > import Prelude (Num, Fractional, Floating)
-> import qualified Prelude as P
+> import qualified Prelude
 > import Buckwalter.Dimensional
-> import Buckwalter.NumType ( Neg2, Neg1, Zero, Pos1, Pos2, Pos3
->                           , neg2, neg1, zero, pos1, pos2, pos3
->                           )
+> import Buckwalter.NumType 
+>   ( Neg2, Neg1, Zero, Pos1, Pos2, Pos3
+>   , neg2, neg1, zero, pos1, pos2, pos3
+>   )
 
 
 We add some derived physical dimensions.
@@ -72,7 +73,7 @@ We start with (a limited set of) the units accepted for use with
 the SI (see 5.1 of [1]).
 
 > degree :: Floating a => Unit DOne a
-> degree = prefix (P.pi P./ 180) radian
+> degree = prefix (Prelude.pi Prelude./ 180) radian
 
 Note that all the below time units are "nominal" units, in the sense
 that they represent the given time span provided there was no leap
