@@ -1,5 +1,6 @@
 module Buckwalter.Dimensional.Prelude 
     ( module Buckwalter.Dimensional
+    , module Buckwalter.NumType
     , module Prelude
     ) where
 
