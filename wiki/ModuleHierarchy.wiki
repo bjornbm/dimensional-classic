@@ -1,10 +1,10 @@
-#summary The module hierarchy of the dimensional library.
+#summary The module hierarchy of the Dimensional library.
 #labels Phase-Design
 
 
 = Introduction =
 
-The module hierarchy of dimensional library is an open question (as is the name). This page describes the current vision for the modules. Note that *the hierarchy and functionality described below is not reflected in the currently released version* of the library.
+The module hierarchy of the Dimensional library is an open question (as is the name). This page describes the current vision for the modules. Note that *the hierarchy and functionality described below is not reflected in the currently released version* of the library.
 
 
 = Hierarchy =
