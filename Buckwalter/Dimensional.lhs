@@ -54,12 +54,14 @@ extensions.
 
 > import Prelude 
 >   ( Show, Eq, Ord, Num, Fractional, Floating, RealFloat, Functor, fmap
->   , (.), flip 
+>   , (.), flip, show, (++), undefined, otherwise, (==), String, unwords
 >   )
 > import qualified Prelude 
+> import Data.Maybe (Maybe (Just, Nothing), catMaybes)
 > import Buckwalter.NumType 
 >   ( NumType, NonZero, PosType, Zero, toNum, Sum
->   , Pos1, Pos2, pos2, Pos3, pos3, neg3
+>   , Pos1, Pos2, pos2, Pos3, pos3
+>   , neg3, zero -- Only for playing around.
 >   )
 > import qualified Buckwalter.NumType as N (Mul, Div)
 
@@ -67,7 +69,7 @@ We will reuse the operators and function names from the Prelude.
 To prevent unpleasant surprises we give operators the same fixity
 as the Prelude.
 
-> infixr 8  ^, ^+, ^/
+> infixr 8  ^, ^+, ^/, **
 > infixl 7  *, /
 > infixl 6  +, -
 
@@ -85,7 +87,7 @@ to occasionally cumbersome type classes.
 We call this data type 'Dimensional' to capture the notion that the
 units and quantities it represents have physical dimensions.
 
-> newtype Dimensional v d a = Dimensional a deriving (Show, Eq, Ord)
+> newtype Dimensional v d a = Dimensional a deriving (Eq, Ord)
 
 The type variable 'a' is the only non-phantom type variable and
 represents the numerical value of a quantity or the scale (w.r.t.
@@ -472,6 +474,52 @@ The drawback is that we are forced to use 'Fractional'.
 > candela = Dimensional 1
 
 
+= Instances of 'Show' =
+
+We will conclude by providing a reasonable 'Show' instance for
+quantities. We neglect units since it is unclear how to represent them
+in a way that distinguishes them from quantities, or whether that is
+even a requirement.
+
+> instance forall d a. (Show d, Show a) => Show (Quantity d a) where
+>   show (Dimensional x) = show x ++ " " ++ show (undefined :: d)
+
+The above implementation of 'show' relies on the dimension 'd' being an
+instance of 'Show'. The "normalized" unit of the quantity can be inferred
+from its dimension.
+
+> instance forall l m t i th n j.
+>   ( NumType l
+>   , NumType m
+>   , NumType t
+>   , NumType i
+>   , NumType th
+>   , NumType n
+>   , NumType j
+>   ) => Show (Dim l m t i th n j) where
+>   show _ = (unwords . catMaybes)
+>            [ dimUnit "m"   (undefined :: l)
+>            , dimUnit "kg"  (undefined :: m)
+>            , dimUnit "s"   (undefined :: t)
+>            , dimUnit "A"   (undefined :: i)
+>            , dimUnit "K"   (undefined :: th)
+>            , dimUnit "mol" (undefined :: n)
+>            , dimUnit "cd"  (undefined :: j)
+>            ]
+
+The helper function 'dimUnit' defined next conditions a 'String' (unit)
+with an exponent, if appropriate. The reason we define 'dimUnit' at the
+top-level rather than in the where-clause is that it may be useful for
+users of the 'Extensible' module.
+
+> dimUnit :: (NumType n) => String -> n -> Maybe String
+> dimUnit u n 
+>   | x == 0    = Nothing
+>   | x == 1    = Just u
+>   | otherwise = Just (u ++ "^" ++ show x)
+>   where x = toNum n
+
+
 = Conclusion and usage =
 
 We have defined operators and units that allow us to define and
@@ -488,12 +536,11 @@ obtained by division by a unit.
 ] numval = v /~ (meter / second)
  
 The notion of a quantity as the product of a numerical value and a
-unit is supported by 7.1 "Value and numerical value of a quantity"
-of [1]. While the above syntax is fairly natural it is unfortunate
-that it must violate a number of the guidelines in [1], in particular
-9.3 "Spelling unit names with prefixes", 9.4 "Spelling unit names
-obtained by multiplication", 9.5 "Spelling unit names obtained by
-division".
+unit is supported by 7.1 "Value and numerical value of a quantity" of
+[1]. While the above syntax is fairly natural it is unfortunate that
+it must violate a number of the guidelines in [1], in particular 9.3
+"Spelling unit names with prefixes", 9.4 "Spelling unit names obtained
+by multiplication", 9.5 "Spelling unit names obtained by division".
 
 As a more elaborate example of how to use the module we define a
 function for calculating the escape velocity of a celestial body
