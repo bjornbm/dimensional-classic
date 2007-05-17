@@ -1,4 +1,4 @@
-#summary Example using Dimensional to calculate GM.
+#summary Example of using Dimensional to calculate GM.
 #labels Example
 
 = GM calculation =
@@ -96,7 +96,6 @@ Loading package dimensional-0.3 ... linking ... done.
 The value used for GM was 398600.4400008003 km^3 / s^2.
 *GM>
 }}}
-
 
 
 
