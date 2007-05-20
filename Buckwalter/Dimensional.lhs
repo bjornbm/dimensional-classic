@@ -173,25 +173,24 @@ and illustrative purposes. We start with the base dimensions.
 > type DLength      = Dim Pos1 Zero Zero Zero Zero Zero Zero
 > type DMass        = Dim Zero Pos1 Zero Zero Zero Zero Zero
 > type DTime        = Dim Zero Zero Pos1 Zero Zero Zero Zero
-> type DCurrent     = Dim Zero Zero Zero Pos1 Zero Zero Zero
-> type DTemperature = Dim Zero Zero Zero Zero Pos1 Zero Zero
-> type DAmount      = Dim Zero Zero Zero Zero Zero Pos1 Zero
-> type DIntensity   = Dim Zero Zero Zero Zero Zero Zero Pos1
-
+> type DElectricCurrent          = Dim Zero Zero Zero Pos1 Zero Zero Zero
+> type DThermodynamicTemperature = Dim Zero Zero Zero Zero Pos1 Zero Zero
+> type DAmountOfSubstance        = Dim Zero Zero Zero Zero Zero Pos1 Zero
+> type DLuminousIntensity        = Dim Zero Zero Zero Zero Zero Zero Pos1
 
 Using the above type synonyms we can define type synonyms for
 quantities of particular physical dimensions.
 
 Quantities with the base dimensions.
 
-> type Dimensionless = Quantity DOne
-> type Length        = Quantity DLength
-> type Mass          = Quantity DMass
-> type Time          = Quantity DTime
-> type Current       = Quantity DCurrent
-> type Temperature   = Quantity DTemperature
-> type Amount        = Quantity DAmount
-> type Intensity     = Quantity DIntensity
+> type Dimensionless            = Quantity DOne
+> type Length                   = Quantity DLength
+> type Mass                     = Quantity DMass
+> type Time                     = Quantity DTime
+> type ElectricCurrent          = Quantity DElectricCurrent
+> type ThermodynamicTemperature = Quantity DThermodynamicTemperature
+> type AmountOfSubstance        = Quantity DAmountOfSubstance
+> type LuminousIntensity        = Quantity DLuminousIntensity
 
 
 = Arithmetic on physical dimensions =
@@ -375,8 +374,20 @@ that may be obviously useful.
 >       => Dimensionless a -> Dimensionless a -> Dimensionless a
 > atan2 (Dimensional y) (Dimensional x) = Dimensional (Prelude.atan2 y x)
 
-We define some constants for small integer values that often show
-up in formulae. We also throw in 'pi' for good measure.
+The only unit we will define in this module is 'one'. The unit one
+has dimension one and is the base unit of dimensionless values. As
+detailed in 7.10 "Values of quantities expressed simply as numbers:
+the unit one, symbol 1" of [1] the unit one generally does not
+appear in expressions. However, for us it is necessary to use 'one'
+as we would any other unit to perform the "boxing" of dimensionless
+values.
+
+> one :: Num a => Unit DOne a
+> one = Dimensional 1
+
+For convenience We define some constants for small integer values
+that often show up in formulae. We also throw in 'pi' for good
+measure.
 
 > _1, _2, _3, _4 :: (Num a) => Dimensionless a
 > _1 = 1 *~ one
@@ -386,92 +397,6 @@ up in formulae. We also throw in 'pi' for good measure.
 
 > pi :: (Floating a) => Dimensionless a
 > pi = Prelude.pi *~ one
-
-
-= Unit prefixes =
-
-Prefixes are used to form decimal multiples and submultiples of SI
-Units as described in 4.4 of [1]. We will define the SI prefixes
-in terms of a 'prefix' function which applies a scale factor to a
-unit. (The 'prefix' function will also be used to define non-SI
-units.)
-
-> prefix :: (Num a) => a -> Unit d a -> Unit d a
-> prefix x (Dimensional y) = Dimensional (x Prelude.* y)
-
-We define all SI prefixes, from Table 5 in [1]. Multiples first.
-
-> deca, hecto, kilo, mega, giga, tera, peta, exa, zetta, yotta 
->   :: Num a => Unit d a -> Unit d a
-> deca  = prefix 10
-> hecto = deca . deca
-> kilo  = deca . hecto
-> mega  = kilo . kilo
-> giga  = kilo . mega
-> tera  = kilo . giga
-> peta  = kilo . tera
-> exa   = kilo . peta
-> zetta = kilo . exa
-> yotta = kilo . zetta
-
-Then the submultiples.
- 
-> deci, centi, milli, micro, nano, pico, femto, atto, zepto, yocto
->   :: Fractional a => Unit d a -> Unit d a
-> deci  = prefix 0.1
-> centi = deci . deci
-> milli = deci . centi
-> micro = milli . milli
-> nano  = milli . micro
-> pico  = milli . nano
-> femto = milli . pico
-> atto  = milli . femto
-> zepto = milli . atto
-> yocto = milli . zepto
-
-By defining SI prefixes as functions applied to a 'Unit' we satisfy
-6.2.6 "Unacceptability of stand-alone prefixes" of [1].
-
-
-= SI base and derived units (incomplete) =
-
-Finally we define the units. To avoid a myriad of one-letter functions
-that would doubtlessly cause clashes and frustration in users' code
-we spell out all unit names in full, as we did for prefixes. We
-also elect to spell the unit names in singular form, as allowed by
-9.7 "Other spelling conventions" of [1].
-
-The first unit we will define is 'one'. The unit one has dimension
-one and is the base unit of dimensionless values. As detailed in
-7.10 "Values of quantities expressed simply as numbers: the unit
-one, symbol 1" of [1] the unit one generally does not appear in
-expressions. However, for us it is necessary to use 'one' as we
-would any other unit to perform the "boxing" of dimensionless values.
-
-> one     :: Num a => Unit DOne a
-> one     = Dimensional 1
-
-We continue by defining the other SI base units (see 4.1 of [1]).
-
-> meter   :: Num a => Unit DLength a
-> meter   = Dimensional 1
-
-For mass the SI base unit is kilogram. For sensible prefixes we
-define gram here (see 6.2.7 "Prefixes and the kilogram" in [1]).
-The drawback is that we are forced to use 'Fractional'.
-
-> gram    :: Fractional a => Unit DMass a
-> gram    = Dimensional 1e-3
-> second  :: Num a => Unit DTime a
-> second  = Dimensional 1
-> ampere  :: Num a => Unit DCurrent a
-> ampere  = Dimensional 1
-> kelvin  :: Num a => Unit DTemperature a
-> kelvin  = Dimensional 1
-> mole    :: Num a => Unit DAmount a
-> mole    = Dimensional 1
-> candela :: Num a => Unit DIntensity a
-> candela = Dimensional 1
 
 
 = Instances of 'Show' =
@@ -518,6 +443,16 @@ users of the 'Extensible' module.
 >   | x == 1    = Just u
 >   | otherwise = Just (u ++ "^" ++ show x)
 >   where x = toNum n
+
+
+= The 'prefix' function =
+
+We will define a 'prefix' function which applies a scale factor to
+a unit. The 'prefix' function will be used by other modules to
+define the SI prefixes and non-SI units.
+
+> prefix :: (Num a) => a -> Unit d a -> Unit d a
+> prefix x (Dimensional y) = Dimensional (x Prelude.* y)
 
 
 = Conclusion and usage =

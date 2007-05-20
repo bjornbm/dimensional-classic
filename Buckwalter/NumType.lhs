@@ -46,7 +46,7 @@ instances (and possibly additional unidentified GHC extensions).
 >   -- Data types.
 >   , Zero, Pos, Neg
 >   -- Type synonyms for convenience.
-> 	, Pos1, Pos2, Pos3, Neg1, Neg2, Neg3
+> 	, Pos1, Pos2, Pos3, Pos4, Pos5, Neg1, Neg2, Neg3, Neg4, Neg5
 >   -- Values for convenience.
 > 	, zero, pos1, pos2, pos3, pos4, pos5, neg1, neg2, neg3, neg4, neg5
 >   ) where
@@ -330,9 +330,13 @@ of the library.
 > type Pos1 = Pos Zero
 > type Pos2 = Pos Pos1
 > type Pos3 = Pos Pos2
+> type Pos4 = Pos Pos3
+> type Pos5 = Pos Pos4
 > type Neg1 = Neg Zero
 > type Neg2 = Neg Neg1
 > type Neg3 = Neg Neg2
+> type Neg4 = Neg Neg3
+> type Neg5 = Neg Neg4
 
 Analogously we also define some convenience values (all 'undefined'
 but with the expected types).

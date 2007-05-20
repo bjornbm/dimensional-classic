@@ -10,37 +10,6 @@
 >   )
 
 
-We add some derived physical dimensions.
-
-> type DArea         = Dim Pos2 Zero Zero Zero Zero Zero Zero
-> type DVolume       = Dim Pos3 Zero Zero Zero Zero Zero Zero
-> type DFrequency    = Dim Zero Zero Neg1 Zero Zero Zero Zero
-> type DVelocity     = Dim Pos1 Zero Neg1 Zero Zero Zero Zero
-> type DAcceleration = Dim Pos1 Zero Neg2 Zero Zero Zero Zero
-> type DForce        = Dim Pos1 Pos1 Neg2 Zero Zero Zero Zero
-> type DImpulse      = Dim Pos1 Pos1 Neg1 Zero Zero Zero Zero
-> type DMassFlow     = Dim Zero Pos1 Neg1 Zero Zero Zero Zero
-> type DPressure     = Dim Neg1 Pos1 Neg2 Zero Zero Zero Zero
-> type DEnergy       = Dim Pos2 Pos1 Neg2 Zero Zero Zero Zero
-> type DEnergyPerUnitMass = Dim Pos2 Zero Neg2 Zero Zero Zero Zero
-
-
-Some quantities with derived dimensions.
-
-> type Frequency       = Quantity DFrequency
-> type Velocity        = Quantity DVelocity
-> type Angle           = Dimensionless
-> type SolidAngle      = Dimensionless
-> type AngularVelocity = Frequency
-> type Force           = Quantity DForce
-> type Thrust          = Force
-> type Impulse         = Quantity DImpulse
-> type MassFlow        = Quantity DMassFlow
-> type Pressure        = Quantity DPressure
-> type Energy          = Quantity DEnergy
-> type EnergyPerUnitMass = Quantity DEnergyPerUnitMass
-
-
 = Powers of length units =
 
 It is permissible to express powers of length units by prefixing
