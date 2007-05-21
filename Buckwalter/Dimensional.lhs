@@ -244,14 +244,14 @@ the exponent with a 'NumType'.
 Powers of dimensions corresponds to multiplication of the base
 dimensions' exponents by the exponent.
 
-> class (NumType x) => Power d x d' | d x -> d'
+> class (NumType x) => Pow d x d' | d x -> d'
 > instance (N.Mul l  x l',
 >           N.Mul m  x m',
 >           N.Mul t  x t',
 >           N.Mul i  x i',
 >           N.Mul th x th',
 >           N.Mul n  x n',
->           N.Mul j  x j') => Power (Dim l   m   t   i   th   n   j) x 
+>           N.Mul j  x j') => Pow (Dim l   m   t   i   th   n   j) x 
 >                                   (Dim l'  m'  t'  i'  th'  n'  j')
 
 Roots of dimensions corresponds to division of the base dimensions'
@@ -284,7 +284,7 @@ Multiplication, division and powers apply to both units and quantities.
 >     => Dimensional v d a -> Dimensional v d' a -> Dimensional v d'' a
 > Dimensional x / Dimensional y = Dimensional (x Prelude./ y)
 
-> (^) :: (Fractional a, Power d n d')
+> (^) :: (Fractional a, Pow d n d')
 >     => Dimensional v d a -> n -> Dimensional v d' a
 > Dimensional x ^ n = Dimensional (x Prelude.^^ toNum n)
 
@@ -292,7 +292,7 @@ In the unlikely case someone needs to use this library with
 non-fractional numbers we provide the alternative power operator
 '^+' that is restricted to positive exponents.
 
-> (^+) :: (Num a, PosType n, Power d n d')
+> (^+) :: (Num a, PosType n, Pow d n d')
 >      => Dimensional v d a -> n -> Dimensional v d' a
 > Dimensional x ^+ n = Dimensional (x Prelude.^ toNum n)
 

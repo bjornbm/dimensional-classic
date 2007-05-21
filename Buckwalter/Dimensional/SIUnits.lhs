@@ -12,7 +12,7 @@ referenced are from [1] unless otherwise specified.
 
 > module Buckwalter.Dimensional.SIUnits where
 
-> import Buckwalter.Dimensional hiding (Power)
+> import Buckwalter.Dimensional
 > import Buckwalter.NumType 
 >   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
 >   , neg3, neg2, neg1, pos1, pos2, pos3
@@ -144,6 +144,7 @@ type one type synonyms is provided for each name.
 
 > type DLuminance = Dim Neg2 Zero Zero Zero Zero Zero Pos1
 > type Luminance  = Quantity DLuminance
+
 
 == Table 3a ==
 
@@ -304,6 +305,42 @@ We use the same grouping as for table 3a.
 > type EquivalentDose            = DoseEquivalent
 > sievert :: Fractional a => Unit DAbsorbedDose a
 > sievert = joule / kilo gram
+
+
+== Table 4 ==
+
+"Examples of SI derived units expressed with the aid of SI derived
+units having special names and symbols."
+
+We use the same grouping as for table 2.
+
+> type AngularVelocity = Frequency
+
+> type DAngularAcceleration = Dim Zero Zero Neg2 Zero Zero Zero Zero
+> type AngularAcceleration  = Quantity DAngularAcceleration
+
+> type DDynamicViscosity = Dim Neg1 Pos1 Neg1 Zero Zero Zero Zero
+> type DynamicViscosity  = Quantity DDynamicViscosity
+
+> type DMomentOfForce = Dim Pos2 Pos1 Neg2 Zero Zero Zero Zero
+> type MomentOfForce  = Quantity DMomentOfForce
+
+> type DSurfaceTension = Dim Zero Pos1 Neg2 Zero Zero Zero Zero
+> type SurfaceTension  = Quantity DSurfaceTension
+
+> type DHeatFluxDensity = Dim Zero Pos1 Neg3 Zero Zero Zero Zero
+> type HeatFluxDensity  = Quantity DHeatFluxDensity
+> type Irradiance       = HeatFluxDensity
+
+> type RadiantIntensity = Power
+
+> type Radiance = Irradiance
+
+> type DHeatCapacity = Dim Pos2 Pos1 Neg2 Zero Neg1 Zero Zero
+> type HeatCapacity  = Quantity DHeatCapacity
+> type Entropy       = HeatCapacity
+
+
 
 
 = Other quantities =
