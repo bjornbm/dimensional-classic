@@ -1,5 +1,5 @@
 Name:                dimensional
-Version:             0.4
+Version:             0.5
 Synopsis:            Statically checked physical dimensions.
 License:             BSD3
 License-File:        LICENSE
@@ -9,7 +9,7 @@ Stability:           Unstable
 Build-Depends:       base
 Exposed-Modules:     Buckwalter.NumType, 
                      Buckwalter.Dimensional, 
-                     Buckwalter.Dimensional.Units,
+                     Buckwalter.Dimensional.SIUnits,
                      Buckwalter.Dimensional.Prelude,
                      Buckwalter.Dimensional.Extensible
 ghc-options:         -O
