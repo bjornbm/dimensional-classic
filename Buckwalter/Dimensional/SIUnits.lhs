@@ -5,9 +5,10 @@ License: BSD3
 
 = Summary =
 
-This module defines the SI prefixes, the SI base units and the SI derived
-units. It also defines the units outside of the SI that are accepted for use with the SI.
-Any to chapters, sections or tables referenced are from [1] unless otherwise specified.
+This module defines the SI prefixes, the SI base units and the SI
+derived units. It also defines the units outside of the SI that are
+accepted for use with the SI.  Any chapters, sections or tables
+referenced are from [1] unless otherwise specified.
 
 > module Buckwalter.Dimensional.SIUnits where
 
@@ -69,7 +70,7 @@ and frustration in users' code we spell out all unit names in full,
 as we did for prefixes. We also elect to spell the unit names in
 singular form, as allowed by section 9.7 "Other spelling conventions".
 
-We defining the SI base units in the order of table 1.
+We define the SI base units in the order of table 1.
 
 > meter   :: Num a => Unit DLength a
 > meter   = Dimensional 1
@@ -95,17 +96,19 @@ The drawback is that we are forced to use 'Fractional'.
 = SI derived units (section 4.2) =
 
 Before defining the derived units themselves we provide type synonyms
-for derived quantities and their dimensions. For lack of better
+for derived quantities and their dimensionalities. For lack of better
 organization we provide definitions grouped by table in [1].
 
 
 == Table 2 ==
-        
+
+"Examples of SI derived units expressed in terms of SI base units."
+
 The following definitions are grouped so that a type synonym for
-the dimension is defined first in terms of base dimension exponents.
-Then a type synonym for the corresponding quantity is defined. If
-there are several alternate names for a quantity one type synonyms
-is provided for each name.
+the dimensionality is defined first in terms of base dimension
+exponents.  Then a type synonym for the corresponding quantity type
+is defined. If there are several alternate names for a quantity
+type one type synonyms is provided for each name.
 
 > type DArea = Dim Pos2 Zero Zero Zero Zero Zero Zero
 > type Area  = Quantity DArea
@@ -144,11 +147,15 @@ is provided for each name.
 
 == Table 3a ==
 
+"SI derived units with special names and symboks, including the
+radian and steradian."
+
 The following definitions are grouped so that a type synonym for
-the dimension is defined first in terms of base dimension exponents.
-Then a type synonym for the corresponding quantity is defined. If
-there are several quantities with the same dimensions a type synonym
-is provided for each quantity. Finally the unit is defined.
+the dimensionality is defined first in terms of base dimension
+exponents.  Then a type synonym for the corresponding quantity type
+is defined. If there are several quantity types with the same
+dimensionality a type synonym is provided for each quantity type.
+Finally the unit is defined.
 
 > type DPlaneAngle = DOne
 > type PlaneAngle  = Dimensionless
@@ -255,7 +262,7 @@ is appropriate to define a unit for use with relative quantities
 unit with functions for converting absolute values.
 
 > type DCelsiusTemperature = DThermodynamicTemperature
-> type CelsiusTemperature = ThermodynamicTemperature
+> type CelsiusTemperature  = ThermodynamicTemperature
 > degreeCelsius :: Num a => Unit DCelsiusTemperature a
 > degreeCelsius = kelvin
 
@@ -272,10 +279,36 @@ when working with absolute temperatures.
 
 == Table 3b ==
 
+"SI derived units with special names and symbols admitted for reasons
+of safeguarding human health"
+
+We use the same grouping as for table 3a.
+
+> type DActivity = DFrequency -- Activity of a radionuclide.
+> type Activity  = Quantity DActivity
+> becquerel :: Fractional a => Unit DActivity a
+> becquerel = second ^ neg1
+
+> type DAbsorbedDose  = Dim Pos2 Zero Neg2 Zero Zero Zero Zero
+> type AbsorbedDose   = Quantity DAbsorbedDose
+> type SpecificEnergy = Quantity DAbsorbedDose -- Specific energy imparted.
+> type Kerma          = Quantity DAbsorbedDose
+> gray :: Fractional a => Unit DAbsorbedDose a
+> gray = joule / kilo gram
+
+> type DDoseEquivalent           = DAbsorbedDose
+> type DoseEquivalent            = Quantity DDoseEquivalent
+> type AmbientDoseEquivalent     = DoseEquivalent
+> type DirectionalDoseEquivalent = DoseEquivalent
+> type PersonalDoseEquivalent    = DoseEquivalent
+> type EquivalentDose            = DoseEquivalent
+> sievert :: Fractional a => Unit DAbsorbedDose a
+> sievert = joule / kilo gram
 
 
 = Other quantities =
 
+> {-
 > type AngularVelocity = Frequency
 > type Thrust          = Force
 > type Impulse         = Quantity DImpulse
@@ -286,8 +319,10 @@ when working with absolute temperatures.
 > type DImpulse      = Dim Pos1 Pos1 Neg1 Zero Zero Zero Zero
 > type DMassFlow     = Dim Zero Pos1 Neg1 Zero Zero Zero Zero
 > type DEnergyPerUnitMass = Dim Pos2 Zero Neg2 Zero Zero Zero Zero
+> -}
 
 
 = References =
 
 [1] http://physics.nist.gov/Pubs/SP811/
+
