@@ -10,7 +10,7 @@ The module hierarchy of the Dimensional library is an open question (as is the n
 = Hierarchy =
 
  * Dimensional
- * Dimensional.Dimensionalities
+ * Dimensional.Dimensionalities (bad name?)
  * Dimensional.SIUnits
  * Dimensional.NonSI
  * Dimensional.Prelude
