@@ -1,5 +1,6 @@
 module Buckwalter.Dimensional.Prelude 
     ( module Buckwalter.Dimensional
+    , module Buckwalter.Dimensional.Quantities
     , module Buckwalter.Dimensional.SIUnits
     , module Buckwalter.NumType
     , module Prelude
@@ -8,6 +9,8 @@ module Buckwalter.Dimensional.Prelude
 import Buckwalter.Dimensional hiding 
     ( Dimensional (Dimensional)
     )
+
+import Buckwalter.Dimensional.Quantities
 
 import Buckwalter.Dimensional.SIUnits
 
