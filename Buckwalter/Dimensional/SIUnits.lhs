@@ -17,7 +17,7 @@ referenced are from [1] unless otherwise specified.
 >   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
 >   , neg3, neg2, neg1, pos1, pos2, pos3
 >   )
-> import Prelude ( (.), Num, Fractional )
+> import Prelude ( (.), Num, Fractional, Floating, recip )
 > import qualified Prelude
 
 
@@ -32,7 +32,7 @@ We define all SI prefixes from Table 5. Multiples first.
 
 > deca, hecto, kilo, mega, giga, tera, peta, exa, zetta, yotta 
 >   :: Num a => Unit d a -> Unit d a
-> deca  = prefix 10
+> deca  = prefix 10 -- "deka" in international English.
 > hecto = deca . deca
 > kilo  = deca . hecto
 > mega  = kilo . kilo
@@ -72,7 +72,7 @@ singular form, as allowed by section 9.7 "Other spelling conventions".
 
 We define the SI base units in the order of table 1.
 
-> meter   :: Num a => Unit DLength a
+> meter   :: Num a => Unit DLength a -- "metre" in international English.
 > meter   = Dimensional 1
 
 For mass the SI base unit is kilogram. For sensible prefixes we
@@ -290,6 +290,13 @@ We use the same grouping as for table 3a.
 > becquerel :: Fractional a => Unit DActivity a
 > becquerel = second ^ neg1
 
+Above we gave a new name to the dimensionality instead of reusing
+'Frequency' in the quantity type definition. This will allow GHCi
+be more specific when queried for the type of 'becquerel'. For
+quantity types without a specific unit we don't bother doing this
+(though perhaps we should in case there is a non-SI unit for the
+quantity type?).
+
 > type DAbsorbedDose  = Dim Pos2 Zero Neg2 Zero Zero Zero Zero
 > type AbsorbedDose   = Quantity DAbsorbedDose
 > type SpecificEnergy = Quantity DAbsorbedDose -- Specific energy imparted.
@@ -322,8 +329,7 @@ We use the same grouping as for table 2.
 > type DDynamicViscosity = Dim Neg1 Pos1 Neg1 Zero Zero Zero Zero
 > type DynamicViscosity  = Quantity DDynamicViscosity
 
-> type DMomentOfForce = Dim Pos2 Pos1 Neg2 Zero Zero Zero Zero
-> type MomentOfForce  = Quantity DMomentOfForce
+> type MomentOfForce  = Quantity DEnergy
 
 > type DSurfaceTension = Dim Zero Pos1 Neg2 Zero Zero Zero Zero
 > type SurfaceTension  = Quantity DSurfaceTension
@@ -340,17 +346,134 @@ We use the same grouping as for table 2.
 > type HeatCapacity  = Quantity DHeatCapacity
 > type Entropy       = HeatCapacity
 
+> type DSpecificHeatCapacity = Dim Pos2 Zero Neg2 Zero Neg1 Zero Zero
+> type SpecificHeatCapacity  = Quantity DSpecificHeatCapacity
+> type SpecificEntropy       = SpecificHeatCapacity
 
+Specific energy was already defined in table 3b.
+
+> type DThermalConductivity = Dim Pos1 Pos1 Neg3 Zero Neg1 Zero Zero
+> type ThermalConductivity  = Quantity DThermalConductivity
+
+> type EnergyDensity = Pressure
+
+> type DElectricFieldStrength = Dim Pos1 Pos1 Neg3 Neg1 Zero Zero Zero
+> type ElectricFieldStrength  = Quantity DElectricFieldStrength
+
+> type DElectricChargeDensity = Dim Neg3 Zero Pos1 Pos1 Zero Zero Zero
+> type ElectricChargeDensity  = Quantity DElectricChargeDensity
+
+> type DElectricFluxDensity = Dim Neg2 Zero Pos1 Pos1 Zero Zero Zero
+> type ElectricFluxDensity  = Quantity DElectricFluxDensity
+
+> type DPermittivity = Dim Neg3 Neg1 Pos4 Pos2 Zero Zero Zero
+> type Permittivity  = Quantity DPermittivity
+
+> type DPermeability = Dim Pos1 Pos1 Neg2 Neg2 Zero Zero Zero
+> type Permeability  = Quantity DPermeability
+
+> type DMolarEnergy = Dim Pos2 Pos1 Neg2 Zero Zero Neg1 Zero
+> type MolarEnergy  = Quantity DMolarEnergy
+
+> type DMolarEntropy     = Dim Pos2 Pos1 Neg2 Zero Neg1 Neg1 Zero
+> type MolarEntropy      = Quantity DMolarEntropy
+> type MolarHeatCapacity = MolarEntropy
+
+> type DExposure = Dim Zero Neg1 Pos1 Pos1 Zero Zero Zero
+> type Exposure  = Quantity DExposure -- Exposure to x and gamma rays.
+
+> type DAbsorbedDoseRate = Dim Pos2 Zero Neg3 Zero Zero Zero Zero
+> type AbsorbedDoseRate  = Quantity DAbsorbedDoseRate
+
+
+= Units outside the SI =
+
+There are several units that are not strictly part of the SI but
+are either permanently or temporarily accepted for use with the SI.
+
+== Table 6 ==
+
+"Units accepted for use with the SI."
+
+We start with time which we grant exclusive rights to 'minute' and
+'second'.
+
+> minute, hour, day :: Num a => Unit DTime a
+> minute = prefix 60 second
+> hour   = prefix 60 minute
+> day    = prefix 24 hour
+
+Since 'minute' and 'second' are already in use for time we use
+'arcminute' and 'arcsecond' [2] for plane angle instead.
+
+> degree, arcMinute, arcSecond :: Floating a => Unit DPlaneAngle a
+> degree = prefix (Prelude.pi Prelude./ 180) radian
+> arcminute = prefix (recip 60) degreeOfArc
+> arcsecond = prefix (recip 60) minuteOfArc
+
+Alternate (longer) forms of the above. In particular 'degreeOfArc'
+can be used if there is a percieved need to disambiguate from e.g.
+temperature.
+
+> degreeOfArc, minuteOfArc, secondOfArc :: Floating a => Unit DPlaneAngle a
+> degreeOfArc = degree
+> secondOfArc = arcsecond
+> minuteOfArc = arcminute
+
+> liter :: Fractional a => Unit DVolume a -- "litre" in international English.
+> liter = deci meter ^ pos3
+
+> metricTon :: Fractional a => Unit DMass a
+> metricTon = prefix 1000 (kilo gram) -- mega gram.
+
+(A footnote to table 6 mentions that the metric ton is called "tonne"
+in the SI standard and many countries.)
+
+
+== Neper, bel, shannon and the like ==
+
+The units of section 5.1.2 are purposefully omitted. In fact the
+logarithmic units (see section 8.7) are problematic and it is not
+clear how to implement them. Perhaps with a conversion function
+similar to for degrees Celsius.
+
+
+== Table 7 ==
+
+TODO: Move these to NonSIUnits module.
+
+"Units accepted for use with the SI whose values in SI units are
+obtained experimentally."
+
+The electronvolt had a standard combined uncertainity of 0.00000049e-19 J
+when [1] was published.
+
+> electronVolt :: Unit DEnergy a
+> electronVolt = prefix 1.60217733e-19 joule
+
+The unified atomic mass unit had a combined uncertainty of 0.0000010e-27 kg.
+
+> unifiedAtomicMassUnit :: Unit DMass a
+> unifiedAtomicMassUnit = prefix 1.6605402e-27 kilo gram
+
+
+== Table 9 ==
+
+"Units temporarily accepted for use with the SI."
+
+TODO: put in NonSIUnits module.
 
 
 = Other quantities =
 
+Some other quantity types that have come in handy.
+
 > {-
-> type AngularVelocity = Frequency
+> type Angle           = PlaneAngle -- Abbreviation
 > type Thrust          = Force
 > type Impulse         = Quantity DImpulse
 > type MassFlow        = Quantity DMassFlow
-> type EnergyPerUnitMass = Quantity DEnergyPerUnitMass
+> type EnergyPerUnitMass = SpecificEnergy
 
 
 > type DImpulse      = Dim Pos1 Pos1 Neg1 Zero Zero Zero Zero
@@ -362,4 +485,4 @@ We use the same grouping as for table 2.
 = References =
 
 [1] http://physics.nist.gov/Pubs/SP811/
-
+[2] http://en.wikipedia.org/wiki/Minute_of_arc

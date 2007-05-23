@@ -52,3 +52,28 @@ y8 :: Radiance Double
 y8 = 1 *~ (watt / (meter ^ pos2 * steradian))
 y9 :: HeatCapacity Double
 y9 = 1 *~ (joule / kelvin)
+y10 :: SpecificHeatCapacity Double
+y10 = 1 *~ (joule / (kilo gram * kelvin))
+y11 :: ThermalConductivity Double
+y11 = 1 *~ (watt / (meter * kelvin))
+y12 :: EnergyDensity Double
+y12 = 1 *~ (joule / meter ^ pos3)
+y13 :: ElectricFieldStrength Double
+y13 = 1 *~ (volt / meter)
+y14 :: ElectricChargeDensity Double
+y14 = 1 *~ (coulomb / meter ^ pos3)
+y15 :: ElectricFluxDensity Double
+y15 = 1 *~ (coulomb / meter ^ pos2)
+y16 :: Permittivity Double
+y16 = 1 *~ (farad / meter)
+y17 :: Permeability Double
+y17 = 1 *~ (henry / meter)
+y18 :: MolarEnergy Double
+y18 = 1 *~ (joule / mole)
+y19 :: MolarEntropy Double
+y19 = 1 *~ (joule / (mole * kelvin))
+y20 :: Exposure Double
+y20 = 1 *~ (coulomb / kilo gram)
+y21 :: AbsorbedDoseRate Double
+y21 = 1 *~ (gray / second)
+
