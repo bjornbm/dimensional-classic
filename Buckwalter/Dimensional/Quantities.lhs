@@ -17,9 +17,14 @@ dimensionality type synonyms are provided for each quantity type.
 
 > module Buckwalter.Dimensional.Quantities where
 
-> import Buckwalter.Dimensional
+> import Buckwalter.Dimensional 
+>   ( Dim, Quantity, Dimensionless
+>   , DOne, DLuminousIntensity, DThermodynamicTemperature
+>   , Unit, DLength, (^+) -- Used only for 'square' and 'cubic'.
+>   )
 > import Buckwalter.NumType 
 >   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
+>   , pos2, pos3 -- Used only for 'square' and 'cubic'.
 >   )
 
 
@@ -154,7 +159,7 @@ radian and steradian."
 > type Inductance  = Quantity DInductance
 
 > type DLuminousFlux = DLuminousIntensity
-> type LuminousFlux  = LuminousIntensity
+> type LuminousFlux  = Quantity DLuminousFlux
 
 > type DIlluminance = Dim Neg2 Zero Zero Zero Zero Zero Pos1
 > type Illuminance  = Quantity DIlluminance
