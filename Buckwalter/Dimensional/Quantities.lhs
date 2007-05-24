@@ -5,9 +5,15 @@ License: BSD3
 
 = Summary =
 
-This module defines typ synonyms for common dimensionalities and
+This module defines type synonyms for common dimensionalities and
 the associated quantity types. Additional dimensionalities and
 quantity types will be added on an as-needed basis.
+
+The definitions in this module are grouped so that a type synonym
+for the dimensionality is defined first in terms of base dimension
+exponents. Then a type synonym for the corresponding quantity type
+is defined. If there are several quantity types with the same
+dimensionality type synonyms are provided for each quantity type.
 
 > module Buckwalter.Dimensional.Quantities where
 
@@ -17,15 +23,20 @@ quantity types will be added on an as-needed basis.
 >   )
 
 
+= Quantities from [1] =
+
+The following quantities are all from the NIST publication "Guide
+for the Use of the International System of Units (SI)" [1]. Any
+chapters, sections or tables referenced are from [1] unless otherwise
+specified.
+
+For lack of better organization we provide definitions grouped by
+table in [1].
+
+
 == Table 2 ==
 
 "Examples of SI derived units expressed in terms of SI base units."
-
-The following definitions are grouped so that a type synonym for
-the dimensionality is defined first in terms of base dimension
-exponents.  Then a type synonym for the corresponding quantity type
-is defined. If there are several alternate names for a quantity
-type one type synonyms is provided for each name.
 
 > type DArea = Dim Pos2 Zero Zero Zero Zero Zero Zero
 > type Area  = Quantity DArea
@@ -62,6 +73,21 @@ type one type synonyms is provided for each name.
 > type DLuminance = Dim Neg2 Zero Zero Zero Zero Zero Pos1
 > type Luminance  = Quantity DLuminance
 
+=== Powers of length units ===
+
+It is permissible to express powers of length units by prefixing
+'square' and 'cubic' (see section 9.6 "Spelling unit names raised
+to powers" of [1]).
+
+> square :: (Num a) => Unit DLength a -> Unit DArea a
+> square x = x ^+ pos2
+> cubic  :: (Num a) => Unit DLength a -> Unit DVolume a
+> cubic  x = x ^+ pos3
+
+These definitions may seem slightly out of place but these is no
+obvious place where they should be. Here they are at least close
+to the definitions of 'DLength' and 'DVolume'.
+
 
 == Table 3a ==
 
@@ -97,6 +123,72 @@ radian and steradian."
 > type Power        = Quantity DPower
 > type RadiantFlux  = Quantity DRadiantFlux
 
+> type DElectricCharge        = Dim Zero Zero Pos1 Pos1 Zero Zero Zero
+> type DQuantityOfElectricity = DElectricCharge
+> type ElectricCharge         = Quantity DElectricCharge
+> type QuantityOfElectricity  = Quantity DQuantityOfElectricity
+
+> type DElectricPotential   = Dim Pos2 Pos1 Neg3 Neg1 Zero Zero Zero
+> type DPotentialDifference = DElectricPotential
+> type DElectromotiveForce  = DElectricPotential
+> type ElectricPotential    = Quantity DElectricPotential
+> type PotentialDifference  = Quantity DPotentialDifference
+> type ElectromotiveForce   = Quantity DElectromotiveForce
+
+> type DCapacitance = Dim Neg2 Neg1 Pos4 Pos2 Zero Zero Zero
+> type Capacitance  = Quantity DCapacitance
+
+> type DElectricResistance = Dim Pos2 Pos1 Neg3 Neg2 Zero Zero Zero
+> type ElectricResistance  = Quantity DElectricResistance
+
+> type DElectricConductance = Dim Neg2 Neg1 Pos3 Pos2 Zero Zero Zero
+> type ElectricConductance  = Quantity DElectricConductance
+
+> type DMagneticFlux = Dim Pos2 Pos1 Neg2 Neg1 Zero Zero Zero
+> type MagneticFlux  = Quantity DMagneticFlux
+
+> type DMagneticFluxDensity = Dim Zero Pos1 Neg2 Neg1 Zero Zero Zero
+> type MagneticFluxDensity  = Quantity DMagneticFluxDensity
+
+> type DInductance = Dim Pos2 Pos1 Neg2 Neg2 Zero Zero Zero
+> type Inductance  = Quantity DInductance
+
+> type DLuminousFlux = DLuminousIntensity
+> type LuminousFlux  = LuminousIntensity
+
+> type DIlluminance = Dim Neg2 Zero Zero Zero Zero Zero Pos1
+> type Illuminance  = Quantity DIlluminance
+
+> type DCelsiusTemperature = DThermodynamicTemperature
+> type CelsiusTemperature  = Quantity DCelsiusTemperature
+
+
+== Table 3b ==
+
+"SI derived units with special names and symbols admitted for reasons
+of safeguarding human health"
+
+> type DActivity = DFrequency -- Activity of a radionuclide.
+> type Activity  = Quantity DActivity
+
+> type DAbsorbedDose   = Dim Pos2 Zero Neg2 Zero Zero Zero Zero
+> type DSpecificEnergy = DAbsorbedDose
+> type DKerma          = DAbsorbedDose
+> type AbsorbedDose    = Quantity DAbsorbedDose
+> type SpecificEnergy  = Quantity DSpecificEnergy -- Specific energy imparted.
+> type Kerma           = Quantity DKerma
+
+> type DDoseEquivalent            = DAbsorbedDose
+> type DAmbientDoseEquivalent     = DDoseEquivalent
+> type DDirectionalDoseEquivalent = DDoseEquivalent
+> type DPersonalDoseEquivalent    = DDoseEquivalent
+> type DEquivalentDose            = DDoseEquivalent
+> type DoseEquivalent             = Quantity DDoseEquivalent
+> type AmbientDoseEquivalent      = DoseEquivalent
+> type DirectionalDoseEquivalent  = DoseEquivalent
+> type PersonalDoseEquivalent     = DoseEquivalent
+> type EquivalentDose             = DoseEquivalent
+
 
 == Table 4 ==
 
@@ -105,7 +197,8 @@ units having special names and symbols."
 
 We use the same grouping as for table 2.
 
-> type AngularVelocity = Frequency
+> type DAngularVelocity = DFrequency
+> type AngularVelocity  = Quantity DAngularVelocity
 
 > type DAngularAcceleration = Dim Zero Zero Neg2 Zero Zero Zero Zero
 > type AngularAcceleration  = Quantity DAngularAcceleration
@@ -113,33 +206,40 @@ We use the same grouping as for table 2.
 > type DDynamicViscosity = Dim Neg1 Pos1 Neg1 Zero Zero Zero Zero
 > type DynamicViscosity  = Quantity DDynamicViscosity
 
-> type MomentOfForce  = Quantity DEnergy
+> type DMomentOfForce = DEnergy
+> type MomentOfForce  = Quantity DMomentOfForce
 
 > type DSurfaceTension = Dim Zero Pos1 Neg2 Zero Zero Zero Zero
 > type SurfaceTension  = Quantity DSurfaceTension
 
 > type DHeatFluxDensity = Dim Zero Pos1 Neg3 Zero Zero Zero Zero
+> type DIrradiance      = DHeatFluxDensity
 > type HeatFluxDensity  = Quantity DHeatFluxDensity
-> type Irradiance       = HeatFluxDensity
+> type Irradiance       = Quantity DIrradiance
 
-> type RadiantIntensity = Power
+> type DRadiantIntensity = DPower
+> type RadiantIntensity  = Quantity DRadiantIntensity
 
-> type Radiance = Irradiance
+> type DRadiance = DIrradiance
+> type Radiance  = Quantity DRadiance
 
 > type DHeatCapacity = Dim Pos2 Pos1 Neg2 Zero Neg1 Zero Zero
+> type DEntropy      = DHeatCapacity
 > type HeatCapacity  = Quantity DHeatCapacity
-> type Entropy       = HeatCapacity
+> type Entropy       = Quantity DEntropy
 
 > type DSpecificHeatCapacity = Dim Pos2 Zero Neg2 Zero Neg1 Zero Zero
+> type DSpecificEntropy      = DSpecificHeatCapacity
 > type SpecificHeatCapacity  = Quantity DSpecificHeatCapacity
-> type SpecificEntropy       = SpecificHeatCapacity
+> type SpecificEntropy       = Quantity DSpecificEntropy
 
 Specific energy was already defined in table 3b.
 
 > type DThermalConductivity = Dim Pos1 Pos1 Neg3 Zero Neg1 Zero Zero
 > type ThermalConductivity  = Quantity DThermalConductivity
 
-> type EnergyDensity = Pressure
+> type DEnergyDensity = DPressure
+> type EnergyDensity  = Quantity DEnergyDensity
 
 > type DElectricFieldStrength = Dim Pos1 Pos1 Neg3 Neg1 Zero Zero Zero
 > type ElectricFieldStrength  = Quantity DElectricFieldStrength
@@ -159,9 +259,10 @@ Specific energy was already defined in table 3b.
 > type DMolarEnergy = Dim Pos2 Pos1 Neg2 Zero Zero Neg1 Zero
 > type MolarEnergy  = Quantity DMolarEnergy
 
-> type DMolarEntropy     = Dim Pos2 Pos1 Neg2 Zero Neg1 Neg1 Zero
-> type MolarEntropy      = Quantity DMolarEntropy
-> type MolarHeatCapacity = MolarEntropy
+> type DMolarEntropy      = Dim Pos2 Pos1 Neg2 Zero Neg1 Neg1 Zero
+> type DMolarHeatCapacity = DMolarEntropy
+> type MolarEntropy       = Quantity DMolarEntropy
+> type MolarHeatCapacity  = Quantity DMolarHeatCapacity
 
 > type DExposure = Dim Zero Neg1 Pos1 Pos1 Zero Zero Zero
 > type Exposure  = Quantity DExposure -- Exposure to x and gamma rays.
@@ -170,23 +271,23 @@ Specific energy was already defined in table 3b.
 > type AbsorbedDoseRate  = Quantity DAbsorbedDoseRate
 
 
+= Quantities not defined in [1] =
 
-= Other quantities =
+Here we define additional quantities on an as-needed basis. We also
+provide some synonyms that we anticipate will be useful.
 
-Some other quantity types that have come in handy.
+> type DImpulse = Dim Pos1 Pos1 Neg1 Zero Zero Zero Zero
+> type Impulse  = Quantity DImpulse
 
-> {-
-> type Angle           = PlaneAngle -- Abbreviation
-> type Thrust          = Force
-> type Impulse         = Quantity DImpulse
-> type MassFlow        = Quantity DMassFlow
+> type DMassFlow = Dim Zero Pos1 Neg1 Zero Zero Zero Zero
+> type MassFlow  = Quantity DMassFlow
+
+For these we don't bother defining new type synonyms for dimensionalities.
+Is this rational?
+
+> type Angle             = PlaneAngle -- Abbreviation
+> type Thrust            = Force
 > type EnergyPerUnitMass = SpecificEnergy
-
-
-> type DImpulse      = Dim Pos1 Pos1 Neg1 Zero Zero Zero Zero
-> type DMassFlow     = Dim Zero Pos1 Neg1 Zero Zero Zero Zero
-> type DEnergyPerUnitMass = Dim Pos2 Zero Neg2 Zero Zero Zero Zero
-> -}
 
 
 = References =

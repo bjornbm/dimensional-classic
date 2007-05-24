@@ -7,7 +7,7 @@ License: BSD3
 
 This module defines the SI prefixes, the SI base units and the SI
 derived units. It also defines the units outside of the SI that are
-accepted for use with the SI.  Any chapters, sections or tables
+accepted for use with the SI. Any chapters, sections or tables
 referenced are from [1] unless otherwise specified.
 
 > module Buckwalter.Dimensional.SIUnits where
@@ -108,13 +108,6 @@ organization we provide definitions grouped by table in [1].
 "SI derived units with special names and symbols, including the
 radian and steradian."
 
-The following definitions are grouped so that a type synonym for
-the dimensionality is defined first in terms of base dimension
-exponents.  Then a type synonym for the corresponding quantity type
-is defined. If there are several quantity types with the same
-dimensionality a type synonym is provided for each quantity type.
-Finally the unit is defined.
-
 > radian :: Fractional a => Unit DPlaneAngle a
 > radian = one -- meter * meter ^ neg1
 
@@ -136,59 +129,36 @@ Finally the unit is defined.
 > watt :: Fractional a => Unit DPower a
 > watt = joule / second
 
-> type DElectricCharge       = Dim Zero Zero Pos1 Pos1 Zero Zero Zero
-> type ElectricCharge        = Quantity DElectricCharge
-> type QuantityOfElectricity = Quantity DElectricCharge
 > coulomb :: Fractional a => Unit DElectricCharge a
 > coulomb = second * ampere
 
-> type DElectricPotential  = Dim Pos2 Pos1 Neg3 Neg1 Zero Zero Zero
-> type ElectricPotential   = Quantity DElectricPotential
-> type PotentialDifference = Quantity DElectricPotential
-> type ElectromotiveForce  = Quantity DElectricPotential
 > volt :: Fractional a => Unit DElectricPotential a
 > volt = watt / ampere
 
-> type DCapacitance = Dim Neg2 Neg1 Pos4 Pos2 Zero Zero Zero
-> type Capacitance  = Quantity DCapacitance
 > farad :: Fractional a => Unit DCapacitance a
 > farad = coulomb / volt
 
-> type DElectricResistance = Dim Pos2 Pos1 Neg3 Neg2 Zero Zero Zero
-> type ElectricResistance  = Quantity DElectricResistance
 > ohm :: Fractional a => Unit DElectricResistance a
 > ohm = volt / ampere
 
-> type DElectricConductance = Dim Neg2 Neg1 Pos3 Pos2 Zero Zero Zero
-> type ElectricConductance  = Quantity DElectricConductance
 > siemens :: Fractional a => Unit DElectricConductance a
 > siemens = ampere / volt
 
-> type DMagneticFlux = Dim Pos2 Pos1 Neg2 Neg1 Zero Zero Zero
-> type MagneticFlux  = Quantity DMagneticFlux
 > weber :: Fractional a => Unit DMagneticFlux a
 > weber = volt * second
 
-> type DMagneticFluxDensity = Dim Zero Pos1 Neg2 Neg1 Zero Zero Zero
-> type MagneticFluxDensity  = Quantity DMagneticFluxDensity
 > tesla :: Fractional a => Unit DMagneticFluxDensity a
 > tesla = weber / meter ^ pos2
 
-> type DInductance = Dim Pos2 Pos1 Neg2 Neg2 Zero Zero Zero
-> type Inductance  = Quantity DInductance
 > henry :: Fractional a => Unit DInductance a
 > henry = weber / ampere
 
 We defer the definition of Celcius temperature to the end (would
 appear here if we stricly followed table 3a).
 
-> type DLuminousFlux = DLuminousIntensity
-> type LuminousFlux  = LuminousIntensity
 > lumen :: Fractional a => Unit DLuminousFlux a
 > lumen = candela / steradian
 
-> type DIlluminance = Dim Neg2 Zero Zero Zero Zero Zero Pos1
-> type Illuminance  = Quantity DIlluminance
 > lux :: Fractional a => Unit DIlluminance a
 > lux = lumen / meter ^ pos2
 
@@ -201,8 +171,6 @@ is appropriate to define a unit for use with relative quantities
 (taking only into account the proportionality) and complement the
 unit with functions for converting absolute values.
 
-> type DCelsiusTemperature = DThermodynamicTemperature
-> type CelsiusTemperature  = ThermodynamicTemperature
 > degreeCelsius :: Num a => Unit DCelsiusTemperature a
 > degreeCelsius = kelvin
 
@@ -224,8 +192,6 @@ of safeguarding human health"
 
 We use the same grouping as for table 3a.
 
-> type DActivity = DFrequency -- Activity of a radionuclide.
-> type Activity  = Quantity DActivity
 > becquerel :: Fractional a => Unit DActivity a
 > becquerel = second ^ neg1
 
@@ -236,19 +202,9 @@ quantity types without a specific unit we don't bother doing this
 (though perhaps we should in case there is a non-SI unit for the
 quantity type?).
 
-> type DAbsorbedDose  = Dim Pos2 Zero Neg2 Zero Zero Zero Zero
-> type AbsorbedDose   = Quantity DAbsorbedDose
-> type SpecificEnergy = Quantity DAbsorbedDose -- Specific energy imparted.
-> type Kerma          = Quantity DAbsorbedDose
 > gray :: Fractional a => Unit DAbsorbedDose a
 > gray = joule / kilo gram
 
-> type DDoseEquivalent           = DAbsorbedDose
-> type DoseEquivalent            = Quantity DDoseEquivalent
-> type AmbientDoseEquivalent     = DoseEquivalent
-> type DirectionalDoseEquivalent = DoseEquivalent
-> type PersonalDoseEquivalent    = DoseEquivalent
-> type EquivalentDose            = DoseEquivalent
 > sievert :: Fractional a => Unit DAbsorbedDose a
 > sievert = joule / kilo gram
 
@@ -301,3 +257,4 @@ temperature.
 
 [1] http://physics.nist.gov/Pubs/SP811/
 [2] http://en.wikipedia.org/wiki/Minute_of_arc
+
