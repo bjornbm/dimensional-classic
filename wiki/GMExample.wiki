@@ -1,4 +1,4 @@
-#summary Example of using Dimensional to calculate the value of GM.
+#summary Example of using the Dimensional library to calculate the value of GM.
 #labels Example
 
 = GM calculation =
