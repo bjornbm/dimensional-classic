@@ -30,7 +30,7 @@ Similarly with 'Buckwalter.Dimensional' this module requires GHC
 
 > module Buckwalter.Dimensional.Extensible (DExt) where
 
-> import Buckwalter.Dimensional ( Dim, Mul, Div, Power, Root )
+> import Buckwalter.Dimensional ( Dim, Mul, Div, Pow, Root )
 > import Buckwalter.NumType ( NumType, Sum, Negate, Zero, Pos, Neg ) 
 > import qualified Buckwalter.NumType as N ( Div, Mul )
 
@@ -93,7 +93,7 @@ dropped. In all other cases the dimensions are retained as is.
 
 We get negation, addition and subtraction for free with extended
 Dimensionals. However, we will need instances of the 'Mul', 'Div',
-'Power' and 'Root' classes for the corresponding operations to work.
+'Pow' and 'Root' classes for the corresponding operations to work.
 
 Multiplication and division can cause dimensions to be eliminated.
 We use the 'DropZero' type class to guarantee that the result of a
@@ -122,11 +122,42 @@ Analogously for 'Div'.
 > instance (Sum n'' n' n, Div d d' d'', DropZero (DExt n'' d'') d''') 
 >       => Div (DExt n d) (DExt n' d') d'''
 
-The instances for 'Power' and 'Root' are simpler since they can not
+The instances for 'Pow' and 'Root' are simpler since they can not
 change any previously non-zero to be eliminated.
 
-> instance (N.Mul n x n', Power d x d') => Power (DExt n d) x (DExt n' d')
+> instance (N.Mul n x n', Pow d x d') => Pow (DExt n d) x (DExt n' d')
 > instance (N.Div n x n', Root  d x d') => Root  (DExt n d) x (DExt n' d')
+
+
+= WARNING =
+
+The use of 'DExt' is not particularily safe and care must be taken
+when using more than one extended dimension. Consider for example
+the following example.
+
+] module Apples where
+]
+] type DApples  = DExt Pos1 DOne
+] type Apples   = Quantity DApples
+
+] module Oranges where
+]
+] import Apples
+]
+] type DOranges = DExt Pos1 DOne
+] type Oranges  = Quantity DOranges
+
+The author of the Oranges module has inadvertently defined Oranges
+to be identical with Apples, thus allowing the to be e.g. added
+together. This was obviously not the intent but unless the author
+knows the inner workings of the Apples module he can not avoid this
+situation. Thus extended dimensions as defined in this module are
+not safely modular.
+
+This is a significant shortcoming. Accidental mixing could be
+prevented by adding a phantom type "tag" to 'DExt'. However extended
+dimensions from different modules would not be compatible (in terms
+of e.g. multiplication) with each other in this situation.
 
 
 = References =
