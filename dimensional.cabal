@@ -9,8 +9,10 @@ Stability:           Unstable
 Build-Depends:       base
 Exposed-Modules:     Buckwalter.NumType, 
                      Buckwalter.Dimensional, 
+                     Buckwalter.Dimensional.Quantities,
                      Buckwalter.Dimensional.SIUnits,
                      Buckwalter.Dimensional.Prelude,
+                     Buckwalter.Dimensional.NonSI,
                      Buckwalter.Dimensional.Extensible
 ghc-options:         -O
  

@@ -110,46 +110,32 @@ radian and steradian."
 
 > radian :: Fractional a => Unit DPlaneAngle a
 > radian = one -- meter * meter ^ neg1
-
 > steradian :: Fractional a => Unit DSolidAngle a
 > steradian = one -- meter ^ pos2 * meter ^ neg2
-
 > hertz :: Fractional a => Unit DFrequency a
 > hertz = second ^ neg1
-
 > newton :: Fractional a => Unit DForce a
 > newton = kilo gram * meter * second ^ neg2
-
 > pascal :: Fractional a => Unit DPressure a
 > pascal = newton / meter ^ pos2
-
 > joule :: Fractional a => Unit DEnergy a
 > joule = newton * meter
-
 > watt :: Fractional a => Unit DPower a
 > watt = joule / second
-
 > coulomb :: Fractional a => Unit DElectricCharge a
 > coulomb = second * ampere
-
 > volt :: Fractional a => Unit DElectricPotential a
 > volt = watt / ampere
-
 > farad :: Fractional a => Unit DCapacitance a
 > farad = coulomb / volt
-
 > ohm :: Fractional a => Unit DElectricResistance a
 > ohm = volt / ampere
-
 > siemens :: Fractional a => Unit DElectricConductance a
 > siemens = ampere / volt
-
 > weber :: Fractional a => Unit DMagneticFlux a
 > weber = volt * second
-
 > tesla :: Fractional a => Unit DMagneticFluxDensity a
 > tesla = weber / meter ^ pos2
-
 > henry :: Fractional a => Unit DInductance a
 > henry = weber / ampere
 
@@ -158,7 +144,6 @@ appear here if we stricly followed table 3a).
 
 > lumen :: Fractional a => Unit DLuminousFlux a
 > lumen = candela / steradian
-
 > lux :: Fractional a => Unit DIlluminance a
 > lux = lumen / meter ^ pos2
 
@@ -204,8 +189,7 @@ quantity type?).
 
 > gray :: Fractional a => Unit DAbsorbedDose a
 > gray = joule / kilo gram
-
-> sievert :: Fractional a => Unit DAbsorbedDose a
+> sievert :: Fractional a => Unit DDoseEquivalent a
 > sievert = joule / kilo gram
 
 
