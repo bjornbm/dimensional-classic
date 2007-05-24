@@ -15,15 +15,15 @@ empirically better known that the magnitudes of 'G' and 'M' individually.
 *The problem:* Given two representations of the same satellite orbit -- one
 using the cartesian state vector and using keplerian elements, both at the
 same epoch -- determine the value of 'mu' used to convert between the two.
-
 {{{
+
 > module GM where
 
 > import qualified Prelude
 > import Buckwalter.Dimensional.Prelude
 > import Buckwalter.Dimensional.Units (Velocity, EnergyPerUnitMass)
-}}}
 
+}}}
 The state vector describing the orbit at epoch.
 
 {{{
@@ -96,7 +96,6 @@ Loading package dimensional-0.3 ... linking ... done.
 The value used for GM was 398600.4400008003 km^3 / s^2.
 *GM>
 }}}
-
 
 
 
