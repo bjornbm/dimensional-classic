@@ -154,10 +154,15 @@ knows the inner workings of the Apples module he can not avoid this
 situation. Thus extended dimensions as defined in this module are
 not safely modular.
 
+Rule of thumb: Extended dimensions should not cross module boundaries.
+They should be defined and used in the same module and should not
+be exported.
+
 This is a significant shortcoming. Accidental mixing could be
-prevented by adding a phantom type "tag" to 'DExt'. However extended
-dimensions from different modules would not be compatible (in terms
-of e.g. multiplication) with each other in this situation.
+prevented by adding a phantom type "tag" to 'DExt'. This would make
+it safe for extended dimensions to cross module boundaries. However,
+extended dimensions from different modules would not be compatible
+(in terms of e.g. multiplication) with each other in this situation.
 
 
 = References =
