@@ -4,16 +4,16 @@
 
 = Introduction =
 
-The module hierarchy of the Dimensional library is an open question (as is the name). This page describes the current vision for the modules. Note that *the hierarchy and functionality described below is not reflected in the currently released version* of the library.
+The module hierarchy of the Dimensional library is an open question (as is the name). This page describes the current vision for the modules. Note that *the hierarchy and functionality described below is not necessarily reflected in the currently released version* of the library.
 
 
 = Hierarchy =
 
  * Dimensional
- * Dimensional.Dimensionalities (bad name?)
+ * Dimensional.Quantities
  * Dimensional.SIUnits
- * Dimensional.NonSI
  * Dimensional.Prelude
+ * Dimensional.NonSI
  * Dimensional.Extensible (experimental)
  * Dimensional.ForwardAD (experimental, planned)
 
@@ -28,7 +28,7 @@ The meat of code. Defines base dimensions and the unit 'one'. Defines type class
 This module will exports as little as possible in terms of type classes and such. However, to facilitate some trickery (e.g. 'Dimensional.Extensible') the restrictions must be loosened somewhat  (but see 'Dimensional.Prelude').
 
 
-== Dimensional.Dimensionalities ==
+== Dimensional.Quantities ==
 
 Defines all derived dimensionalities and the corresponding quantity types. New dimensionalities will be added on an as-needed basis.
 
@@ -36,11 +36,6 @@ Defines all derived dimensionalities and the corresponding quantity types. New d
 == Dimensional.SIUnits ==
 
 Defines the SI units (base and derived) and units approved for use with SI. This module should be static.
-
-
-== Dimensional.NonSI ==
-
-Defines units outside of SI. Will never be "complete" but units will be added on an as-needed basis.
 
 
 == Dimensional.Prelude ==
@@ -53,6 +48,11 @@ The following modules will have a subset of their contents re-exported through '
  * Dimensional.Dimensionalities (will be re-exported in its entirety)
  * Dimensional.SIUnits (will be re-exported in its entirety)
  * Prelude (will be re-exported in its entirety with the exception of definitions conflicting with those in 'Dimensional')
+
+
+== Dimensional.NonSI ==
+
+Defines units outside of SI. Will never be "complete" but units will be added on an as-needed basis.
 
 
 == Experimental modules ==
