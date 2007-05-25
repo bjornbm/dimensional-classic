@@ -1,5 +1,5 @@
 #summary Example of using the Dimensional library to calculate the value of GM.
-#labels Example
+#labels Example,LiterateHaskell
 
 = GM calculation =
 
