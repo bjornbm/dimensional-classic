@@ -1,0 +1,15 @@
+It is not within the scope of this library to handle the complex
+task of date and time arithmetic. It is recommended to use the
+'Data.Time' library for handling dates and using 'Time' quantities
+only when time differences are involved in calculations with other
+quantities. In order to convert between the 'DiffTime' data type
+in the 'Data.Time' library and 'Time' quantities we provide the
+functions 'fromDiffTime' and 'toDiffTime'.
+{{{
+
+> fromDiffTime :: (Fractional a) => DiffTime -> Time a
+> toDiffTime :: (Real a, Fractional a) => Time a -> DiffTime
+
+}}}
+
+TODO: Add example usage, e.g. "Greenwich hour angle".
