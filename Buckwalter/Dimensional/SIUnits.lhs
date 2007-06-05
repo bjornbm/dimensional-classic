@@ -18,7 +18,8 @@ referenced are from [1] unless otherwise specified.
 >   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
 >   , neg3, neg2, neg1, pos1, pos2, pos3
 >   )
-> import Prelude ( (.), Num, Fractional, Floating, recip )
+> import Data.Time.Clock (DiffTime)
+> import Prelude ( (.), Num, Real (toRational), Fractional (fromRational), Floating, recip )
 > import qualified Prelude
 
 
@@ -94,6 +95,22 @@ The drawback is that we are forced to use 'Fractional'.
 > mole    = Dimensional 1
 > candela :: Num a => Unit DLuminousIntensity a
 > candela = Dimensional 1
+
+
+= DiffTime conversion =
+
+It is not within the scope of this library to handle the complex
+task of date and time arithmetic. It is recommended to use the
+'Data.Time' library for handling dates and using 'Time' quantities
+only when time differences are involved in calculations with other
+quantities. In order to convert between the 'DiffTime' data type
+in the 'Data.Time' library and 'Time' quantities we provide the
+functions 'fromDiffTime' and 'toDiffTime'.
+
+> fromDiffTime :: (Fractional a) => DiffTime -> Time a
+> fromDiffTime = (*~ second) . fromRational . toRational
+> toDiffTime :: (Real a, Fractional a) => Time a -> DiffTime
+> toDiffTime = fromRational . toRational . (/~ second)
 
 
 = SI derived units (section 4.2) =
@@ -209,7 +226,7 @@ We start with time which we grant exclusive rights to 'minute' and
 > minute, hour, day :: Num a => Unit DTime a
 > minute = prefix 60 second
 > hour   = prefix 60 minute
-> day    = prefix 24 hour
+> day    = prefix 24 hour -- Mean solar day.
 
 Since 'minute' and 'second' are already in use for time we use
 'arcminute' and 'arcsecond' [2] for plane angle instead.
