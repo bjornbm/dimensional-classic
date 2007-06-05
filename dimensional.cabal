@@ -6,7 +6,8 @@ License-File:        LICENSE
 Author:              Bjorn Buckwalter 
 Maintainer:          bjorn.buckwalter@gmail.com
 Stability:           Unstable
-Build-Depends:       base
+Build-Depends:       base,
+                     time
 Exposed-Modules:     Buckwalter.NumType, 
                      Buckwalter.Dimensional, 
                      Buckwalter.Dimensional.Quantities,
