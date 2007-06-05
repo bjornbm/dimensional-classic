@@ -1,4 +1,4 @@
-#summary Interfacing with DiffTime in the Data.Time library.
+#summary Interfacing with 'DiffTime' in the 'Data.Time' library.
 
 It is not within the scope of this library to handle the complex
 task of date and time arithmetic. It is recommended to use the
