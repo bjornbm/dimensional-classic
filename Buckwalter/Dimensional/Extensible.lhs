@@ -28,9 +28,9 @@ Similarly with 'Buckwalter.Dimensional' this module requires GHC
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module Buckwalter.Dimensional.Extensible (DExt) where
+> module Buckwalter.Dimensional.Extensible ( DExt, showDExt ) where
 
-> import Buckwalter.Dimensional ( Dim, Mul, Div, Pow, Root )
+> import Buckwalter.Dimensional ( Dim, Mul, Div, Pow, Root, dimUnit )
 > import Buckwalter.NumType ( NumType, Sum, Negate, Zero, Pos, Neg ) 
 > import qualified Buckwalter.NumType as N ( Div, Mul )
 
@@ -71,6 +71,25 @@ When extending dimensions we adopt the convention that the first
 shown in the above example. This is important when performing
 operations on two Dimensionals with a differing number of extended
 dimensions.
+
+
+= 'Show' helper function =
+
+We provide a helper function to ease defining 'Show' instances.
+
+> showDExt :: forall a n d. (NumType n, Show d) => String -> DExt a n d -> String
+> showDExt u _ = showHelp (dimUnit u (undefined :: n)) (show (undefined :: d))
+>        where
+>            showHelp Nothing  s  = s
+>            showHelp (Just s) s' = s ++ " " ++ s'
+
+Using this helper function defining 'Show' instances for the dimensions
+with extent in apples and oranges is simple.
+
+] instance (NumType n, Show d) => Show (DExt TApples n d) where
+]   show = showDExt "apple" 
+] instance (NumType n, Show d) => Show (DExt TOranges n d) where
+]   show = showDExt "orange" 
 
 
 = The 'DropZero' class =
@@ -134,40 +153,13 @@ change any previously non-zero to be eliminated.
 > instance (N.Div n x n', Root  d x d') => Root (DExt a n d) x (DExt a n' d')
 
 
-= WARNING =
+= Note =
 
-The use of 'DExt' is not particularily safe and care must be taken
-when using more than one extended dimension. Consider for example
-the following example.
-
-] module Apples where
-]
-] type DApples  = DExt Pos1 DOne
-] type Apples   = Quantity DApples
-
-] module Oranges where
-]
-] import Apples
-]
-] type DOranges = DExt Pos1 DOne
-] type Oranges  = Quantity DOranges
-
-The author of the Oranges module has inadvertently defined Oranges
-to be identical with Apples, thus allowing the to be e.g. added
-together. This was obviously not the intent but unless the author
-knows the inner workings of the Apples module he can not avoid this
-situation. Thus extended dimensions as defined in this module are
-not safely modular.
-
-Rule of thumb: Extended dimensions should not cross module boundaries.
-They should be defined and used in the same module and should not
-be exported.
-
-This is a significant shortcoming. Accidental mixing could be
-prevented by adding a phantom type "tag" to 'DExt'. This would make
-it safe for extended dimensions to cross module boundaries. However,
-extended dimensions from different modules would not be compatible
-(in terms of e.g. multiplication) with each other in this situation.
+The use of 'DExt' is not particularily modular. Exrended dimensions
+must adhere to a strict ordering in order to be compatible in terms
+of e.g. multiplication. This makes it difficult to add extra
+dimensions without full knowledge of all extra dimension one will
+be interacting with.
 
 
 = References =
