@@ -41,9 +41,9 @@ We define the datatype 'DExt' which we will use to increase the
 number of dimensions from the seven SI base dimensions to an arbitrary
 number of dimensions.
 
-> data DExt t n d
+> data DExt a n d
 
-The type variable 't' is used to tag the extended dimensions with
+The type variable 'a' is used to tag the extended dimensions with
 an identity, thus preventing inadvertent mixing of extended dimensions.
 
 Using 'DExt' we can define type synonyms for extended dimensions
@@ -88,10 +88,10 @@ The following 'DropZero' instances say that when an extended dimension
 with zero extent is next to a 'Dim' the extended dimension can be
 dropped. In all other cases the dimensions are retained as is.
 
-> instance DropZero (DExt t Zero (Dim l m t i th n j)) (Dim l m t i th j j)
-> instance DropZero (DExt t Zero (DExt t' n d)) (DExt t Zero (DExt t' n d))
-> instance DropZero (DExt t (Pos n) d) (DExt t (Pos n) d)
-> instance DropZero (DExt t (Neg n) d) (DExt t (Neg n) d)
+> instance DropZero (DExt a Zero (Dim l m t i th n j)) (Dim l m t i th j j)
+> instance DropZero (DExt a Zero (DExt a' n d)) (DExt a Zero (DExt a' n d))
+> instance DropZero (DExt a (Pos n) d) (DExt a (Pos n) d)
+> instance DropZero (DExt a (Neg n) d) (DExt a (Neg n) d)
 
 
 = Classes from 'Buckwalter.Dimensional' = 
@@ -108,30 +108,30 @@ When only one of the 'Mul' factors is an extended dimensional there is
 no need to minimize.
 
 > instance (Mul d (Dim l m t i th n j) d') 
->       => Mul (DExt t x d) (Dim l m t i th n j) (DExt t x d')
+>       => Mul (DExt a x d) (Dim l m t i th n j) (DExt a x d')
 > instance (Mul (Dim l m t i th n j) d d') 
->       => Mul (Dim l m t i th n j) (DExt t x d) (DExt t x d')
+>       => Mul (Dim l m t i th n j) (DExt a x d) (DExt a x d')
 
 If both of the factors are extended the product must be minimized.
 
-> instance (Sum n n' n'', Mul d d' d'', DropZero (DExt t n'' d'') d''') 
->       => Mul (DExt t n d) (DExt t n' d') d'''
+> instance (Sum n n' n'', Mul d d' d'', DropZero (DExt a n'' d'') d''') 
+>       => Mul (DExt a n d) (DExt a n' d') d'''
 
 Analogously for 'Div'.
 
 > instance (Div d (Dim l m t i th n j) d') 
->       => Div (DExt t x d) (Dim l m t i th n j) (DExt t x d')
+>       => Div (DExt a x d) (Dim l m t i th n j) (DExt a x d')
 > instance (Div (Dim l m t i th n j) d d', Negate x x') 
->       => Div (Dim l m t i th n j) (DExt t x d) (DExt t x' d')
+>       => Div (Dim l m t i th n j) (DExt a x d) (DExt a x' d')
 
-> instance (Sum n'' n' n, Div d d' d'', DropZero (DExt t n'' d'') d''') 
->       => Div (DExt t n d) (DExt t n' d') d'''
+> instance (Sum n'' n' n, Div d d' d'', DropZero (DExt a n'' d'') d''') 
+>       => Div (DExt a n d) (DExt a n' d') d'''
 
 The instances for 'Pow' and 'Root' are simpler since they can not
 change any previously non-zero to be eliminated.
 
-> instance (N.Mul n x n', Pow d x d')   => Pow  (DExt t n d) x (DExt t n' d')
-> instance (N.Div n x n', Root  d x d') => Root (DExt t n d) x (DExt t n' d')
+> instance (N.Mul n x n', Pow d x d')   => Pow  (DExt a n d) x (DExt a n' d')
+> instance (N.Div n x n', Root  d x d') => Root (DExt a n d) x (DExt a n' d')
 
 
 = WARNING =

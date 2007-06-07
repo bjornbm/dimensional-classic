@@ -50,10 +50,10 @@ And the corresponding units.
 
 = Stuff we expect to compile =
 
-> --f'' = m / a
-> --f' = a * o
+> f'' = m / a
+> f' = a * o
 
-> {-
+> --{-
 > f = a / o * p
 
 > foo1 :: Quantity (DExt TApples Pos1 (DExt TOranges Neg1 (DLength))) Double
