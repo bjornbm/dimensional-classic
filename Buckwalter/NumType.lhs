@@ -189,7 +189,7 @@ than or equal to Zero or remove a 'Neg' from numbers less than Zero.
 Now let us move on towards more complex arithmetic operations. We
 define a class for addition and subtraction of NumTypes.
 
-> class (NumTypeI a, NumTypeI b, NumTypeI c) 
+> class (Add a b c, Sub c b a)
 >    => Sum a b c | a b -> c, a c -> b, b c -> a
 
 In order to provide instances satisfying the functional dependencies
@@ -197,6 +197,7 @@ of 'Sum', in particular the property that any two parameters uniquely
 define the third, we must use helper classes.
 
 > class (NumTypeI a, NumTypeI b, NumTypeI c) => Add a b c | a b -> c
+> class (NumTypeI a, NumTypeI b, NumTypeI c) => Sub a b c | a b -> c
 
 Adding anything to Zero gives "anything".
 
@@ -209,11 +210,22 @@ type is Zero. We use the 'Succ' class to do this.
 > instance (PosTypeI a, Succ b c, Add a c d) => Add (Pos a) b d
 > instance (NegTypeI a, Succ c b, Add a c d) => Add (Neg a) b d
 
-We define our helper class for subtraction using negation and
+We define our helper class for subtraction analogously.
+
+> instance (NumType a) => Sub a Zero a
+> instance (Succ a' a, PosTypeI b, Sub a' b c) => Sub a (Pos b) c
+> instance (Succ a a', NegTypeI b, Sub a' b c) => Sub a (Neg b) c
+
+While we cold have defined a single 'Sub' instance using negation and
 addition.
 
-> class (NumTypeI a, NumTypeI b, NumTypeI c) => Sub a b c | a b -> c
-> instance (Negate b b', Add a b' c) => Sub a b c
+] instance (Negate b b', Add a b' c) => Sub a b c
+
+However, the constraints of such a 'Sub' instance which are not
+also constraints of the 'Sub' class can complicate type signatures
+(is this true or was I confused by other issues at the time?). Thus
+we elect to use the lower level instances analoguous to the 'Add'
+instances.
 
 Using the helper classes we can provide an instance of 'Sum' that
 satisfies its functional dependencies. We provide an instance of
