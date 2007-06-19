@@ -251,8 +251,8 @@ dimensions' exponents by the exponent.
 >           N.Mul i  x i',
 >           N.Mul th x th',
 >           N.Mul n  x n',
->           N.Mul j  x j') => Pow (Dim l   m   t   i   th   n   j) x 
->                                   (Dim l'  m'  t'  i'  th'  n'  j')
+>           N.Mul j  x j') => Pow (Dim l  m  t  i  th  n  j) x 
+>                                 (Dim l' m' t' i' th' n' j')
 
 Roots of dimensions corresponds to division of the base dimensions'
 exponents by order(?) of the root.
@@ -264,8 +264,8 @@ exponents by order(?) of the root.
 >           N.Div i  x i',
 >           N.Div th x th',
 >           N.Div n  x n',
->           N.Div j  x j') => Root (Dim l   m   t   i   th   n   j) x 
->                                  (Dim l'  m'  t'  i'  th'  n'  j')
+>           N.Div j  x j') => Root (Dim l  m  t  i  th  n  j) x 
+>                                  (Dim l' m' t' i' th' n' j')
 
 
 = Arithmetic on units and quantities =
@@ -320,20 +320,20 @@ Roots could conceivably be applied to units but valid reasons
 for doing so elude the author, so their use will be limited to
 quantities.
 
-> nroot :: (Floating a, Root d n d') => n -> Quantity d a -> Quantity d' a
+> nroot :: (Floating a, Root d n d') => n -> Dimensional v d a -> Dimensional v d' a
 > nroot n (Dimensional x) = Dimensional (x Prelude.** (1 Prelude./ toNum n))
 
 We provide short-hands for the square and cubic roots.
 
-> sqrt :: (Floating a, Root d Pos2 d') => Quantity d a -> Quantity d' a
+> sqrt :: (Floating a, Root d Pos2 d') => Dimensional v d a -> Dimensional v d' a
 > sqrt = nroot pos2
-> cbrt :: (Floating a, Root d Pos3 d') => Quantity d a -> Quantity d' a
+> cbrt :: (Floating a, Root d Pos3 d') => Dimensional v d a -> Dimensional v d' a
 > cbrt = nroot pos3
 
 We also provide an operator alternative to nroot for those that
 prefer such.
 
-> (^/) :: (Floating a, Root d n d') => Quantity d a -> n -> Quantity d' a
+> (^/) :: (Floating a, Root d n d') => Dimensional v d a -> n -> Dimensional v d' a
 > (^/) = flip nroot
 
 
