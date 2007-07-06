@@ -139,7 +139,7 @@ units using '*' and '/', e.g. "1 *~ (meter / second)".
 = The dimension 'd' of 'Dimensional' =
 
 The phantom type variable d encompasses the physical dimension of
-the 'Dimensional'. As detailed in [1] there are seven base dimensions,
+the 'Dimensional'. As detailed in [5] there are seven base dimensions,
 which can be combined in integer powers to a given physical dimension.
 We represent physical dimensions as the powers of the seven base
 dimensions that make up the given dimension. The powers are represented
