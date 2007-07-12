@@ -3,13 +3,19 @@
 
 = Introduction =
 
-
+This module was prompted by an email from Chuck Blake. He asked if
+the Dimensional library could support other systems of units than
+SI. In particular systems such as the centimeter-gram-second (CGS)
+system where fractional exponents of dimensions occur. He also
+wondered whether it was possible to convert quantities between
+different systems while statically ensuring that a given conversion
+was valid.
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
 > module CGS where
 
-> import Prelude ( undefined, Num, Fractional, Floating, Show )
+> import Prelude ( undefined, Num, Fractional, Floating, Show, recip )
 > import qualified Prelude
 > import Buckwalter.Dimensional hiding ( DLength, DMass, DTime, DElectricCurrent )
 > import Buckwalter.Dimensional.Quantities
@@ -89,59 +95,45 @@ We define the base units of the system. By defining 'meter' with a
 > second :: Num a => Unit DTime a
 > second = Dimensional 1
 
-We continue by defining the CGS equivalents of the other base SI units. Actually we limit ourselves to 'ampere' since I am not sure if or how the SI base dimensions other than current are expressed in CGS.
+We continue by defining the CGS equivalents of the other base SI
+units. Actually we limit ourselves to 'ampere' since I am not sure
+if or how the SI base dimensions other than current are expressed
+in CGS.
 
 > ampere :: Floating a => Unit DElectricCurrent a
-> ampere = prefix 3.33564e10 ((SI.centi meter ^ pos3) ^/ pos2 * gram ^/ pos2 * second ^ neg2)
+> ampere = prefix (recip 3.33564e-10) ((SI.centi meter ^ pos3) ^/ pos2 * gram ^/ pos2 * second ^ neg2)
 
 We also define the preferred CGS unit for charge.
 
-> franklin :: Floating a => Unit DCharge a
+> franklin :: Floating a => Unit DCharge a -- Also known as "esu".
 > franklin = gram ^/ pos2 * (SI.centi meter ^ pos3) ^/ pos2 / second
 
 
 = Conversion from SI =
 
+At some point we may wish to convert an SI quantity to a CGS quantity
+or vice versa.
+
 In order to convert a 'Quantity' from the SI system to the CGS
 system we use the strategy of dividing the quantity by the SI base
 unit and multiplying the resulting number (sans dimension) by the
-equivalent CGS unit. In order to realize this strategy we must be
-able to obtain the SI base unit and the equivalent CGS unit for a
-given quantity. We start with the SI unit since it is trivial.
+equivalent CGS unit. To realize this strategy we must be able to
+obtain the SI base unit and the equivalent CGS unit for a given
+quantity. We start with the SI unit since it is trivial.
 
 > unit_SI :: Num a => Quantity (Dim l m t i th n j) a -> Unit (Dim l m t i th n j) a
 > unit_SI _ = Dimensional 1
 
+(Perhaps the above function would be better defined in another
+module.)
 
-> -- Get the SI base unit of a Quantity.
-> unit_SI' :: forall a l m t i th n j.
->         ( Fractional a
->         , N.Mul Zero l  Zero, N.Mul Pos1 l  l
->         , N.Mul Zero m  Zero, N.Mul Pos1 m  m
->         , N.Mul Zero t  Zero, N.Mul Pos1 t  t
->         , N.Mul Zero i  Zero, N.Mul Pos1 i  i
->         , N.Mul Zero th Zero, N.Mul Pos1 th th
->         , N.Mul Zero n  Zero, N.Mul Pos1 n  n
->         , N.Mul Zero j  Zero, N.Mul Pos1 j  j
->         , N.Sum l  Zero l
->         , N.Sum Zero m  m,  N.Sum m  Zero m
->         , N.Sum Zero t  t,  N.Sum t  Zero t
->         , N.Sum Zero i  i,  N.Sum i  Zero i
->         , N.Sum Zero th th, N.Sum th Zero th
->         , N.Sum Zero n  n,  N.Sum n  Zero n
->         , N.Sum Zero j  j
->         ) => Quantity (Dim l m t i th n j) a -> Unit (Dim l m t i th n j) a
-> unit_SI' _ = SI.meter        ^ (undefined :: l)
->           * SI.kilo SI.gram ^ (undefined :: m)
->           * SI.second       ^ (undefined :: t)
->           * SI.ampere       ^ (undefined :: i)
->           * SI.kelvin       ^ (undefined :: th)
->           * SI.mole         ^ (undefined :: n)
->           * SI.candela      ^ (undefined :: j)
+Obtaining the CGS unit corresponding to the SI base unit of a
+Quantity isn't quite as trivial. The function body itself is
+straight-forward enough, the hairy part is the type signature. As
+can be seen we have assumed zero extent in the temperature, amount
+and lumnosity dimensions which is in line with my lack of knowledge
+of their CGS representation.
 
-> -- Alternate definition (this won't work for other than SI).
-
-> -- Get the CGS unit corresponding to the SI base unit of a Quantity.
 > unit_CGS :: forall a l m t i l2 m2 il it l' m' t'.
 >          ( Floating a
 >          , N.Mul Zero l Zero, N.Mul Pos2 l l2
@@ -162,9 +154,31 @@ given quantity. We start with the SI unit since it is trivial.
 >            * second       ^ (undefined :: t)
 >            * ampere       ^ (undefined :: i)
 
-> -- {-
-> fromSI x = x /~ unit_SI'  x *~ unit_CGS x
-> -- toSI   x = x /~ unit_CGS x *~ unit_SI  x
+Note that since the base dimensions of the CGS are a subset of those
+of the SI the mapping of types from SI to CGS is unabiguous.
+
+Also note that complex as the type signature may be producing it is a
+mostly mechanical process.
+
+With the above two functions we can define the function that converts
+a unit from the SI. We omit the type signature since it is hairy
+but can be readily inferred.
+
+> fromSI x = x /~ unit_SI  x *~ unit_CGS x
+
+
+= Conversion to SI =
+
+We use the same strategy to convert from CGS to SI. However, when
+converting from CGS to SI there may be several valid SI dimensionalities
+for any given CGS dimensionality. We will handle this ambiguity by
+requiring the user to specify the desired type (except when it is
+inferrable) of the resulting quantity.  For example:
+
+] toSI (3.2 *~ centi meter) :: Length Double
+
+In order to do this we must employ lexically scoped type variables
+and provide the hairy type signature for the 'toSI' function.
 
 > toSI :: forall a l m t i l2 m2 il it l' m' t'.
 >          ( Floating a
@@ -181,49 +195,17 @@ given quantity. We start with the SI unit since it is trivial.
 >          , N.Sum m2 i  m'
 >          , N.Sum t  it t'
 >          ) => Quantity (CGSDim l' m' t') a -> Quantity (Dim l m t i Zero Zero Zero) a
-> toSI x = x /~ unit_CGS (undefined :: Quantity (Dim l m t i Zero Zero Zero) a) *~ unit_SI' (undefined :: Quantity (Dim l m t i Zero Zero Zero) a)
+> toSI x = x /~ unit_CGS (undefined :: Quantity (Dim l m t i Zero Zero Zero) a)
+>            *~ unit_SI  (undefined :: Quantity (Dim l m t i Zero Zero Zero) a)
 
-
-> -- -}
-
-> class SIEquivalent a d d' | d -> d' where -- 'd' is the SI dimension.
->         unit :: Dimensional v d a -> Unit d' a
-
-> instance ( Floating a
->          , N.Mul Zero l Zero, N.Mul Pos2 l l2
->          , N.Mul Zero m Zero, N.Mul Pos2 m m2
->          , N.Mul Zero t Zero, N.Mul Pos1 t t
->          , N.Sum l2 Zero l2
->          , N.Sum Zero m2 m2,  N.Sum m2 Zero m2
->          , N.Sum Zero t  t
->          , N.Mul Pos3 i  il
->          , N.Mul Pos1 i  i
->          , N.Mul Neg2 i  it
->          , N.Sum l2 il l'
->          , N.Sum m2 i  m'
->          , N.Sum t  it t'
->          ) => SIEquivalent a (Dim l m t i Zero Zero Zero) (CGSDim l' m' t') where
->             unit _ = meter ^ (undefined :: l)
->                    * SI.kilo gram ^ (undefined :: m)
->                    * second       ^ (undefined :: t)
->                    * ampere       ^ (undefined :: i)
-
-> toSI' :: ( SIEquivalent a (Dim l m t i Zero Zero Zero) (CGSDim l' m' t') ) => Quantity (CGSDim l' m' t') a -> Quantity (Dim l m t i Zero Zero Zero) a
-> toSI' x = x /~ unit    (undefined :: Quantity (Dim l m t i Zero Zero Zero) a)
->             *~ unit_SI (undefined :: Quantity (Dim l m t i Zero Zero Zero) a)
-
-
-> {-
-> unit_CGS' :: ( Floating a, SIEquivalent (Dim l m t i Zero Zero Zero) (CGSDim l' m' t') )
->           => Quantity (Dim l m t i Zero Zero Zero) a -> Unit (CGSDim l' m' t') a
-> unit_CGS' _ = meter        ^ (undefined :: l)
->             * SI.kilo gram ^ (undefined :: m)
->             * second       ^ (undefined :: t)
->             * ampere       ^ (undefined :: i)
-> -}
+Again, the type signature is complex but deriving it is a mechanical
+process.
 
 
 = 'Show' instance =
+
+We round off by writing 'Show' instance for 'CGSDim' analogous to
+that of 'Dim'.
 
 Out of lazyness we use the notation "sqrt(cm)" to represent halves
 of integral dimensions. Nothing is technically keeping us from doing
@@ -239,6 +221,20 @@ a better job here.
 >              , dimUnit "sqrt(g)"  (undefined :: mh)
 >              , dimUnit "s"        (undefined :: t)
 >              ]
+
+
+= Examples =
+
+From [2]:
+
+> q_si  = 1.6021773e-19 *~ SI.coulomb -- Elementary charge in SI.
+> r_si  = 0.1 *~ SI.nano SI.meter     -- Distance in SI
+> f_si  = q_si ^ pos2 / (_4 * pi * e0 * r_si ^ pos2) where 
+>   e0 = 8.8541878e-12 *~ (SI.ampere * SI.second / (SI.volt * SI.meter)) -- Permittivity.
+
+> q_cgs = fromSI q_si -- Elementary charge in CGS.
+> r_cgs = fromSI r_si -- Distance in CGS
+> f_cgs = q_cgs ^ pos2 / r_cgs ^ pos2
 
 
 = References =
