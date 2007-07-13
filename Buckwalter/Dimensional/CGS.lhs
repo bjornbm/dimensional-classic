@@ -3,28 +3,56 @@
 
 = Introduction =
 
-This module was prompted by an email from Chuck Blake. He asked if
+This module was prompted by an email from Chuck Blake [1]. He asked if
 the Dimensional library could support other systems of units than
-SI. In particular systems such as the centimeter-gram-second (CGS)
+SI, in particular systems such as the centimeter-gram-second (CGS)
 system where fractional exponents of dimensions occur. He also
 wondered whether it was possible to convert quantities between
 different systems while statically ensuring that a given conversion
 was valid.
 
+In this module we show that we can in a straight forward manner
+support systems with rational exponents, provided that the rationals
+that may be encountered are known a priori. As an example we provide
+a rudimentary implementation of the CGS system. 
+
+We also show that we can indeed statically prohibit invalid conversions
+between different systems.
+
+
+= Caveats =
+
+I'm ignorantly assuming that when working with the CGS (or MKS)
+system you will only (meaningfully?) encounter half-exponents and
+only of the length and mass dimensions. Of course, in other systems
+other rational exponents may be encountered.
+
+I am also assuming that the CGS system would not be employed when
+working with temperature, amount or luminosity. This is evident in
+the below type signatures where I have assumed zero extent in the
+temperature, amount and lumnosity dimensions. If this is incorrect
+I would appreciate pointers to the CGS representation of these
+dimensions.
+
+Please correct and inform me if my assumptions are wrong! 
+
+
+= Preliminaries =
+
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
 > module CGS where
 
-> import Prelude ( undefined, Num, Fractional, Floating, Show, recip )
+> import Prelude ( undefined, Num, Fractional, Floating, Show, recip, Double )
 > import qualified Prelude
 > import Buckwalter.Dimensional hiding ( DLength, DMass, DTime, DElectricCurrent )
-> import Buckwalter.Dimensional.Quantities
+> import Buckwalter.Dimensional.Quantities as SIQ
 > import qualified Buckwalter.Dimensional.SIUnits as SI
 > import qualified Buckwalter.NumType as N
 > import Buckwalter.NumType ( Neg2, Neg1, Zero, Pos, Pos1, Pos2, Pos3, NumType )
 > import Buckwalter.NumType ( neg2, neg1, zero, pos1, pos2, pos3 )
 > import Data.Maybe (catMaybes)
-
+ 
 
 = Dimensions =
 
@@ -41,14 +69,8 @@ whole-exponents. The base dimensions illustrate this.
 > type DMass   = CGSDim Zero Pos2 Zero
 > type DTime   = CGSDim Zero Zero Pos1
 
-(I'm ignorantly assuming that when working with the CGS (or MKS)
-system you will only (meaningfully?) encounter half-exponents and
-only of the length and mass dimensions. Of course, in other systems
-other rational exponents may be encountered. Please correct me if
-this assumption is wrong!)
-
-We add a few other non-base dimensions for the sake of example.
-Charge is particularly interesting as it illustrates the need for
+We add a few non-base dimensions for the sake of example. Charge
+is particularly interesting as it illustrates the need for
 half-exponents as described in [2].
 
 > type DElectricCurrent = CGSDim Pos3 Pos1 Neg2
@@ -129,10 +151,7 @@ module.)
 
 Obtaining the CGS unit corresponding to the SI base unit of a
 Quantity isn't quite as trivial. The function body itself is
-straight-forward enough, the hairy part is the type signature. As
-can be seen we have assumed zero extent in the temperature, amount
-and lumnosity dimensions which is in line with my lack of knowledge
-of their CGS representation.
+straight-forward enough, the hairy part is the type signature.
 
 > unit_CGS :: forall a l m t i l2 m2 il it l' m' t'.
 >          ( Floating a
@@ -225,16 +244,60 @@ a better job here.
 
 = Examples =
 
-From [2]:
+Let us try the Coulomb attraction example from [2]. We start by
+performing the calculation in the SI.
 
 > q_si  = 1.6021773e-19 *~ SI.coulomb -- Elementary charge in SI.
 > r_si  = 0.1 *~ SI.nano SI.meter     -- Distance in SI
-> f_si  = q_si ^ pos2 / (_4 * pi * e0 * r_si ^ pos2) where 
->   e0 = 8.8541878e-12 *~ (SI.ampere * SI.second / (SI.volt * SI.meter)) -- Permittivity.
+> f_si  = q_si ^ pos2 / (_4 * pi * e0 * r_si ^ pos2) 
+>   where 
+>       e0 = 8.8541878e-12 *~ (SI.ampere * SI.second / (SI.volt * SI.meter)) 
+
+The same calculation in the CGS system.
 
 > q_cgs = fromSI q_si -- Elementary charge in CGS.
 > r_cgs = fromSI r_si -- Distance in CGS
 > f_cgs = q_cgs ^ pos2 / r_cgs ^ pos2
+
+Inspecting the values in GHCI shows us that the results are consistent
+(within reasonable accuracy) with [2].
+
+  *CGS> f_si
+  2.3070794737101255e-8 m kg s^-2
+  *CGS> f_cgs 
+  2.30708078598602e-3 sqrt(cm)^2 sqrt(g)^2 s^-2
+
+To convert from CGS to SI we must specify the type of the SI 'Quantity'.
+
+> f_si' = toSI f_cgs :: SIQ.Force Double
+
+  *CGS> f_si'
+  2.3070807859860202e-8 m kg s^-2
+
+We follow up with another conversion example demonstrating the
+ambiguity in the conversion from CGS to SI.
+
+> c     = 1 *~ SI.farad -- A SI capacitance.
+> c_cgs = fromSI c      -- Capacitance has dimensionality L in CGS.
+> c'    = toSI c_cgs :: SIQ.Capacitance Double
+> c''   = toSI c_cgs :: Length Double
+
+  *CGS> c
+  1.0 m^-2 kg^-1 s^4 A^2
+  *CGS> c_cgs
+  8.98755691740885e11 sqrt(cm)^2
+  *CGS> c'
+  1.0 m^-2 kg^-1 s^4 A^2
+  *CGS> c''
+  8.98755691740885e9 m
+
+
+= Future work =
+
+This is a very rudimentary implementation. For it to be practical
+a significant number of quantities and unit would need to be added.
+If anyone is willing to add quantities/units I will be happily to
+accept patches.
 
 
 = References =
