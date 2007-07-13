@@ -41,7 +41,7 @@ Please correct and inform me if my assumptions are wrong!
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module CGS where
+> module Buckwalter.Dimensional.CGS where
 
 > import Prelude ( undefined, Num, Fractional, Floating, Show, recip, Double )
 > import qualified Prelude
@@ -262,16 +262,16 @@ The same calculation in the CGS system.
 Inspecting the values in GHCI shows us that the results are consistent
 (within reasonable accuracy) with [2].
 
-  *CGS> f_si
+  *Buckwalter.Dimensional.CGS> f_si
   2.3070794737101255e-8 m kg s^-2
-  *CGS> f_cgs 
+  *Buckwalter.Dimensional.CGS> f_cgs 
   2.30708078598602e-3 sqrt(cm)^2 sqrt(g)^2 s^-2
 
 To convert from CGS to SI we must specify the type of the SI 'Quantity'.
 
 > f_si' = toSI f_cgs :: SIQ.Force Double
 
-  *CGS> f_si'
+  *Buckwalter.Dimensional.CGS> f_si'
   2.3070807859860202e-8 m kg s^-2
 
 We follow up with another conversion example demonstrating the
@@ -282,13 +282,13 @@ ambiguity in the conversion from CGS to SI.
 > c'    = toSI c_cgs :: SIQ.Capacitance Double
 > c''   = toSI c_cgs :: Length Double
 
-  *CGS> c
+  *Buckwalter.Dimensional.CGS> c
   1.0 m^-2 kg^-1 s^4 A^2
-  *CGS> c_cgs
+  *Buckwalter.Dimensional.CGS> c_cgs
   8.98755691740885e11 sqrt(cm)^2
-  *CGS> c'
+  *Buckwalter.Dimensional.CGS> c'
   1.0 m^-2 kg^-1 s^4 A^2
-  *CGS> c''
+  *Buckwalter.Dimensional.CGS> c''
   8.98755691740885e9 m
 
 
