@@ -77,3 +77,6 @@ y20 = 1 *~ (coulomb / kilo gram)
 y21 :: AbsorbedDoseRate Double
 y21 = 1 *~ (gray / second)
 
+-- Dummy main function.
+main = Prelude.putStrLn "If I compiled I'm OK!"
+

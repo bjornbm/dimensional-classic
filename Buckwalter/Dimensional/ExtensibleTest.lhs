@@ -71,3 +71,8 @@ Finally the base units.
 > foo3 :: Length Double
 > foo3 = a * m / a + m
 
+
+Dummy main function.
+
+> main = Prelude.putStrLn "If I compiled I'm OK!"
+
