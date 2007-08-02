@@ -1,9 +1,13 @@
+Buckwalter.Dimensional.CGS -- CGS system of units
+Bjorn Buckwalter, bjorn.buckwalter@gmail.com
+License: BSD3
 
 *** EXPERIMENTAL ***
 
+
 = Introduction =
 
-This module was prompted by an email from Chuck Blake [1]. He asked if
+This module was prompted by an email from Chuck Blake[1]. He asked if
 the Dimensional library could support other systems of units than
 SI, in particular systems such as the centimeter-gram-second (CGS)
 system where fractional exponents of dimensions occur. He also
@@ -30,7 +34,7 @@ other rational exponents may be encountered.
 I am also assuming that the CGS system would not be employed when
 working with temperature, amount or luminosity. This is evident in
 the below type signatures where I have assumed zero extent in the
-temperature, amount and lumnosity dimensions. If this is incorrect
+temperature, amount and luminosity dimensions. If this is incorrect
 I would appreciate pointers to the CGS representation of these
 dimensions.
 
@@ -174,7 +178,7 @@ straight-forward enough, the hairy part is the type signature.
 >            * ampere       ^ (undefined :: i)
 
 Note that since the base dimensions of the CGS are a subset of those
-of the SI the mapping of types from SI to CGS is unabiguous.
+of the SI the mapping of types from SI to CGS is unambiguous.
 
 Also note that complex as the type signature may be producing it is a
 mostly mechanical process.
@@ -192,7 +196,7 @@ We use the same strategy to convert from CGS to SI. However, when
 converting from CGS to SI there may be several valid SI dimensionalities
 for any given CGS dimensionality. We will handle this ambiguity by
 requiring the user to specify the desired type (except when it is
-inferrable) of the resulting quantity.  For example:
+inferable) of the resulting quantity.  For example:
 
 ] toSI (3.2 *~ centi meter) :: Length Double
 
@@ -226,7 +230,7 @@ process.
 We round off by writing 'Show' instance for 'CGSDim' analogous to
 that of 'Dim'.
 
-Out of lazyness we use the notation "sqrt(cm)" to represent halves
+Out of laziness we use the notation "sqrt(cm)" to represent halves
 of integral dimensions. Nothing is technically keeping us from doing
 a better job here.
 
@@ -259,7 +263,7 @@ The same calculation in the CGS system.
 > r_cgs = fromSI r_si -- Distance in CGS
 > f_cgs = q_cgs ^ pos2 / r_cgs ^ pos2
 
-Inspecting the values in GHCI shows us that the results are consistent
+Inspecting the values in GHCi shows us that the results are consistent
 (within reasonable accuracy) with [2].
 
   *Buckwalter.Dimensional.CGS> f_si
@@ -294,13 +298,23 @@ ambiguity in the conversion from CGS to SI.
 
 = Future work =
 
-This is a very rudimentary implementation. For it to be practical
-a significant number of quantities and unit would need to be added.
-If anyone is willing to add quantities/units I will be happily to
-accept patches.
+This is a very rudimentary implementation. To make it more practical
+a significant number of quantities and units, in particularly those
+commonly used with the CGS, would need to be added. In the mean
+time all units defined for the SI can be used with the CGS by
+applying 'fromSI' to quantities defined from the SI units.
+
+If anyone is willing to add quantities/units (or other enhancements)
+I will happily to accept patches. Personally I do not expect to use
+this module and therefore do not intend to invest much more time
+in it. If the module has other users I might reconsider.
+
+And of course, another direction of future work is to define
+additional systems (e.g. natural, relativistic) using this module
+as a template. I imagine this should be fairly straight forward.
 
 
 = References =
 
-[1] Chuck's email
+[1] http://code.google.com/p/dimensional/wiki/ChuckBlake20070611
 [2] http://www.tf.uni-kiel.de/matwis/amat/mw1_ge/kap_2/basics/b2_1_14.html
