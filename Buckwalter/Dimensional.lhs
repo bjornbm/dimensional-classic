@@ -564,9 +564,12 @@ Aaron Denney has created a toy example of statically checked
 physical dimensions covering only length and time. HaskellWiki
 has pointers [4] to these.
 
+Also see Samuel Hoffstaetter's blog post [5] which uses techniques
+similar to this library.
+
 Libraries with similar functionality exist for other programming
 languages and may serve as inspiration. The author has found the
-Java library JScience [5] and the Fortress programming language [6]
+Java library JScience [6] and the Fortress programming language [7]
 particularly noteworthy.
 
 
@@ -576,6 +579,7 @@ particularly noteworthy.
 [2] http://en.wikipedia.org/wiki/Escape_velocity
 [3] http://jscience.org/api/org/jscience/physics/models/package-summary.html
 [4] http://www.haskell.org/haskellwiki/Physical_units
-[5] http://jscience.org/
-[6] http://research.sun.com/projects/plrg/fortress.pdf
+[5] http://liftm.wordpress.com/2007/06/03/scientificdimension-type-arithmetic-and-physical-units-in-haskell/
+[6] http://jscience.org/
+[7] http://research.sun.com/projects/plrg/fortress.pdf
 
