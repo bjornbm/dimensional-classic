@@ -58,6 +58,10 @@ Defines units outside of SI. Will never be "complete" but units will be added on
 
 == Experimental modules ==
 
+=== Dimensional.CGS ===
+
+CGS units/quantities with type safe conversions to/from SI. Proof of concept that systems with rational exponents can be supported and that we can statically prohibit invalid conversions between systems.
+
 === Dimensional.Extensible ===
 
 Facilitates the use of custom dimensions (e.g. apples and oranges) in addition to the seven base dimensions.
