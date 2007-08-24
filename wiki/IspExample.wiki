@@ -1,4 +1,4 @@
-#summary Example of using the Dimensional library to calculate a specific impulse.
+#summary Example of using the Dimensional library to calculate specific impulse.
 #labels LiterateHaskell,Example
 
 This example is a real-world calculation I performed at work
