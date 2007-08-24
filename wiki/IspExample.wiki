@@ -1,0 +1,80 @@
+#summary Example of using the Dimensional library to calculate a specific impulse.
+#labels LiterateHaskell,Example
+
+This example is a real-world calculation I performed at work
+recently. I've substituted fake numbers to protect the innocent.
+{{{
+
+> import qualified Prelude
+> import Buckwalter.Dimensional.Prelude
+> import Buckwalter.Dimensional.NonSI (poundMass, gee)
+
+}}}
+When deorbiting (retiring) a geostationary spacecraft you normally want
+to raise its altitude (above the geostationary orbit) by a certain
+amount. A typical target amount would be 300 kilometers. In the satellites
+propellant budget the satellite manufacturer would have reserved the
+necessary propellant to reach this altitude.
+{{{
+
+> deorbitHeight     = 300   *~ kilo meter
+> deorbitPropellant =  20.3 *~ poundMass  -- American manufacturer.
+
+}}}
+The dry mass of the spacecraft is the weight of the spacecraft without
+any expendables (i.e. propellant).
+{{{
+
+> dryMass = 1534.2 *~ kilo gram
+
+}}}
+However, when performing the deorbit the spacecraft will not be completly
+dry. Some propellant (in liquid and gas form) will be trapped inside
+the spacecraft. In addition there will be some uncertainty in how much
+propellant is actually available onboard the spacecraft. We must assume
+these masses are still onboard but unusable (a conservative assumption).
+{{{
+
+> withheldPropellant = m_trapped + m_2sigma
+>   where
+>       m_trapped = 14.0 *~ poundMass
+>       m_2sigma  = 23.2 *~ poundMass  -- 2 sigmas is acceptable here.
+
+}}}
+The total mass we will be deorbiting is the dry mass, the withheld masses
+and the propellant reserved for the deorbit (which will be expended
+during the deorbit, but we'll conservatively assume it remains on board).
+{{{
+
+> massAtDeorbit = dryMass + withheldPropellant + deorbitPropellant
+
+}}}
+In order to change the orbit (mean) altitude by a certain amount the
+velocity of the spacecraft must be changed. In satellite operations the
+term delta-V or DV is often used for a velocity change. In the vicinity
+of the goestationary orbit the following formula can be used.
+{{{
+
+> deorbitDV :: Velocity Double
+> deorbitDV = phi / _2 * deorbitHeight
+>   where
+>       phi = 360.985647 *~ (degree / day) -- Earth's rate of rotation.
+
+}}}
+Based on the mass of the spacecraft we will be deorbiting and the
+propellant required to reach the deorbit altitude we can extract the
+specific impulse the satellite manufacturer expected for the deorbit
+"burns".
+{{{
+
+> i_sp :: Time Double
+> i_sp = massAtDeorbit * deorbitDV / (g * deorbitPropellant)
+>   where
+>       g = 1 *~ gee -- Earth's gravitational acceleration at surface.
+
+}}}
+{{{
+
+> main = print i_sp
+
+}}}
