@@ -14,6 +14,7 @@ The module hierarchy of the Dimensional library is an open question (as is the n
  * Dimensional.SIUnits
  * Dimensional.Prelude
  * Dimensional.NonSI
+ * Dimensional.CGS (experimental)
  * Dimensional.Extensible (experimental)
  * Dimensional.ForwardAD (experimental, planned)
 
