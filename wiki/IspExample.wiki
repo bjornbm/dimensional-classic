@@ -1,5 +1,5 @@
 #summary Example of using the Dimensional library to calculate specific impulse.
-#labels LiterateHaskell,Example
+#labels Example,LiterateHaskell
 
 This example is a real-world calculation I performed at work
 recently. I've substituted fake numbers to protect the innocent.
