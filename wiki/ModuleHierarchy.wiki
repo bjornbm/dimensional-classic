@@ -68,4 +68,4 @@ Facilitates the use of custom dimensions (e.g. apples and oranges) in addition t
 
 === Dimensional.ForwardAD (planned) ===
 
-Will provide forward-mode automatic differentiation (in one variable) on functions of physical quantities. The intent is to provide at least a differentiation operator together with a lifting function to prevent [http://www.bcl.hamilton.ie/~qobi/nesting/papers/ifl2005.pdf perturbation confusion].
+Will provide forward-mode automatic differentiation (in one variable) on functions of physical quantities. The intent is to provide at least a differentiation operator together with a lifting function to prevent [http://www.bcl.hamilton.ie/~qobi/nesting/papers/ifl2005.pdf perturbation confusion]. See [http://thread.gmane.org/gmane.comp.lang.haskell.cafe/22308/ this thread] for more details.
