@@ -55,6 +55,7 @@ extensions.
 > import Prelude 
 >   ( Show, Eq, Ord, Num, Fractional, Floating, RealFloat, Functor, fmap
 >   , (.), flip, show, (++), undefined, otherwise, (==), String, unwords
+>   , map, foldr
 >   )
 > import qualified Prelude 
 > import Data.Maybe (Maybe (Just, Nothing), catMaybes)
@@ -339,6 +340,26 @@ prefer such.
 
 > (^/) :: (Floating a, Root d n d') => Dimensional v d a -> n -> Dimensional v d' a
 > (^/) = flip nroot
+
+
+= List functions =
+
+Here we define operators and functions to make working with homogenuous
+lists of dimensionals more convenient.
+
+We define two convenience operators for applying units to all
+elements of a list.
+
+> (*~~) :: Num a => [a] -> Unit d a -> [Quantity d a]
+> xs *~~ u = map (*~ u) xs
+
+> (/~~) :: Fractional a => [Quantity d a] -> Unit d a -> [a]
+> xs /~~ u = map (/~ u) xs
+
+The sum of all elements in a list.
+
+> sum :: forall d a . Num a => [Quantity d a] -> Quantity d a
+> sum = foldr (+) (Dimensional 0 :: Quantity d a)
 
 
 = Dimensionless =

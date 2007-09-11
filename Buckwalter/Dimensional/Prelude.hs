@@ -20,7 +20,8 @@ import Buckwalter.NumType
 
 import Prelude hiding
     ( (+), (-), (*), (/), (^), (**)
-    , negate, pi, exp, log, sqrt
+    , abs, negate, pi, exp, log, sqrt
     , sin, cos, tan, asin, acos, atan, atan2
     , sinh, cosh, tanh, asinh, acosh, atanh
+    , sum
     ) -- ^Hide definitions overridden by 'Buckwalter.Dimensional'.
