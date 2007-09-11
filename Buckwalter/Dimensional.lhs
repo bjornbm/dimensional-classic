@@ -316,9 +316,13 @@ as they are done in a single physical dimension.
 > (-) :: (Num a) => Quantity d a -> Quantity d a -> Quantity d a
 > x - y = x + negate y
 
-Roots could conceivably be applied to units but valid reasons
-for doing so elude the author, so their use will be limited to
-quantities.
+Absolute value.
+
+> abs :: (Num a) => Quantity d a -> Quantity d a
+> abs (Dimensional x) = Dimensional (Prelude.abs x)
+
+Roots of arbitrary (integral) degree. Appears to occasionally be useful
+for units as well as quantities.
 
 > nroot :: (Floating a, Root d n d') => n -> Dimensional v d a -> Dimensional v d' a
 > nroot n (Dimensional x) = Dimensional (x Prelude.** (1 Prelude./ toNum n))
@@ -340,7 +344,7 @@ prefer such.
 = Dimensionless =
 
 For dimensionless quantities pretty much any operation is applicable.
-We provide this freedom by making 'Dimensionless' and instance of
+We provide this freedom by making 'Dimensionless' an instance of
 'Functor'.
 
 > instance Functor Dimensionless where
