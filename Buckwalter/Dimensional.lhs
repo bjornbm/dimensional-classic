@@ -58,6 +58,7 @@ extensions.
 >   , map, foldr
 >   )
 > import qualified Prelude 
+> import Data.List (genericLength)
 > import Data.Maybe (Maybe (Just, Nothing), catMaybes)
 > import Buckwalter.NumType 
 >   ( NumType, NonZero, PosType, Zero, toNum, Sum
@@ -360,6 +361,12 @@ The sum of all elements in a list.
 
 > sum :: forall d a . Num a => [Quantity d a] -> Quantity d a
 > sum = foldr (+) (Dimensional 0 :: Quantity d a)
+
+The length of the list as a 'Dimensionless'. This can be useful for
+purposes of e.g. calculating averages.
+
+> dimensionlessLength :: Num a => [Dimensional v d a] -> Dimensionless a
+> dimensionlessLength = Dimensional . genericLength
 
 
 = Dimensionless =
