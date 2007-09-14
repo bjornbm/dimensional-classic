@@ -402,8 +402,11 @@ that may be obviously useful.
 >      => Dimensionless a -> Dimensionless a -> Dimensionless a
 > Dimensional x ** Dimensional y = Dimensional (x Prelude.** y)
 
+For 'atan2' the operands need not be dimensionless but they must be
+of the same type. The result will of course always be dimensionless.
+
 > atan2 :: (RealFloat a) 
->       => Dimensionless a -> Dimensionless a -> Dimensionless a
+>       => Quantity d a -> Quantity d a -> Dimensionless a
 > atan2 (Dimensional y) (Dimensional x) = Dimensional (Prelude.atan2 y x)
 
 The only unit we will define in this module is 'one'. The unit one
