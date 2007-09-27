@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -fno-monomorphism-restriction #-}
 
-module Buckwalter.NumTypeTests where
+module Numeric.NumTypeTests where
 
-import Buckwalter.NumType
+import Numeric.NumType
 import Prelude hiding ((*), (/), (+), (-), negate)
 import qualified Prelude as P ((*), (/), (+), (-), negate)
 import Test.HUnit

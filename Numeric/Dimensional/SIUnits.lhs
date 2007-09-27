@@ -1,4 +1,4 @@
-Buckwalter.Dimensional.SIUnits
+Numeric.Dimensional.SIUnits
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
@@ -10,11 +10,11 @@ derived units. It also defines the units outside of the SI that are
 accepted for use with the SI. Any chapters, sections or tables
 referenced are from [1] unless otherwise specified.
 
-> module Buckwalter.Dimensional.SIUnits where
+> module Numeric.Dimensional.SIUnits where
 
-> import Buckwalter.Dimensional
-> import Buckwalter.Dimensional.Quantities
-> import Buckwalter.NumType 
+> import Numeric.Dimensional
+> import Numeric.Dimensional.Quantities
+> import Numeric.NumType 
 >   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
 >   , neg3, neg2, neg1, pos1, pos2, pos3
 >   )

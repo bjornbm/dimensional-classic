@@ -1,9 +1,9 @@
 {-# OPTIONS_GHC -fno-monomorphism-restriction #-}
 
-module Buckwalter.Dimensional.Test where
+module Numeric.Dimensional.Test where
 
-import Buckwalter.Dimensional
-import Buckwalter.NumType (zero, pos1, pos2, neg1, neg2)
+import Numeric.Dimensional
+import Numeric.NumType (zero, pos1, pos2, neg1, neg2)
 import Prelude (($))
 import qualified Prelude
 import Test.HUnit

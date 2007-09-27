@@ -1,4 +1,4 @@
-Buckwalter.Dimensional.NonSI
+Numeric.Dimensional.NonSI
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
@@ -12,9 +12,9 @@ of the SI accepted for use with the SI).
 Any chapters, sections or tables referenced are from [1] unless
 otherwise specified.
 
-> module Buckwalter.Dimensional.NonSI where
+> module Numeric.Dimensional.NonSI where
 
-> import Buckwalter.Dimensional.Prelude
+> import Numeric.Dimensional.Prelude
 > import qualified Prelude
 
 

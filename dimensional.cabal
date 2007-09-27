@@ -5,16 +5,26 @@ License:             BSD3
 License-File:        LICENSE
 Author:              Bjorn Buckwalter 
 Maintainer:          bjorn.buckwalter@gmail.com
+Category:            Math
+Synopsis:            Data types for performing arithmetic with physical quantities and units
+Description:
+    Dimensional is a library providing data types for performing arithmetic
+    with physical quantities and units. Information about the physical
+    dimensions of the quantities and units is embedded in their types and the
+    validity of operations is verified by the type checker at compile time.
+    The boxing and unboxing of numerical values as quantities is done by
+    multiplication and division with units. The library is designed to, as
+    far as is practical, enforce/encourage best practices of unit usage.
 Stability:           Unstable
 Build-Depends:       base,
                      time
-Exposed-Modules:     Buckwalter.NumType, 
-                     Buckwalter.Dimensional, 
-                     Buckwalter.Dimensional.Quantities,
-                     Buckwalter.Dimensional.SIUnits,
-                     Buckwalter.Dimensional.Prelude,
-                     Buckwalter.Dimensional.NonSI,
-                     Buckwalter.Dimensional.Extensible,
-                     Buckwalter.Dimensional.CGS
+Exposed-Modules:     Numeric.NumType, 
+                     Numeric.Dimensional, 
+                     Numeric.Dimensional.Quantities,
+                     Numeric.Dimensional.SIUnits,
+                     Numeric.Dimensional.Prelude,
+                     Numeric.Dimensional.NonSI,
+                     Numeric.Dimensional.Extensible,
+                     Numeric.Dimensional.CGS
 ghc-options:         -O
  

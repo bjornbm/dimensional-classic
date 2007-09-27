@@ -1,4 +1,4 @@
-Buckwalter.Dimensional.Extensible -- Extensible physical dimensions
+Numeric.Dimensional.Extensible -- Extensible physical dimensions
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
@@ -17,22 +17,22 @@ On January 3 Mike Gunter asked[1]:
 
 In this module we facilitate the addition an arbitrary number of
 "extra" dimensions to the seven base dimensions defined in
-'Buckwalter.Dimensional'. A quantity or unit with one or more extra
+'Numeric.Dimensional'. A quantity or unit with one or more extra
 dimensions will be referred to as an "extended Dimensional".
 
 
 = Preliminaries =
 
-Similarly with 'Buckwalter.Dimensional' this module requires GHC
+Similarly with 'Numeric.Dimensional' this module requires GHC
 6.6 or later.
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module Buckwalter.Dimensional.Extensible ( DExt, showDExt ) where
+> module Numeric.Dimensional.Extensible ( DExt, showDExt ) where
 
-> import Buckwalter.Dimensional ( Dim, Mul, Div, Pow, Root, dimUnit )
-> import Buckwalter.NumType ( NumType, Sum, Negate, Zero, Pos, Neg ) 
-> import qualified Buckwalter.NumType as N ( Div, Mul )
+> import Numeric.Dimensional ( Dim, Mul, Div, Pow, Root, dimUnit )
+> import Numeric.NumType ( NumType, Sum, Negate, Zero, Pos, Neg ) 
+> import qualified Numeric.NumType as N ( Div, Mul )
 
 
 = 'DExt', 'Apples' and 'Oranges' =
@@ -113,7 +113,7 @@ dropped. In all other cases the dimensions are retained as is.
 > instance DropZero (DExt a (Neg n) d) (DExt a (Neg n) d)
 
 
-= Classes from 'Buckwalter.Dimensional' = 
+= Classes from 'Numeric.Dimensional' = 
 
 We get negation, addition and subtraction for free with extended
 Dimensionals. However, we will need instances of the 'Mul', 'Div',

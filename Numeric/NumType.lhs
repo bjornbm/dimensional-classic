@@ -1,4 +1,4 @@
-Buckwalter.NumType -- Type level integers
+Numeric.NumType -- Type level integers
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
@@ -36,7 +36,7 @@ instances (and possibly additional unidentified GHC extensions).
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module Buckwalter.NumType 
+> module Numeric.NumType 
 >   -- Basic classes (exported versions).
 >   ( NumType, PosType, NegType, NonZero
 >   -- Arithmetic classes.

@@ -1,4 +1,4 @@
-Buckwalter.Dimensional.Quantities
+Numeric.Dimensional.Quantities
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
@@ -15,14 +15,14 @@ exponents. Then a type synonym for the corresponding quantity type
 is defined. If there are several quantity types with the same
 dimensionality type synonyms are provided for each quantity type.
 
-> module Buckwalter.Dimensional.Quantities where
+> module Numeric.Dimensional.Quantities where
 
-> import Buckwalter.Dimensional 
+> import Numeric.Dimensional 
 >   ( Dim, Quantity, Dimensionless
 >   , DOne, DLuminousIntensity, DThermodynamicTemperature
 >   , Unit, DLength, (^+) -- Used only for 'square' and 'cubic'.
 >   )
-> import Buckwalter.NumType 
+> import Numeric.NumType 
 >   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
 >   , pos2, pos3 -- Used only for 'square' and 'cubic'.
 >   )

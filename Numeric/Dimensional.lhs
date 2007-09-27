@@ -1,4 +1,4 @@
-Buckwalter.Dimensional -- Statically checked physical dimensions
+Numeric.Dimensional -- Statically checked physical dimensions
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
@@ -48,7 +48,7 @@ extensions.
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module Buckwalter.Dimensional 
+> module Numeric.Dimensional 
 >       -- TODO discriminate exports, in particular Variants and Dims.
 >   where
 
@@ -60,12 +60,12 @@ extensions.
 > import qualified Prelude 
 > import Data.List (genericLength)
 > import Data.Maybe (Maybe (Just, Nothing), catMaybes)
-> import Buckwalter.NumType 
+> import Numeric.NumType 
 >   ( NumType, NonZero, PosType, Zero, toNum, Sum
 >   , Pos1, Pos2, pos2, Pos3, pos3
 >   , neg3, zero -- Only for playing around.
 >   )
-> import qualified Buckwalter.NumType as N (Mul, Div)
+> import qualified Numeric.NumType as N (Mul, Div)
 
 We will reuse the operators and function names from the Prelude.
 To prevent unpleasant surprises we give operators the same fixity
@@ -526,14 +526,14 @@ The following is an example GHC session where the above function
 is used to calculate the escape velocity of Earth in kilometer per
 second.
 
-  *Buckwalter.Dimensional> :set +t
-  *Buckwalter.Dimensional> let me = 5.9742e24 *~ kilo gram -- Mass of Earth.
+  *Numeric.Dimensional> :set +t
+  *Numeric.Dimensional> let me = 5.9742e24 *~ kilo gram -- Mass of Earth.
   me :: Quantity DMass GHC.Float.Double
-  *Buckwalter.Dimensional> let re = 6372.792 *~ kilo meter -- Mean radius of Earth.
+  *Numeric.Dimensional> let re = 6372.792 *~ kilo meter -- Mean radius of Earth.
   re :: Quantity DLength GHC.Float.Double
-  *Buckwalter.Dimensional> let ve = escapeVelocity me re   -- Escape velocity of Earth.
+  *Numeric.Dimensional> let ve = escapeVelocity me re   -- Escape velocity of Earth.
   ve :: Velocity GHC.Float.Double
-  *Buckwalter.Dimensional> ve /~ (kilo meter / second)
+  *Numeric.Dimensional> ve /~ (kilo meter / second)
   11.184537332296259
   it :: GHC.Float.Double
 
@@ -558,9 +558,9 @@ In other cases the error messages aren't very friendly.
            against inferred type `Neg Zero'
     When using functional dependencies to combine
       Sub Zero (Pos Zero) (Neg Zero),
-        arising from use of `/' at Buckwalter/Dimensional.lhs:425:9-20
+        arising from use of `/' at Numeric/Dimensional.lhs:425:9-20
       Sub Zero (Pos Zero) Zero,
-        arising from use of `/' at Buckwalter/Dimensional.lhs:532:5-30
+        arising from use of `/' at Numeric/Dimensional.lhs:532:5-30
 
 It is the author's experience that the usefullness of the compiler
 error messages is more often than not limited to pinpointing the

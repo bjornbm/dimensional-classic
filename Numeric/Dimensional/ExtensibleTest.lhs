@@ -1,11 +1,11 @@
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module Buckwalter.Dimensional.Test where
+> module Numeric.Dimensional.Test where
 
-> import Buckwalter.Dimensional.Prelude
-> import Buckwalter.Dimensional.Extensible
-> import Buckwalter.Dimensional ( Dimensional (Dimensional), dimUnit )
-> import Buckwalter.NumType ( NumType, Zero, Pos1, Neg1 )
+> import Numeric.Dimensional.Prelude
+> import Numeric.Dimensional.Extensible
+> import Numeric.Dimensional ( Dimensional (Dimensional), dimUnit )
+> import Numeric.NumType ( NumType, Zero, Pos1, Neg1 )
 > import Data.Maybe ( Maybe (Just), catMaybes )
 > import qualified Prelude
 

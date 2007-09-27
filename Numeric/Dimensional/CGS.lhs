@@ -1,4 +1,4 @@
-Buckwalter.Dimensional.CGS -- CGS system of units
+Numeric.Dimensional.CGS -- CGS system of units
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
@@ -45,16 +45,16 @@ Please correct and inform me if my assumptions are wrong!
 
 > {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
 
-> module Buckwalter.Dimensional.CGS where
+> module Numeric.Dimensional.CGS where
 
 > import Prelude ( undefined, Num, Fractional, Floating, Show, recip, Double )
 > import qualified Prelude
-> import Buckwalter.Dimensional hiding ( DLength, DMass, DTime, DElectricCurrent )
-> import Buckwalter.Dimensional.Quantities as SIQ
-> import qualified Buckwalter.Dimensional.SIUnits as SI
-> import qualified Buckwalter.NumType as N
-> import Buckwalter.NumType ( Neg2, Neg1, Zero, Pos, Pos1, Pos2, Pos3, NumType )
-> import Buckwalter.NumType ( neg2, neg1, zero, pos1, pos2, pos3 )
+> import Numeric.Dimensional hiding ( DLength, DMass, DTime, DElectricCurrent )
+> import Numeric.Dimensional.Quantities as SIQ
+> import qualified Numeric.Dimensional.SIUnits as SI
+> import qualified Numeric.NumType as N
+> import Numeric.NumType ( Neg2, Neg1, Zero, Pos, Pos1, Pos2, Pos3, NumType )
+> import Numeric.NumType ( neg2, neg1, zero, pos1, pos2, pos3 )
 > import Data.Maybe (catMaybes)
  
 
@@ -266,16 +266,16 @@ The same calculation in the CGS system.
 Inspecting the values in GHCi shows us that the results are consistent
 (within reasonable accuracy) with [2].
 
-  *Buckwalter.Dimensional.CGS> f_si
+  *Numeric.Dimensional.CGS> f_si
   2.3070794737101255e-8 m kg s^-2
-  *Buckwalter.Dimensional.CGS> f_cgs 
+  *Numeric.Dimensional.CGS> f_cgs 
   2.30708078598602e-3 sqrt(cm)^2 sqrt(g)^2 s^-2
 
 To convert from CGS to SI we must specify the type of the SI 'Quantity'.
 
 > f_si' = toSI f_cgs :: SIQ.Force Double
 
-  *Buckwalter.Dimensional.CGS> f_si'
+  *Numeric.Dimensional.CGS> f_si'
   2.3070807859860202e-8 m kg s^-2
 
 We follow up with another conversion example demonstrating the
@@ -286,13 +286,13 @@ ambiguity in the conversion from CGS to SI.
 > c'    = toSI c_cgs :: SIQ.Capacitance Double
 > c''   = toSI c_cgs :: Length Double
 
-  *Buckwalter.Dimensional.CGS> c
+  *Numeric.Dimensional.CGS> c
   1.0 m^-2 kg^-1 s^4 A^2
-  *Buckwalter.Dimensional.CGS> c_cgs
+  *Numeric.Dimensional.CGS> c_cgs
   8.98755691740885e11 sqrt(cm)^2
-  *Buckwalter.Dimensional.CGS> c'
+  *Numeric.Dimensional.CGS> c'
   1.0 m^-2 kg^-1 s^4 A^2
-  *Buckwalter.Dimensional.CGS> c''
+  *Numeric.Dimensional.CGS> c''
   8.98755691740885e9 m
 
 
