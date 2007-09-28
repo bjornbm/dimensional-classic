@@ -1,12 +1,11 @@
 Name:                dimensional
 Version:             0.6.99
-Synopsis:            Statically checked physical dimensions.
 License:             BSD3
 License-File:        LICENSE
 Author:              Bjorn Buckwalter 
 Maintainer:          bjorn.buckwalter@gmail.com
 Category:            Math
-Synopsis:            Data types for performing arithmetic with physical quantities and units
+Synopsis:            Statically checked physical dimensions.
 Description:
     Dimensional is a library providing data types for performing arithmetic
     with physical quantities and units. Information about the physical
