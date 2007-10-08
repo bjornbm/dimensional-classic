@@ -18,12 +18,12 @@ Stability:           Unstable
 Build-Depends:       base,
                      time
 Exposed-Modules:     Numeric.NumType, 
-                     Numeric.Dimensional, 
-                     Numeric.Dimensional.Quantities,
-                     Numeric.Dimensional.SIUnits,
-                     Numeric.Dimensional.Prelude,
-                     Numeric.Dimensional.NonSI,
-                     Numeric.Dimensional.Extensible,
-                     Numeric.Dimensional.CGS
+                     Numeric.Units.Dimensional, 
+                     Numeric.Units.Dimensional.Quantities,
+                     Numeric.Units.Dimensional.SIUnits,
+                     Numeric.Units.Dimensional.Prelude,
+                     Numeric.Units.Dimensional.NonSI,
+                     Numeric.Units.Dimensional.Extensible,
+                     Numeric.Units.Dimensional.CGS
 ghc-options:         -O
  
