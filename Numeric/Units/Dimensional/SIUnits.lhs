@@ -10,10 +10,10 @@ derived units. It also defines the units outside of the SI that are
 accepted for use with the SI. Any chapters, sections or tables
 referenced are from [1] unless otherwise specified.
 
-> module Numeric.Dimensional.SIUnits where
+> module Numeric.Units.Dimensional.SIUnits where
 
-> import Numeric.Dimensional
-> import Numeric.Dimensional.Quantities
+> import Numeric.Units.Dimensional
+> import Numeric.Units.Dimensional.Quantities
 > import Numeric.NumType 
 >   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
 >   , neg3, neg2, neg1, pos1, pos2, pos3

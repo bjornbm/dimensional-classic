@@ -1,10 +1,8 @@
-> {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
+> {-# OPTIONS_GHC -fglasgow-exts #-}  -- For types without constructors
 
-> module Numeric.Dimensional.Test where
-
-> import Numeric.Dimensional.Prelude
-> import Numeric.Dimensional.Extensible
-> import Numeric.Dimensional ( Dimensional (Dimensional), dimUnit )
+> import Numeric.Units.Dimensional.Prelude
+> import Numeric.Units.Dimensional.Extensible
+> import Numeric.Units.Dimensional ( Dimensional (Dimensional), dimUnit )
 > import Numeric.NumType ( NumType, Zero, Pos1, Neg1 )
 > import Data.Maybe ( Maybe (Just), catMaybes )
 > import qualified Prelude

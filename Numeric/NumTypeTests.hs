@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fno-monomorphism-restriction #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
 module Numeric.NumTypeTests where
 

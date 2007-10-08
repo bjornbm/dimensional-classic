@@ -1,4 +1,4 @@
-import Numeric.Dimensional.Prelude
+import Numeric.Units.Dimensional.Prelude
 import qualified Prelude
 
 -- These definitions simply verify that the type synonyms are

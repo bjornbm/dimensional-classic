@@ -15,9 +15,9 @@ exponents. Then a type synonym for the corresponding quantity type
 is defined. If there are several quantity types with the same
 dimensionality type synonyms are provided for each quantity type.
 
-> module Numeric.Dimensional.Quantities where
+> module Numeric.Units.Dimensional.Quantities where
 
-> import Numeric.Dimensional 
+> import Numeric.Units.Dimensional 
 >   ( Dim, Quantity, Dimensionless
 >   , DOne, DLuminousIntensity, DThermodynamicTemperature
 >   , Unit, DLength, (^+) -- Used only for 'square' and 'cubic'.

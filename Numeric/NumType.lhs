@@ -34,7 +34,8 @@ This module requires GHC 6.6 or later. We utilize multi-parameter
 type classes, phantom types, functional dependencies and undecidable
 instances (and possibly additional unidentified GHC extensions).
 
-> {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
+> {-# OPTIONS_GHC -fglasgow-exts #-}  -- For types without constructors
+> {-# LANGUAGE UndecidableInstances #-}
 
 > module Numeric.NumType 
 >   -- Basic classes (exported versions).

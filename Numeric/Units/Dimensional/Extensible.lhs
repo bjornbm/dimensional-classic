@@ -26,11 +26,11 @@ dimensions will be referred to as an "extended Dimensional".
 Similarly with 'Numeric.Dimensional' this module requires GHC
 6.6 or later.
 
-> {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
+> {-# LANGUAGE UndecidableInstances, ScopedTypeVariables #-}
 
-> module Numeric.Dimensional.Extensible ( DExt, showDExt ) where
+> module Numeric.Units.Dimensional.Extensible ( DExt, showDExt ) where
 
-> import Numeric.Dimensional ( Dim, Mul, Div, Pow, Root, dimUnit )
+> import Numeric.Units.Dimensional ( Dim, Mul, Div, Pow, Root, dimUnit )
 > import Numeric.NumType ( NumType, Sum, Negate, Zero, Pos, Neg ) 
 > import qualified Numeric.NumType as N ( Div, Mul )
 

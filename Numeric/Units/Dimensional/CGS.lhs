@@ -43,15 +43,15 @@ Please correct and inform me if my assumptions are wrong!
 
 = Preliminaries =
 
-> {-# OPTIONS_GHC -fglasgow-exts -fallow-undecidable-instances #-}
+> {-# LANGUAGE UndecidableInstances, ScopedTypeVariables #-}
 
-> module Numeric.Dimensional.CGS where
+> module Numeric.Units.Dimensional.CGS where
 
 > import Prelude ( undefined, Num, Fractional, Floating, Show, recip, Double )
 > import qualified Prelude
-> import Numeric.Dimensional hiding ( DLength, DMass, DTime, DElectricCurrent )
-> import Numeric.Dimensional.Quantities as SIQ
-> import qualified Numeric.Dimensional.SIUnits as SI
+> import Numeric.Units.Dimensional hiding ( DLength, DMass, DTime, DElectricCurrent )
+> import Numeric.Units.Dimensional.Quantities as SIQ
+> import qualified Numeric.Units.Dimensional.SIUnits as SI
 > import qualified Numeric.NumType as N
 > import Numeric.NumType ( Neg2, Neg1, Zero, Pos, Pos1, Pos2, Pos3, NumType )
 > import Numeric.NumType ( neg2, neg1, zero, pos1, pos2, pos3 )

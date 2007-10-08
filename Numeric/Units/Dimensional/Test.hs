@@ -1,8 +1,6 @@
-{-# OPTIONS_GHC -fno-monomorphism-restriction #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
-module Numeric.Dimensional.Test where
-
-import Numeric.Dimensional
+import Numeric.Units.Dimensional
 import Numeric.NumType (zero, pos1, pos2, neg1, neg2)
 import Prelude (($))
 import qualified Prelude

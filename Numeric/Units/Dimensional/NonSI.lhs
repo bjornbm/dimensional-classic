@@ -12,9 +12,9 @@ of the SI accepted for use with the SI).
 Any chapters, sections or tables referenced are from [1] unless
 otherwise specified.
 
-> module Numeric.Dimensional.NonSI where
+> module Numeric.Units.Dimensional.NonSI where
 
-> import Numeric.Dimensional.Prelude
+> import Numeric.Units.Dimensional.Prelude
 > import qualified Prelude
 
 
