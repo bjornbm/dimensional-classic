@@ -1,4 +1,4 @@
-> {-# OPTIONS_GHC -fglasgow-exts #-}  -- For types without constructors
+> {-# LANGUAGE EmptyDataDecls #-}
 
 > import Numeric.Units.Dimensional.Prelude
 > import Numeric.Units.Dimensional.Extensible

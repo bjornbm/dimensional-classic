@@ -47,6 +47,7 @@ Clients of the module are generally not required to use these
 extensions.
 
 > {-# LANGUAGE UndecidableInstances, ScopedTypeVariables #-}
+>   -- Does 'ScopedTypeVariables' imply 'EmptyDataDecls'?
 
 > module Numeric.Units.Dimensional 
 >       -- TODO discriminate exports, in particular Variants and Dims.
