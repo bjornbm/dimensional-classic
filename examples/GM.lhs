@@ -17,7 +17,7 @@ same epoch -- determine the value of 'mu' used to convert between the two.
 
 > module GM where
 
-> import Buckwalter.Dimensional.Prelude
+> import Numeric.Units.Dimensional.Prelude
 > import qualified Prelude
 
 }}}
