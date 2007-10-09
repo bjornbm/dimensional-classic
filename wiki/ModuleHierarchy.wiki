@@ -41,12 +41,12 @@ Defines the SI units (base and derived) and units approved for use with SI. This
 
 == Dimensional.Prelude ==
 
-Contains no definition -- only re-exports other modules for users' convenience. More often than not this will be the only module users need to import.
+Contains no definition -- only re-exports other modules for users' convenience. *More often than not this will be the only module users need to import.*
 
 The following modules will have a subset of their contents re-exported through 'Dimensional.Prelude':
 
  * Dimensional (a minimal subset will be re-exported)
- * Dimensional.Dimensionalities (will be re-exported in its entirety)
+ * Dimensional.Quantities(will be re-exported in its entirety)
  * Dimensional.SIUnits (will be re-exported in its entirety)
  * Prelude (will be re-exported in its entirety with the exception of definitions conflicting with those in 'Dimensional')
 
