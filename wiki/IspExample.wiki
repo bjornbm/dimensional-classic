@@ -6,8 +6,8 @@ recently. I've substituted fake numbers to protect the innocent.
 {{{
 
 > import qualified Prelude
-> import Buckwalter.Dimensional.Prelude
-> import Buckwalter.Dimensional.NonSI (poundMass, gee)
+> import Numeric.Units.Dimensional.Prelude
+> import Numeric.Units.Dimensional.NonSI (poundMass, gee)
 
 }}}
 When deorbiting (retiring) a geostationary spacecraft you normally want
