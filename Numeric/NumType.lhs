@@ -34,7 +34,13 @@ This module requires GHC 6.6 or later. We utilize multi-parameter
 type classes, phantom types, functional dependencies and undecidable
 instances (and possibly additional unidentified GHC extensions).
 
-> {-# LANGUAGE UndecidableInstances, EmptyDataDecls #-}
+> {-# LANGUAGE UndecidableInstances
+>            , ScopedTypeVariables
+>            , EmptyDataDecls
+>            , FunctionalDependencies
+>            , MultiParamTypeClasses
+>            , FlexibleInstances 
+> #-}
 
 > module Numeric.NumType 
 >   -- Basic classes (exported versions).

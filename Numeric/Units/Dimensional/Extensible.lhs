@@ -26,7 +26,13 @@ dimensions will be referred to as an "extended Dimensional".
 Similarly with 'Numeric.Dimensional' this module requires GHC
 6.6 or later.
 
-> {-# LANGUAGE UndecidableInstances, ScopedTypeVariables #-}
+> {-# LANGUAGE UndecidableInstances
+>            , ScopedTypeVariables
+>            , EmptyDataDecls
+>            , MultiParamTypeClasses
+>            , FunctionalDependencies
+>            , FlexibleInstances
+> #-}
 
 > module Numeric.Units.Dimensional.Extensible ( DExt, showDExt ) where
 

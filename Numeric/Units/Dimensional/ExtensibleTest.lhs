@@ -1,4 +1,4 @@
-> {-# LANGUAGE EmptyDataDecls #-}
+> {-# LANGUAGE EmptyDataDecls, FlexibleInstances #-}
 
 > import Numeric.Units.Dimensional.Prelude
 > import Numeric.Units.Dimensional.Extensible

@@ -43,7 +43,13 @@ Please correct and inform me if my assumptions are wrong!
 
 = Preliminaries =
 
-> {-# LANGUAGE UndecidableInstances, ScopedTypeVariables #-}
+> {-# LANGUAGE UndecidableInstances
+>            , ScopedTypeVariables 
+>            , EmptyDataDecls
+>            , MultiParamTypeClasses
+>            , FlexibleInstances
+>            , FlexibleContexts
+> #-}
 
 > module Numeric.Units.Dimensional.CGS where
 

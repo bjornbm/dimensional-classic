@@ -46,8 +46,15 @@ instances (and possibly additional unidentified GHC extensions).
 Clients of the module are generally not required to use these
 extensions.
 
-> {-# LANGUAGE UndecidableInstances, ScopedTypeVariables #-}
->   -- Does 'ScopedTypeVariables' imply 'EmptyDataDecls'?
+> {-# LANGUAGE UndecidableInstances
+>            , ScopedTypeVariables
+>            , EmptyDataDecls
+>            , MultiParamTypeClasses
+>            , FunctionalDependencies
+>            , FlexibleInstances
+>            , TypeSynonymInstances
+>            , FlexibleContexts
+> #-}
 
 > module Numeric.Units.Dimensional 
 >       -- TODO discriminate exports, in particular Variants and Dims.
