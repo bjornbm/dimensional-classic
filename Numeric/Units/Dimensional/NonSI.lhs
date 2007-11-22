@@ -48,8 +48,9 @@ Some US customary (that is, inch-pound) units.
 > inch, foot :: Fractional a => Unit DLength a
 > inch = prefix 2.54 (centi meter)
 > foot = prefix 12 inch     -- 0.3048 m
-> poundMass :: Fractional a => Unit DMass a
+> poundMass, ounce :: Fractional a => Unit DMass a
 > poundMass = prefix 0.45359237 (kilo gram)
+> ounce     = prefix 28.349523 gram
 
 In order to relate pounds mass to pounds force we define the
 questionable unit 'gee' (G) as the gravitational acceleration at
@@ -63,10 +64,12 @@ uncertainty which also transfers to 'poundForce'.
 
 Other (non inch-pound) units.
 
-> bar :: (Fractional a) => Unit DPressure a
-> bar = prefix 1.0e5 pascal
 > revolution :: (Floating a) => Unit DOne a
 > revolution = prefix 360 degree
+> bar :: (Fractional a) => Unit DPressure a
+> bar = prefix 1.0e5 pascal
+> teaspoon :: (Fractional a) => Unit DVolume a
+> teaspoon = prefix 5 (milli liter)
 
 
 = References =
