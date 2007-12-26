@@ -1,5 +1,5 @@
 #summary An example of error messages and a debugging strategy.
-#labels LiterateHaskell,Example
+#labels Example,LiterateHaskell
 
 This library Dimensional (http://dimensional.googlecode.com) defines what someone referred to as a EDSL for working with physical units. The library leverages the Haskell type checker to provide static checking of physical dimensions. Without  doing this I don't know how I could make such checking static.
 
