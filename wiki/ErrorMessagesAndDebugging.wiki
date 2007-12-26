@@ -1,0 +1,81 @@
+#labels LiterateHaskell,Example
+This library Dimensional (http://dimensional.googlecode.com) defines what someone referred to as a EDSL for working with physical units. The library leverages the Haskell type checker to provide static checking of physical dimensions. Without  doing this I don't know how I could make such checking static.
+
+The downside of this is that while you will be informed at compile time if you physical calculations are incorrect the error message itself is rarely useful. Here is an example with lines numbered:
+{{{
+  1 import Numeric.Units.Dimensional.Prelude
+  2 import qualified Prelude
+  3
+  4 -- The angular velocity of Earth's rotation (Soop p. 7).
+  5 phi = 360.985647 *~ (degree / day)
+  6
+  7 -- The gravitational parameter of Earth.
+  8 mu = 3.986004400008003e14 *~ (meter ^ pos3 / second ^ pos2)
+  9
+ 10 -- The ideal geostationary radius and velocity.
+ 11 r_GEO = cbrt (mu / phi ^ pos2)
+ 12 v_GEO = phi * r_GEO
+ 13
+ 14 -- Something obviously wrong.
+ 15 dont_try_this_at_home = v_GEO + mu
+}}}
+Obviously we shouldn't be adding a velocity to a gravitational parameter on line 15 and the compiler will catch this. However, this is the error message from GHCi (6.6.1):
+{{{
+DSLTest.hs:1:0:
+    Couldn't match expected type `Numeric.NumType.Neg n'
+           against inferred type `Numeric.NumType.Zero'
+    When using functional dependencies to combine
+      Numeric.NumType.Sub a Numeric.NumType.Zero a,
+        arising from the instance declaration at Defined in Numeric.NumType
+      Numeric.NumType.Sub Numeric.NumType.Zero
+                          Numeric.NumType.Zero
+                          (Numeric.NumType.Neg n),
+        arising from use of `/' at DSLTest.hs:11:14-28
+}}}
+I think you will agree that this isn't very helpful in pin-pointing the problem. The compiler is pointing at the definition of `r_GEO` which is twice removed from the actual offender. Stuff like this can make EDSLs difficult to debug.
+
+In this particular example adding type signatures to all definitions will allow the compiler to pin-point the error. In literate haskell:
+{{{
+
+> import Numeric.Units.Dimensional.Prelude
+> import Numeric.NumType (Zero, Pos3, Neg2)
+> import qualified Prelude
+
+The angular velocity of Earth's rotation (Soop p. 7).
+
+> phi :: AngularVelocity Double
+> phi = 360.985647 *~ (degree / day)
+
+The gravitational parameter of Earth.
+
+> mu :: Quantity (Dim Pos3 Zero Neg2 Zero Zero Zero Zero) Double
+> mu = 3.986004400008003e14 *~ (meter ^ pos3 / second ^ pos2)
+
+The ideal geostationary radius and velocity.
+
+> r_GEO :: Length Double
+> r_GEO = cbrt (mu / phi ^ pos2)
+> v_GEO :: Velocity Double
+> v_GEO = phi * r_GEO
+
+Something obviously wrong.
+
+> dont_try_this_at_home :: Velocity Double
+> dont_try_this_at_home = v_GEO + mu
+
+}}}
+Note that since we have no convenient type synonym (as of version 0.7) for the dimension of the gravitational parameter we must fall back to the "raw" type definition based on NumTypes (the good news is that if we get the type signature wrong the compiler will tell us). This can be tedious if you have many definitions of uncommon dimensionalities.
+
+The error message from GHCi after we have added the type signatures:
+{{{
+DSLTest.lhs:25:33:
+    Couldn't match expected type `Zero'
+           against inferred type `Numeric.NumType.Pos2'
+      Expected type: Quantity DVelocity Double
+      Inferred type: Quantity (Dim Pos3 Zero Neg2 Zero Zero Zero Zero)
+                              Double
+    In the second argument of `(+)', namely `mu'
+    In the expression: v_GEO + mu
+}}}
+
+As can be seen GCHi was able to pin-point the error to the offending line (and indeed the offending operation). However, the error message remains cryptic.
