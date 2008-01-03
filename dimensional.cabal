@@ -1,8 +1,8 @@
 Name:                dimensional
-Version:             0.7.1
+Version:             0.7.2
 License:             BSD3
 License-File:        LICENSE
-Copyright:           Bjorn Buckwalter 2006-2007
+Copyright:           Bjorn Buckwalter 2006-2008
 Author:              Bjorn Buckwalter 
 Maintainer:          bjorn.buckwalter@gmail.com
 Stability:           mostly stable
@@ -26,7 +26,7 @@ Exposed-Modules:     Numeric.NumType,
                      Numeric.Units.Dimensional.Quantities,
                      Numeric.Units.Dimensional.SIUnits,
                      Numeric.Units.Dimensional.NonSI,
-                     Numeric.Units.Dimensional.Extensible
-                     --Numeric.Units.Dimensional.CGS
+                     Numeric.Units.Dimensional.Extensible,
+                     Numeric.Units.Dimensional.CGS
 ghc-options:         -O
  
