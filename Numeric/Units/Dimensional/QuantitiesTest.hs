@@ -77,6 +77,10 @@ y20 = 1 *~ (coulomb / kilo gram)
 y21 :: AbsorbedDoseRate Double
 y21 = 1 *~ (gray / second)
 
+-- Other quantitites.
+mu :: GravitationalParameter Double
+mu = 398600.4418 *~ (kilo meter ^ pos3 / second ^ pos2)
+
 -- Dummy main function.
 main = Prelude.putStrLn "If I compiled I'm OK!"
 
