@@ -53,7 +53,8 @@ Please correct and inform me if my assumptions are wrong!
 
 > module Numeric.Units.Dimensional.CGS where
 
-> import Prelude ( undefined, Num, Fractional, Floating, Show, recip, Double )
+> import Prelude
+>   ( undefined, Num, Fractional, Floating, Show, recip, Double, unwords, (.) )
 > import qualified Prelude
 > import Numeric.Units.Dimensional hiding ( DLength, DMass, DTime, DElectricCurrent )
 > import Numeric.Units.Dimensional.Quantities as SIQ
@@ -245,7 +246,7 @@ a better job here.
 >     , NumType mh
 >     , NumType t
 >     ) => Show (CGSDim lh mh t) where
->     show _ = (Prelude.unwords Prelude.. catMaybes)
+>     show _ = (unwords . catMaybes)
 >              [ dimUnit "sqrt(cm)" (undefined :: lh)
 >              , dimUnit "sqrt(g)"  (undefined :: mh)
 >              , dimUnit "s"        (undefined :: t)

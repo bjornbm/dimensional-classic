@@ -4,7 +4,7 @@
 > import Numeric.Units.Dimensional.Extensible
 > import Numeric.Units.Dimensional ( Dimensional (Dimensional), dimUnit )
 > import Numeric.NumType ( NumType, Zero, Pos1, Neg1 )
-> import Data.Maybe ( Maybe (Just), catMaybes )
+> import Test.HUnit
 > import qualified Prelude
 
 
@@ -70,7 +70,20 @@ Finally the base units.
 > foo3 = a * m / a + m
 
 
-Dummy main function.
+Finally a HUnit test case.
 
-> main = Prelude.putStrLn "If I compiled I'm OK!"
+> testShow = TestLabel "Test 'Show' instance" $ TestList
+>   [ TestCase $ show (1 *~ apple) @?= "1 apple"
+>   , TestCase $ show (2 *~ orange) @?= "2 orange"
+>   , TestCase $ show (2.0 *~ (apple / second)) @?= "2.0 apple s^-1"
+>   , TestCase $ show (2.0 *~ (meter ^ pos2 / peach ^ pos2)) @?= "2.0 peaches^-2 m^2"
+>   , TestCase $ show (2.0 *~ (apple ^ pos2 / peach ^ pos2)) @?= "2.0 apple^2 peaches^-2"
+>   , TestCase $ show (undefined :: DApples) @?= "apple"
+>   ]
+
+Main function.
+
+> main = do 
+>   putStrLn "If I compiled I'm mostly OK!"
+>   runTestTT $ TestList [testShow]
 

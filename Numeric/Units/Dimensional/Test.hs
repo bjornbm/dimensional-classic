@@ -1,8 +1,6 @@
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
-import Numeric.Units.Dimensional
-import Numeric.NumType (zero, pos1, pos2, neg1, neg2)
-import Prelude (($))
+import Numeric.Units.Dimensional.Prelude
 import qualified Prelude
 import Test.HUnit
 
@@ -16,10 +14,19 @@ testDimensionless = TestLabel "Dimensionless test" $ TestList
     [ TestCase $ (3 Prelude.** 2) *~ one @=? (3 *~ one) ** (2 *~ one)
     ]
 
+testShow = TestLabel "Test 'Show' instance" $ TestList
+    [ TestCase $ show (1 *~ one) @?= "1"
+    , TestCase $ show (2 *~ meter) @?= "2 m"
+    , TestCase $ show (2.0 *~ (meter / second)) @?= "2.0 m s^-1"
+    , TestCase $ show (2.0 *~ (meter ^ pos2 / second ^ pos2)) @?= "2.0 m^2 s^-2"
+    , TestCase $ show (undefined :: DVelocity) @?= "m s^-1"
+    ]
+
 -- Collect the test cases.
 tests = TestList
     [ testPower
     , testDimensionless
+    , testShow
     ]
 
 main = runTestTT tests

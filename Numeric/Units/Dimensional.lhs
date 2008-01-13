@@ -63,7 +63,7 @@ extensions.
 > import Prelude 
 >   ( Show, Eq, Ord, Num, Fractional, Floating, RealFloat, Functor, fmap
 >   , (.), flip, show, (++), undefined, otherwise, (==), String, unwords
->   , map, foldr
+>   , map, foldr, null
 >   )
 > import qualified Prelude 
 > import Data.List (genericLength)
@@ -451,7 +451,8 @@ in a way that distinguishes them from quantities, or whether that is
 even a requirement.
 
 > instance forall d a. (Show d, Show a) => Show (Quantity d a) where
->   show (Dimensional x) = show x ++ " " ++ show (undefined :: d)
+>   show (Dimensional x) = show x ++ if (null unit) then "" else " " ++ unit
+>       where unit = show (undefined :: d)
 
 The above implementation of 'show' relies on the dimension 'd' being an
 instance of 'Show'. The "normalized" unit of the quantity can be inferred
