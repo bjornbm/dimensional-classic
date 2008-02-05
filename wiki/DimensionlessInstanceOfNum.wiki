@@ -1,4 +1,4 @@
-#summary Discussion of making 'Dimensionless' and instance of 'Num' et al.
+#summary Discussion of making 'Dimensionless' and instance of 'Num' et al, and why it wasn't a great idea.
 #labels Phase-Design,Incomplete
 
 
