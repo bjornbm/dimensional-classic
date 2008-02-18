@@ -28,5 +28,6 @@ Exposed-Modules:     Numeric.NumType,
                      Numeric.Units.Dimensional.NonSI,
                      Numeric.Units.Dimensional.Extensible,
                      Numeric.Units.Dimensional.CGS
+Extra-source-files:  README
 ghc-options:         -O
  
