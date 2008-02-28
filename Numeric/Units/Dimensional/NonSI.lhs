@@ -64,6 +64,10 @@ uncertainty which also transfers to 'poundForce'.
 
 Other (non inch-pound) units.
 
+> yard, mile, nauticalMile :: (Fractional a) => Unit DLength a
+> yard = prefix 3 foot
+> mile = prefix 1760 yard
+> nauticalMile = prefix 1852 meter
 > revolution :: (Floating a) => Unit DOne a
 > revolution = prefix 360 degree
 > bar :: (Fractional a) => Unit DPressure a
