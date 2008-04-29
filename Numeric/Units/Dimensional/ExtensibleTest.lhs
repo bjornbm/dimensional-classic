@@ -1,5 +1,7 @@
 > {-# LANGUAGE EmptyDataDecls, FlexibleInstances #-}
 
+> module Numeric.Units.Dimensional.ExtensibleTest where
+
 > import Numeric.Units.Dimensional.Prelude
 > import Numeric.Units.Dimensional.Extensible
 > import Numeric.Units.Dimensional ( Dimensional (Dimensional), dimUnit )

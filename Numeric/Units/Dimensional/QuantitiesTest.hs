@@ -1,3 +1,5 @@
+module Numeric.Units.Dimensional.QuantitiesTest where
+
 import Numeric.Units.Dimensional.Prelude
 import qualified Prelude
 
