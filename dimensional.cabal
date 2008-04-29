@@ -19,6 +19,7 @@ Description:
     Requires GHC 6.6.1 or later.
 Category:            Math
 Build-Depends:       base, time
+                     -- , fad
 Exposed-Modules:     Numeric.NumType, 
                      Numeric.Units.Dimensional, 
                      Numeric.Units.Dimensional.Prelude,
@@ -27,9 +28,12 @@ Exposed-Modules:     Numeric.NumType,
                      Numeric.Units.Dimensional.NonSI,
                      Numeric.Units.Dimensional.Extensible,
                      Numeric.Units.Dimensional.CGS
+                     -- , Numeric.Units.Dimensional.ForwardAD
 Extra-source-files:  README,
+                     -- Fad.hs,
                      Numeric.Units.Dimensional.Test,
                      Numeric.Units.Dimensional.QuantitiesTest,
                      Numeric.Units.Dimensional.ExtensibleTest
+                     -- , Numeric.Units.Dimensional.ForwardADTest
 ghc-options:         -O
  
