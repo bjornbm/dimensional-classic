@@ -34,7 +34,9 @@ Extra-source-files:  README,
                      Test.hs
                      Numeric/Units/Dimensional/Test.hs,
                      Numeric/Units/Dimensional/QuantitiesTest.hs,
-                     Numeric/Units/Dimensional/ExtensibleTest.lhs
+                     Numeric/Units/Dimensional/ExtensibleTest.lhs,
                      -- , Numeric/Units/Dimensional/ForwardADTest.lhs
+                     examples/README,
+                     examples/GM.lhs
 ghc-options:         -O
  
