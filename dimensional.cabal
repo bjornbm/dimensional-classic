@@ -31,9 +31,10 @@ Exposed-Modules:     Numeric.NumType,
                      -- , Numeric.Units.Dimensional.ForwardAD
 Extra-source-files:  README,
                      -- Fad.hs,
-                     Numeric.Units.Dimensional.Test,
-                     Numeric.Units.Dimensional.QuantitiesTest,
-                     Numeric.Units.Dimensional.ExtensibleTest
-                     -- , Numeric.Units.Dimensional.ForwardADTest
+                     Test.hs
+                     Numeric/Units/Dimensional/Test.hs,
+                     Numeric/Units/Dimensional/QuantitiesTest.hs,
+                     Numeric/Units/Dimensional/ExtensibleTest.lhs
+                     -- , Numeric/Units/Dimensional/ForwardADTest.lhs
 ghc-options:         -O
  
