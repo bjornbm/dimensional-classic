@@ -1,0 +1,34 @@
+\begin{hcarentry}[updated]{dimensional}
+\label{dimensional}
+\report{Bj\"orn Buckwalter}
+\status{active, mostly stable}
+\entry{updated}% done 2008-05-10
+\makeheader
+
+Dimensional is a library providing data types for performing
+arithmetic with physical quantities and units. Information about
+the physical dimensions of the quantities/units is embedded in their
+types and the validity of operations is verified by the type checker
+at compile time. The boxing and unboxing of numerical values as
+quantities is done by multiplication and division with units. The
+library is designed to, as far as is practical, enforce/encourage
+best practices of unit usage.
+
+The core of dimensional is stable with additional units being added
+on an as-needed basis. In addition to the \textsc{si} system of
+units dimensional has experimental support for user-defined dimensions
+and a proof-of-concept implementation of the \textsc{cgs} system
+of units. I am also experimenting with forward automatic differentiation
+and rudimentary linear algebra.
+
+The current release is compatible with \textsc{ghc} 6.6.x and
+above and can be downloaded from hackage or the project web site.
+The primary documentation is the literate haskell source code but
+the wiki on the project web site has a few usage examples to help
+with getting started.
+
+The darcs repo has moved to \texttt{code.haskell.org/dimensional}.
+
+\FurtherReading
+ \url{http://dimensional.googlecode.com}
+\end{hcarentry}
