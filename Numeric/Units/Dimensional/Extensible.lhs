@@ -34,6 +34,18 @@ Similarly with 'Numeric.Dimensional' this module requires GHC
 >            , FlexibleInstances
 > #-}
 
+> {- |
+>    Copyright  : Copyright (C) 2006-2008 Bjorn Buckwalter
+>    License    : BSD3
+>
+>    Maintainer : bjorn.buckwalter@gmail.com
+>    Stability  : Experimental
+>    Portability: GHC only?
+> 
+> Please refer to the literate Haskell code for documentation of both API
+> and implementation.
+> -}
+
 > module Numeric.Units.Dimensional.Extensible ( DExt, showDExt ) where
 
 > import Numeric.Units.Dimensional ( Dim, Mul, Div, Pow, Root, dimUnit )

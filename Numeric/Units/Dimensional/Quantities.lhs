@@ -15,6 +15,18 @@ exponents. Then a type synonym for the corresponding quantity type
 is defined. If there are several quantity types with the same
 dimensionality type synonyms are provided for each quantity type.
 
+> {- |
+>    Copyright  : Copyright (C) 2006-2008 Bjorn Buckwalter
+>    License    : BSD3
+>
+>    Maintainer : bjorn.buckwalter@gmail.com
+>    Stability  : Stable
+>    Portability: GHC only?
+> 
+> Please refer to the literate Haskell code for documentation of both API
+> and implementation.
+> -}
+
 > module Numeric.Units.Dimensional.Quantities where
 
 > import Numeric.Units.Dimensional 

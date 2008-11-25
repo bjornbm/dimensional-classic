@@ -10,6 +10,18 @@ derived units. It also defines the units outside of the SI that are
 accepted for use with the SI. Any chapters, sections or tables
 referenced are from [1] unless otherwise specified.
 
+> {- |
+>    Copyright  : Copyright (C) 2006-2008 Bjorn Buckwalter
+>    License    : BSD3
+>
+>    Maintainer : bjorn.buckwalter@gmail.com
+>    Stability  : Stable
+>    Portability: GHC only?
+> 
+> Please refer to the literate Haskell code for documentation of both API
+> and implementation.
+> -}
+
 > module Numeric.Units.Dimensional.SIUnits where
 
 > import Numeric.Units.Dimensional
