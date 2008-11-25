@@ -86,9 +86,9 @@ We provide a helper function to ease defining 'Show' instances.
 > showDExt :: forall a n d. (NumType n, Show d) => String -> DExt a n d -> String
 > showDExt u _ = showHelp (dimUnit u (undefined :: n)) (show (undefined :: d))
 >        where
->            showHelp Nothing  s  = s
->            showHelp (Just u) "" = u
->            showHelp (Just u) s  = u ++ " " ++ s
+>            showHelp Nothing   s  = s
+>            showHelp (Just u') "" = u'
+>            showHelp (Just u') s  = u' ++ " " ++ s
 
 Using this helper function defining 'Show' instances for the dimensions
 with extent in apples and oranges is simple.

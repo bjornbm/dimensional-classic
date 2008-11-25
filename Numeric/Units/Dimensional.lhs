@@ -63,7 +63,7 @@ extensions.
 > import Prelude 
 >   ( Show, Eq, Ord, Num, Fractional, Floating, RealFloat, Functor, fmap
 >   , (.), flip, show, (++), undefined, otherwise, (==), String, unwords
->   , map, foldr, null
+>   , map, foldr, null, Integer
 >   )
 > import qualified Prelude 
 > import Data.List (genericLength)
@@ -71,7 +71,6 @@ extensions.
 > import Numeric.NumType 
 >   ( NumType, NonZero, PosType, Zero, toNum, Sum
 >   , Pos1, Pos2, pos2, Pos3, pos3
->   , neg3, zero -- Only for playing around.
 >   )
 > import qualified Numeric.NumType as N (Mul, Div)
 
@@ -296,7 +295,7 @@ Multiplication, division and powers apply to both units and quantities.
 
 > (^) :: (Fractional a, Pow d n d')
 >     => Dimensional v d a -> n -> Dimensional v d' a
-> Dimensional x ^ n = Dimensional (x Prelude.^^ toNum n)
+> Dimensional x ^ n = Dimensional (x Prelude.^^ (toNum n :: Integer))
 
 In the unlikely case someone needs to use this library with
 non-fractional numbers we provide the alternative power operator
@@ -304,7 +303,7 @@ non-fractional numbers we provide the alternative power operator
 
 > (^+) :: (Num a, PosType n, Pow d n d')
 >      => Dimensional v d a -> n -> Dimensional v d' a
-> Dimensional x ^+ n = Dimensional (x Prelude.^ toNum n)
+> Dimensional x ^+ n = Dimensional (x Prelude.^ (toNum n :: Integer))
 
 A special case is that dimensionless quantities are not restricted
 to integer exponents. This is accommodated by the '**' operator
@@ -487,7 +486,7 @@ users of the 'Extensible' module.
 >   | x == 0    = Nothing
 >   | x == 1    = Just u
 >   | otherwise = Just (u ++ "^" ++ show x)
->   where x = toNum n
+>   where x = toNum n :: Integer
 
 
 = The 'prefix' function =

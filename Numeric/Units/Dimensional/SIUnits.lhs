@@ -14,10 +14,7 @@ referenced are from [1] unless otherwise specified.
 
 > import Numeric.Units.Dimensional
 > import Numeric.Units.Dimensional.Quantities
-> import Numeric.NumType 
->   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
->   , neg3, neg2, neg1, pos1, pos2, pos3
->   )
+> import Numeric.NumType ( neg1, neg2, pos2, pos3 )
 > import Data.Time.Clock (DiffTime)
 > import Prelude ( (.), Num, Real (toRational), Fractional (fromRational), Floating, recip )
 > import qualified Prelude

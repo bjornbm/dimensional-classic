@@ -60,8 +60,8 @@ Please correct and inform me if my assumptions are wrong!
 > import Numeric.Units.Dimensional.Quantities as SIQ
 > import qualified Numeric.Units.Dimensional.SIUnits as SI
 > import qualified Numeric.NumType as N
-> import Numeric.NumType ( Neg2, Neg1, Zero, Pos, Pos1, Pos2, Pos3, NumType )
-> import Numeric.NumType ( neg2, neg1, zero, pos1, pos2, pos3 )
+> import Numeric.NumType ( Neg2, Neg1, Zero, Pos1, Pos2, Pos3, NumType )
+> import Numeric.NumType ( neg2, pos2, pos3 )
 > import Data.Maybe (catMaybes)
  
 
