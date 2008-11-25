@@ -18,6 +18,7 @@ Description:
     far as is practical, enforce/encourage best practices of unit usage.
     Requires GHC 6.6.1 or later.
 Category:            Math
+Build-Type:          Simple
 Build-Depends:       base, time
                      -- , fad
 Exposed-Modules:     Numeric.NumType, 
@@ -38,5 +39,4 @@ Extra-source-files:  README,
                      -- , Numeric/Units/Dimensional/ForwardADTest.lhs
                      examples/README,
                      examples/GM.lhs
-ghc-options:         -O
  
