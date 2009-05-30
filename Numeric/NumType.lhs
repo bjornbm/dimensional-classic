@@ -64,9 +64,9 @@ instances (and possibly additional unidentified GHC extensions).
 >   -- Data types.
 >   , Zero, Pos, Neg
 >   -- Type synonyms for convenience.
-> 	, Pos1, Pos2, Pos3, Pos4, Pos5, Neg1, Neg2, Neg3, Neg4, Neg5
+>   , Pos1, Pos2, Pos3, Pos4, Pos5, Neg1, Neg2, Neg3, Neg4, Neg5
 >   -- Values for convenience.
-> 	, zero, pos1, pos2, pos3, pos4, pos5, neg1, neg2, neg3, neg4, neg5
+>   , zero, pos1, pos2, pos3, pos4, pos5, neg1, neg2, neg3, neg4, neg5
 >   ) where
 
 > import Prelude hiding ((*), (/), (+), (-), negate)
