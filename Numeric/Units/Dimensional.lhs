@@ -63,24 +63,24 @@ extensions.
 >    Maintainer : bjorn.buckwalter@gmail.com
 >    Stability  : Stable
 >    Portability: GHC only?
-> 
+>
 > Please refer to the literate Haskell code for documentation of both API
 > and implementation.
 > -}
 
-> module Numeric.Units.Dimensional 
+> module Numeric.Units.Dimensional
 >       -- TODO discriminate exports, in particular Variants and Dims.
 >   where
 
-> import Prelude 
+> import Prelude
 >   ( Show, Eq, Ord, Num, Fractional, Floating, RealFloat, Functor, fmap
 >   , (.), flip, show, (++), undefined, otherwise, (==), String, unwords
 >   , map, foldr, null, Integer
 >   )
-> import qualified Prelude 
+> import qualified Prelude
 > import Data.List (genericLength)
 > import Data.Maybe (Maybe (Just, Nothing), catMaybes)
-> import Numeric.NumType 
+> import Numeric.NumType
 >   ( NumType, NonZero, PosType, Zero, toNum, Sum
 >   , Pos1, Pos2, pos2, Pos3, pos3
 >   )
@@ -151,7 +151,7 @@ of obtaining the numerical value of a quantity.
 > Dimensional x /~ Dimensional y = x Prelude./ y
 
 We give '*~' and '/~' the same fixity as '*' and '/' defined below.
-Note that this necessitates the use of parenthesis when composing 
+Note that this necessitates the use of parenthesis when composing
 units using '*' and '/', e.g. "1 *~ (meter / second)".
 
 > infixl 7  *~, /~
@@ -167,7 +167,7 @@ dimensions that make up the given dimension. The powers are represented
 using NumTypes. For convenience we collect all seven base dimensions
 in a data type 'Dim'.
 
-> data Dim l m t i th n j 
+> data Dim l m t i th n j
 
 where the respective dimensions are represented by type variables
 using the following convention.
@@ -260,7 +260,7 @@ We limit ourselves to integer powers of Dimensionals as fractional
 powers make little physical sense. Since the value of the exponent
 affects the type of the result the value of the exponent must be
 visible to the type system, therefore we will generally represent
-the exponent with a 'NumType'. 
+the exponent with a 'NumType'.
 
 Powers of dimensions corresponds to multiplication of the base
 dimensions' exponents by the exponent.
@@ -272,7 +272,7 @@ dimensions' exponents by the exponent.
 >           N.Mul i  x i',
 >           N.Mul th x th',
 >           N.Mul n  x n',
->           N.Mul j  x j') => Pow (Dim l  m  t  i  th  n  j) x 
+>           N.Mul j  x j') => Pow (Dim l  m  t  i  th  n  j) x
 >                                 (Dim l' m' t' i' th' n' j')
 
 Roots of dimensions corresponds to division of the base dimensions'
@@ -285,7 +285,7 @@ exponents by order(?) of the root.
 >           N.Div i  x i',
 >           N.Div th x th',
 >           N.Div n  x n',
->           N.Div j  x j') => Root (Dim l  m  t  i  th  n  j) x 
+>           N.Div j  x j') => Root (Dim l  m  t  i  th  n  j) x
 >                                  (Dim l' m' t' i' th' n' j')
 
 
@@ -297,11 +297,11 @@ forward. In particular the type signatures are much simplified.
 
 Multiplication, division and powers apply to both units and quantities.
 
-> (*) :: (Num a, Mul d d' d'') 
+> (*) :: (Num a, Mul d d' d'')
 >     => Dimensional v d a -> Dimensional v d' a -> Dimensional v d'' a
 > Dimensional x * Dimensional y = Dimensional (x Prelude.* y)
 
-> (/) :: (Fractional a, Div d d' d'') 
+> (/) :: (Fractional a, Div d d' d'')
 >     => Dimensional v d a -> Dimensional v d' a -> Dimensional v d'' a
 > Dimensional x / Dimensional y = Dimensional (x Prelude./ y)
 
@@ -398,9 +398,9 @@ We provide this freedom by making 'Dimensionless' an instance of
 >   fmap f (Dimensional x) = Dimensional (f x)
 
 We continue by defining elementary functions on 'Dimensionless'
-that may be obviously useful. 
+that may be obviously useful.
 
-> exp, log, sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh 
+> exp, log, sin, cos, tan, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh
 >   :: (Floating a) => Dimensionless a -> Dimensionless a
 > exp   = fmap Prelude.exp
 > log   = fmap Prelude.log
@@ -417,14 +417,14 @@ that may be obviously useful.
 > acosh = fmap Prelude.acosh
 > atanh = fmap Prelude.atanh
 
-> (**) :: (Floating a) 
+> (**) :: (Floating a)
 >      => Dimensionless a -> Dimensionless a -> Dimensionless a
 > Dimensional x ** Dimensional y = Dimensional (x Prelude.** y)
 
 For 'atan2' the operands need not be dimensionless but they must be
 of the same type. The result will of course always be dimensionless.
 
-> atan2 :: (RealFloat a) 
+> atan2 :: (RealFloat a)
 >       => Quantity d a -> Quantity d a -> Dimensionless a
 > atan2 (Dimensional y) (Dimensional x) = Dimensional (Prelude.atan2 y x)
 
@@ -494,7 +494,7 @@ top-level rather than in the where-clause is that it may be useful for
 users of the 'Extensible' module.
 
 > dimUnit :: (NumType n) => String -> n -> Maybe String
-> dimUnit u n 
+> dimUnit u n
 >   | x == 0    = Nothing
 >   | x == 1    = Just u
 >   | otherwise = Just (u ++ "^" ++ show x)
@@ -525,7 +525,7 @@ obtained by division by a unit.
 
 ] numval :: Prelude.Double
 ] numval = v /~ (meter / second)
- 
+
 The notion of a quantity as the product of a numerical value and a
 unit is supported by 7.1 "Value and numerical value of a quantity" of
 [1]. While the above syntax is fairly natural it is unfortunate that
@@ -539,7 +539,7 @@ function for calculating the escape velocity of a celestial body
 
 ] escapeVelocity :: (Floating a) => Mass a -> Length a -> Velocity a
 ] escapeVelocity m r = sqrt (two * g * m / r)
-]   where 
+]   where
 ]       two = 2 *~ one
 ]       g = 6.6720e-11 *~ (newton * meter ^ pos2 / kilo gram ^ pos2)
 
@@ -592,7 +592,7 @@ location of errors.
 
 While there is an insane amount of units in use around the world
 it is reasonable to provide at least all SI units. Units outside
-of SI will most likely be added on an as-needed basis. 
+of SI will most likely be added on an as-needed basis.
 
 There are also plenty of elementary functions to add. The 'Floating'
 class can be used as reference.
@@ -601,12 +601,12 @@ Another useful addition would be decent 'Show' and 'Read' instances.
 The 'show' implementation could output the numerical value and the
 unit expressed in (base?) SI units, along the lines of:
 
-] instance (Fractional a, Show a) => Show (Length a) 
+] instance (Fractional a, Show a) => Show (Length a)
 ]   where show x = show (x /~ meter) ++ " m"
 
 Additional functions could be provided for "showing" with any unit
 and prefix.  The 'read' implementation should be able to read values
-with any unit and prefix. It is not clear to the author how to best 
+with any unit and prefix. It is not clear to the author how to best
 implement these.
 
 Additional physics models could be implemented. See [3] for ideas.

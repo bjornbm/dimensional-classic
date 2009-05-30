@@ -30,13 +30,13 @@ type tags and show instances for each.
 Define show instances.
 
 > instance (NumType n, Show d) => Show (DExt TApples n d) where
->   show = showDExt "apple" 
+>   show = showDExt "apple"
 
 > instance (NumType n, Show d) => Show (DExt TOranges n d) where
->   show = showDExt "orange" 
+>   show = showDExt "orange"
 
 > instance (NumType n, Show d) => Show (DExt TPeaches n d) where
->   show = showDExt "peaches" 
+>   show = showDExt "peaches"
 
 Finally the base units.
 
@@ -85,7 +85,7 @@ Finally a HUnit test case.
 
 Main function.
 
-> main = do 
+> main = do
 >   putStrLn "If I compiled I'm mostly OK!"
 >   runTestTT $ TestList [testShow]
 

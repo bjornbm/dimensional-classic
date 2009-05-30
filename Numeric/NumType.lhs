@@ -21,7 +21,7 @@ stack. If the NumTypes grow too large (which can happen quickly
 with multiplication) an error message similar to the following will
 be emitted:
 
-    Context reduction stack overflow; size = 20 
+    Context reduction stack overflow; size = 20
     Use -fcontext-stack=N to increase stack size to N
 
 This situation could concievably be mitigated significantly by using
@@ -39,7 +39,7 @@ instances (and possibly additional unidentified GHC extensions).
 >            , EmptyDataDecls
 >            , FunctionalDependencies
 >            , MultiParamTypeClasses
->            , FlexibleInstances 
+>            , FlexibleInstances
 > #-}
 
 > {- |
@@ -49,12 +49,12 @@ instances (and possibly additional unidentified GHC extensions).
 >    Maintainer : bjorn.buckwalter@gmail.com
 >    Stability  : Stable
 >    Portability: GHC only?
-> 
+>
 > Please refer to the literate Haskell code for documentation of both API
 > and implementation.
 > -}
 
-> module Numeric.NumType 
+> module Numeric.NumType
 >   -- Basic classes (exported versions).
 >   ( NumType, PosType, NegType, NonZero
 >   -- Arithmetic classes.
@@ -147,24 +147,24 @@ Next we define the "successor" type, here called 'Pos' (corresponding
 to HList's 'HSucc').
 
 > data Pos n
-> instance (PosTypeI n) => NumTypeI (Pos n) where 
->   toNum _ = toNum (undefined :: n) Prelude.+ 1 
+> instance (PosTypeI n) => NumTypeI (Pos n) where
+>   toNum _ = toNum (undefined :: n) Prelude.+ 1
 > instance (PosTypeI n) => PosTypeI (Pos n)
 > instance (PosTypeI n) => NonZeroI (Pos n)
 
 We could be more restrictive using "data (PosTypeI n) => Pos n" but
 this constraint will not be checked (by GHC) anyway when 'Pos' is
-used solely at the type level. 
+used solely at the type level.
 
 Finally we define the "predecessor" type used to represent negative
 numbers.
 
 > data Neg n
 > instance (NegTypeI n) => NumTypeI (Neg n) where
->   toNum _ = toNum (undefined :: n) Prelude.- 1 
+>   toNum _ = toNum (undefined :: n) Prelude.- 1
 > instance (NegTypeI n) => NegTypeI (Neg n)
 > instance (NegTypeI n) => NonZeroI (Neg n)
- 
+
 
 = Show instances =
 
@@ -174,7 +174,7 @@ For convenience we create show instances for the defined NumTypes.
 > instance (PosTypeI n) => Show (Pos n) where show x = "NumType " ++ show (toNum x :: Integer)
 > instance (NegTypeI n) => Show (Neg n) where show x = "NumType " ++ show (toNum x :: Integer)
 
- 
+
 = Negation, incrementing and decrementing =
 
 We start off with some basic building blocks. Negation is a simple
@@ -185,7 +185,7 @@ leaving 'Zero' unchanged.
 
 > instance Negate Zero Zero
 > instance (PosTypeI a, NegTypeI b, Negate a b) => Negate (Pos a) (Neg b)
-> instance (NegTypeI a, PosTypeI b, Negate a b) => Negate (Neg a) (Pos b) 
+> instance (NegTypeI a, PosTypeI b, Negate a b) => Negate (Neg a) (Pos b)
 
 We define a type class for incrementing and decrementing NumTypes.
 The 'incr' and 'decr' functions correspond roughly to HList's 'hSucc'
@@ -283,7 +283,7 @@ positive. We recursively subtract the denominator from nominator
 while incrementing the result, until we reach the zero case.
 
 > instance ( Sum n' (Pos n'') (Pos n)
->          , Div n'' (Pos n') n''', PosTypeI n''') 
+>          , Div n'' (Pos n') n''', PosTypeI n''')
 >       => Div (Pos n) (Pos n') (Pos n''')
 
 Now we tackle cases with negative numbers involved. We trivially
@@ -309,7 +309,7 @@ appropriate.
 Class for multiplication. Limited by the type checker stack. If the
 multiplication is too large this error message will be emitted:
 
-    Context reduction stack overflow; size = 20 
+    Context reduction stack overflow; size = 20
     Use -fcontext-stack=N to increase stack size to N
 
 > class (NumTypeI a, NumTypeI b, NumTypeI c) => Mul a b c | a b -> c
@@ -345,10 +345,10 @@ preceeding sections free from distraction.
 > (-) :: (Sum a b c) => c -> b -> a
 > _ - _ = undefined
 
-> (/) :: (Div a b c) => a -> b -> c 
+> (/) :: (Div a b c) => a -> b -> c
 > _ / _ = undefined
 
-> (*) :: (Mul a b c) => a -> b -> c 
+> (*) :: (Mul a b c) => a -> b -> c
 > _ * _ = undefined
 
 

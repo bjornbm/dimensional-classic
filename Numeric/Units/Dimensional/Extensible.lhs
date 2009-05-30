@@ -41,7 +41,7 @@ Similarly with 'Numeric.Dimensional' this module requires GHC
 >    Maintainer : bjorn.buckwalter@gmail.com
 >    Stability  : Experimental
 >    Portability: GHC only?
-> 
+>
 > Please refer to the literate Haskell code for documentation of both API
 > and implementation.
 > -}
@@ -49,7 +49,7 @@ Similarly with 'Numeric.Dimensional' this module requires GHC
 > module Numeric.Units.Dimensional.Extensible ( DExt, showDExt ) where
 
 > import Numeric.Units.Dimensional ( Dim, Mul, Div, Pow, Root, dimUnit )
-> import Numeric.NumType ( NumType, Sum, Negate, Zero, Pos, Neg ) 
+> import Numeric.NumType ( NumType, Sum, Negate, Zero, Pos, Neg )
 > import qualified Numeric.NumType as N ( Div, Mul )
 
 
@@ -106,9 +106,9 @@ Using this helper function defining 'Show' instances for the dimensions
 with extent in apples and oranges is simple.
 
 ] instance (NumType n, Show d) => Show (DExt TApples n d) where
-]   show = showDExt "apple" 
+]   show = showDExt "apple"
 ] instance (NumType n, Show d) => Show (DExt TOranges n d) where
-]   show = showDExt "orange" 
+]   show = showDExt "orange"
 
 
 = The 'DropZero' class =
@@ -132,7 +132,7 @@ dropped. In all other cases the dimensions are retained as is.
 > instance DropZero (DExt a (Neg n) d) (DExt a (Neg n) d)
 
 
-= Classes from 'Numeric.Dimensional' = 
+= Classes from 'Numeric.Dimensional' =
 
 We get negation, addition and subtraction for free with extended
 Dimensionals. However, we will need instances of the 'Mul', 'Div',
@@ -145,24 +145,24 @@ multiplication or division has a minimal representation.
 When only one of the 'Mul' factors is an extended dimensional there is
 no need to minimize.
 
-> instance (Mul d (Dim l m t i th n j) d') 
+> instance (Mul d (Dim l m t i th n j) d')
 >       => Mul (DExt a x d) (Dim l m t i th n j) (DExt a x d')
-> instance (Mul (Dim l m t i th n j) d d') 
+> instance (Mul (Dim l m t i th n j) d d')
 >       => Mul (Dim l m t i th n j) (DExt a x d) (DExt a x d')
 
 If both of the factors are extended the product must be minimized.
 
-> instance (Sum n n' n'', Mul d d' d'', DropZero (DExt a n'' d'') d''') 
+> instance (Sum n n' n'', Mul d d' d'', DropZero (DExt a n'' d'') d''')
 >       => Mul (DExt a n d) (DExt a n' d') d'''
 
 Analogously for 'Div'.
 
-> instance (Div d (Dim l m t i th n j) d') 
+> instance (Div d (Dim l m t i th n j) d')
 >       => Div (DExt a x d) (Dim l m t i th n j) (DExt a x d')
-> instance (Div (Dim l m t i th n j) d d', Negate x x') 
+> instance (Div (Dim l m t i th n j) d d', Negate x x')
 >       => Div (Dim l m t i th n j) (DExt a x d) (DExt a x' d')
 
-> instance (Sum n'' n' n, Div d d' d'', DropZero (DExt a n'' d'') d''') 
+> instance (Sum n'' n' n, Div d d' d'', DropZero (DExt a n'' d'') d''')
 >       => Div (DExt a n d) (DExt a n' d') d'''
 
 The instances for 'Pow' and 'Root' are simpler since they can not

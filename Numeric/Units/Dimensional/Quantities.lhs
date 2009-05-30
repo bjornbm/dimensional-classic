@@ -22,19 +22,19 @@ dimensionality type synonyms are provided for each quantity type.
 >    Maintainer : bjorn.buckwalter@gmail.com
 >    Stability  : Stable
 >    Portability: GHC only?
-> 
+>
 > Please refer to the literate Haskell code for documentation of both API
 > and implementation.
 > -}
 
 > module Numeric.Units.Dimensional.Quantities where
 
-> import Numeric.Units.Dimensional 
+> import Numeric.Units.Dimensional
 >   ( Dim, Quantity, Dimensionless
 >   , DOne, DLuminousIntensity, DThermodynamicTemperature
 >   , Unit, DLength, (^+) -- Used only for 'square' and 'cubic'.
 >   )
-> import Numeric.NumType 
+> import Numeric.NumType
 >   ( Neg3, Neg2, Neg1, Zero, Pos1, Pos2, Pos3, Pos4
 >   , pos2, pos3 -- Used only for 'square' and 'cubic'.
 >   )
@@ -74,7 +74,7 @@ table in [1].
 > type MassDensity  = Quantity DMassDensity
 > type Density      = MassDensity -- Short name.
 
-> type DSpecificVolume = Dim Pos3 Neg1 Zero Zero Zero Zero Zero 
+> type DSpecificVolume = Dim Pos3 Neg1 Zero Zero Zero Zero Zero
 > type SpecificVolume  = Quantity DSpecificVolume
 
 > type DCurrentDensity = Dim Neg2 Zero Zero Pos1 Zero Zero Zero

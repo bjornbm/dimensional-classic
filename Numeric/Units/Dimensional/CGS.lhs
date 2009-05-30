@@ -18,7 +18,7 @@ was valid.
 In this module we show that we can in a straight forward manner
 support systems with rational exponents, provided that the rationals
 that may be encountered are known a priori. As an example we provide
-a rudimentary implementation of the CGS system. 
+a rudimentary implementation of the CGS system.
 
 We also show that we can indeed statically prohibit invalid conversions
 between different systems.
@@ -38,13 +38,13 @@ temperature, amount and luminosity dimensions. If this is incorrect
 I would appreciate pointers to the CGS representation of these
 dimensions.
 
-Please correct and inform me if my assumptions are wrong! 
+Please correct and inform me if my assumptions are wrong!
 
 
 = Preliminaries =
 
 > {-# LANGUAGE UndecidableInstances
->            , ScopedTypeVariables 
+>            , ScopedTypeVariables
 >            , EmptyDataDecls
 >            , MultiParamTypeClasses
 >            , FlexibleInstances
@@ -58,7 +58,7 @@ Please correct and inform me if my assumptions are wrong!
 >    Maintainer : bjorn.buckwalter@gmail.com
 >    Stability  : Experimental
 >    Portability: GHC only?
-> 
+>
 > Please refer to the literate Haskell code for documentation of both API
 > and implementation.
 > -}
@@ -75,7 +75,7 @@ Please correct and inform me if my assumptions are wrong!
 > import Numeric.NumType ( Neg2, Neg1, Zero, Pos1, Pos2, Pos3, NumType )
 > import Numeric.NumType ( neg2, pos2, pos3 )
 > import Data.Maybe (catMaybes)
- 
+
 
 = Dimensions =
 
@@ -107,24 +107,24 @@ with the SI.
 
 > instance ( N.Sum lh lh' lh''
 >          , N.Sum mh mh' mh''
->          , N.Sum t  t'  t'' ) => Mul (CGSDim lh   mh   t) 
->                                      (CGSDim lh'  mh'  t') 
+>          , N.Sum t  t'  t'' ) => Mul (CGSDim lh   mh   t)
+>                                      (CGSDim lh'  mh'  t')
 >                                      (CGSDim lh'' mh'' t'')
 
 > instance ( N.Sum lh lh' lh''
 >          , N.Sum mh mh' mh''
->          , N.Sum t  t'  t'' ) => Div (CGSDim lh'' mh'' t'') 
->                                      (CGSDim lh'  mh'  t') 
+>          , N.Sum t  t'  t'' ) => Div (CGSDim lh'' mh'' t'')
+>                                      (CGSDim lh'  mh'  t')
 >                                      (CGSDim lh   mh   t)
 
 > instance ( N.Mul lh x lh'
 >          , N.Mul mh x mh'
->          , N.Mul t  x t' ) => Pow (CGSDim lh  mh  t) x 
+>          , N.Mul t  x t' ) => Pow (CGSDim lh  mh  t) x
 >                                   (CGSDim lh' mh' t')
 
 > instance ( N.Div lh x lh'
 >          , N.Div mh x mh'
->          , N.Div t  x t' ) => Root (CGSDim lh  mh  t) x 
+>          , N.Div t  x t' ) => Root (CGSDim lh  mh  t) x
 >                                    (CGSDim lh' mh' t')
 
 
@@ -272,9 +272,9 @@ performing the calculation in the SI.
 
 > q_si  = 1.6021773e-19 *~ SI.coulomb -- Elementary charge in SI.
 > r_si  = 0.1 *~ SI.nano SI.meter     -- Distance in SI
-> f_si  = q_si ^ pos2 / (_4 * pi * e0 * r_si ^ pos2) 
->   where 
->       e0 = 8.8541878e-12 *~ (SI.ampere * SI.second / (SI.volt * SI.meter)) 
+> f_si  = q_si ^ pos2 / (_4 * pi * e0 * r_si ^ pos2)
+>   where
+>       e0 = 8.8541878e-12 *~ (SI.ampere * SI.second / (SI.volt * SI.meter))
 
 The same calculation in the CGS system.
 
@@ -287,7 +287,7 @@ Inspecting the values in GHCi shows us that the results are consistent
 
   *Numeric.Dimensional.CGS> f_si
   2.3070794737101255e-8 m kg s^-2
-  *Numeric.Dimensional.CGS> f_cgs 
+  *Numeric.Dimensional.CGS> f_cgs
   2.30708078598602e-3 sqrt(cm)^2 sqrt(g)^2 s^-2
 
 To convert from CGS to SI we must specify the type of the SI 'Quantity'.

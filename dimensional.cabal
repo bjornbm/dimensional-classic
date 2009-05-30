@@ -3,7 +3,7 @@ Version:             0.7.3
 License:             BSD3
 License-File:        LICENSE
 Copyright:           Bjorn Buckwalter 2006-2008
-Author:              Bjorn Buckwalter 
+Author:              Bjorn Buckwalter
 Maintainer:          bjorn.buckwalter@gmail.com
 Stability:           mostly stable
 Homepage:            http://dimensional.googlecode.com/
@@ -21,8 +21,8 @@ Category:            Math
 Build-Type:          Simple
 Build-Depends:       base, time
                      -- , fad
-Exposed-Modules:     Numeric.NumType, 
-                     Numeric.Units.Dimensional, 
+Exposed-Modules:     Numeric.NumType,
+                     Numeric.Units.Dimensional,
                      Numeric.Units.Dimensional.Prelude,
                      Numeric.Units.Dimensional.Quantities,
                      Numeric.Units.Dimensional.SIUnits,
@@ -39,4 +39,4 @@ Extra-source-files:  README,
                      -- , Numeric/Units/Dimensional/ForwardADTest.lhs
                      examples/README,
                      examples/GM.lhs
- 
+

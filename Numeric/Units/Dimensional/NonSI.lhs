@@ -7,7 +7,7 @@ License: BSD3
 
 This module defines units that are not part of the SI, with the
 exception of those defined in the 'SIUnits' module (units outside
-of the SI accepted for use with the SI). 
+of the SI accepted for use with the SI).
 
 Any chapters, sections or tables referenced are from [1] unless
 otherwise specified.
@@ -19,7 +19,7 @@ otherwise specified.
 >    Maintainer : bjorn.buckwalter@gmail.com
 >    Stability  : Stable
 >    Portability: GHC only?
-> 
+>
 > Please refer to the literate Haskell code for documentation of both API
 > and implementation.
 > -}

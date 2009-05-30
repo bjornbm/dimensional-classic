@@ -17,7 +17,7 @@ referenced are from [1] unless otherwise specified.
 >    Maintainer : bjorn.buckwalter@gmail.com
 >    Stability  : Stable
 >    Portability: GHC only?
-> 
+>
 > Please refer to the literate Haskell code for documentation of both API
 > and implementation.
 > -}
@@ -41,7 +41,7 @@ unit.
 
 We define all SI prefixes from Table 5. Multiples first.
 
-> deka, deca, hecto, kilo, mega, giga, tera, peta, exa, zetta, yotta 
+> deka, deca, hecto, kilo, mega, giga, tera, peta, exa, zetta, yotta
 >   :: Num a => Unit d a -> Unit d a
 > deka  = prefix 10 -- International English.
 > deca  = deka      -- American English.
@@ -56,7 +56,7 @@ We define all SI prefixes from Table 5. Multiples first.
 > yotta = kilo . zetta
 
 Then the submultiples.
- 
+
 > deci, centi, milli, micro, nano, pico, femto, atto, zepto, yocto
 >   :: Fractional a => Unit d a -> Unit d a
 > deci  = prefix 0.1
