@@ -1,4 +1,4 @@
-#summary Accessing the source code.
+#summary Accessing the source code of the dimensional packages.
 
 = dimensional =
 
