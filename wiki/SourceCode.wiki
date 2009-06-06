@@ -1,8 +1,8 @@
-#summary Accessing the source code of the dimensional packages.
+#summary How to access the source code of the dimensional project.
 
 = dimensional =
 
-The dimensional package source code is in a darcs repository at http://code.haskell.org/dimensional. To check it out do:
+The dimensional package source code is in a Darcs repository at http://code.haskell.org/dimensional. To check it out do:
 
 {{{
 darcs get http://code.haskell.org/dimensional/
@@ -11,7 +11,7 @@ darcs get http://code.haskell.org/dimensional/
 
 = numtype =
 
-The numtype package source code is in a git repository at http://github.com/bjornbm/numtype. To check it out do:
+The numtype package source code is in a Git repository at http://github.com/bjornbm/numtype. To check it out do:
 
 {{{
 git clone git://github.com/bjornbm/numtype.git
