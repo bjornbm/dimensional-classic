@@ -1,8 +1,8 @@
 Name:                dimensional
-Version:             0.7.3
+Version:             0.8
 License:             BSD3
 License-File:        LICENSE
-Copyright:           Bjorn Buckwalter 2006-2008
+Copyright:           Bjorn Buckwalter 2006-2009
 Author:              Bjorn Buckwalter
 Maintainer:          bjorn.buckwalter@gmail.com
 Stability:           mostly stable
@@ -19,10 +19,9 @@ Description:
     Requires GHC 6.6.1 or later.
 Category:            Math
 Build-Type:          Simple
-Build-Depends:       base, time
+Build-Depends:       base, time, numtype
                      -- , fad
-Exposed-Modules:     Numeric.NumType,
-                     Numeric.Units.Dimensional,
+Exposed-Modules:     Numeric.Units.Dimensional,
                      Numeric.Units.Dimensional.Prelude,
                      Numeric.Units.Dimensional.Quantities,
                      Numeric.Units.Dimensional.SIUnits,
@@ -39,4 +38,3 @@ Extra-source-files:  README,
                      -- , Numeric/Units/Dimensional/ForwardADTest.lhs
                      examples/README,
                      examples/GM.lhs
-
