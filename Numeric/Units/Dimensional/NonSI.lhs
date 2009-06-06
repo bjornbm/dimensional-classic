@@ -88,7 +88,22 @@ Other (non inch-pound) units.
 > teaspoon = prefix 5 (milli liter)
 
 
+The IAU recommends[2] that:
+
+  Although there are several different kinds of year (as there are
+  several kinds of day), it is best to regard a year as a julian
+  year of 365.25 days (31.5576 Ms) unless otherwise specified.
+
+This aligns well with my needs so I'm happy to oblige. We define
+the year in terms of seconds in order to avoid a 'Fractional'
+constraint, and also provide a Julian century.
+
+> year, century :: Num a => Unit DTime a
+> year    = prefix 31557600 second
+> century = prefix 100 year
+
+
 = References =
 
 [1] http://physics.nist.gov/Pubs/SP811/
-
+[2] http://www.iau.org/science/publications/proceedings_rules/units/

@@ -237,15 +237,6 @@ We start with time which we grant exclusive rights to 'minute' and
 > hour   = prefix 60 minute
 > day    = prefix 24 hour -- Mean solar day.
 
-> {-
-
-The IAU defines a Julian century as 36525 days. Should we also
-define a year as 365.25 days?
-
-> century :: Num a => Unit DTime a
-> century = prefix 36525 day
-> -}
-
 Since 'minute' and 'second' are already in use for time we use
 'arcminute' and 'arcsecond' [2] for plane angle instead.
 
