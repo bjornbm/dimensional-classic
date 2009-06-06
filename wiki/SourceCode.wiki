@@ -2,11 +2,17 @@
 
 = dimensional =
 
-The dimensional package source code is in a darcs repository:
+The dimensional package source code is in a darcs repository at http://code.haskell.org/dimensional. To check it out do:
+
+{{{
+darcs get http://code.haskell.org/dimensional/
+}}}
+
 
 = numtype =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+The numtype package source code is in a git repository at http://github.com/bjornbm/numtype. To check it out do:
+
+{{{
+git clone git://github.com/bjornbm/numtype.git
+}}}
