@@ -19,7 +19,7 @@ Description:
     Requires GHC 6.6.1 or later.
 Category:            Math
 Build-Type:          Simple
-Build-Depends:       base < 5, time, numtype
+Build-Depends:       base < 5, time < 1.3, numtype < 1.1
                      -- , fad
 Exposed-Modules:     Numeric.Units.Dimensional,
                      Numeric.Units.Dimensional.Prelude,
