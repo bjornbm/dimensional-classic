@@ -7,13 +7,13 @@ License: BSD3
 
 On January 3 Mike Gunter asked[1]:
 
-| The very nice Buckwalter and Denney dimensional-numbers packages
-| both work on a fixed set of base dimensions.  This is a significant
-| restriction for me--I want to avoid adding apples to oranges as
-| well as avoiding adding meters to grams.  Is it possible to have
-| an extensible set of base dimensions?  If so, how usable can such
-| a system be made?  Is it very much worse than a system with a fixed
-| set of base dimensions?
+  The very nice Buckwalter and Denney dimensional-numbers packages
+  both work on a fixed set of base dimensions.  This is a significant
+  restriction for me--I want to avoid adding apples to oranges as
+  well as avoiding adding meters to grams.  Is it possible to have
+  an extensible set of base dimensions?  If so, how usable can such
+  a system be made?  Is it very much worse than a system with a fixed
+  set of base dimensions?
 
 In this module we facilitate the addition an arbitrary number of
 "extra" dimensions to the seven base dimensions defined in

@@ -2,7 +2,7 @@ Numeric.Dimensional.CGS -- CGS system of units
 Bjorn Buckwalter, bjorn.buckwalter@gmail.com
 License: BSD3
 
-*** EXPERIMENTAL ***
+!!! EXPERIMENTAL !!!
 
 
 = Introduction =
