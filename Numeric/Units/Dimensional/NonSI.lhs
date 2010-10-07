@@ -74,6 +74,11 @@ uncertainty which also transfers to 'poundForce'.
 > poundForce :: Fractional a => Unit DForce a
 > poundForce = poundMass * gee  -- 4.4482 N
 
+Pounds per square inch.
+
+> psi :: Fractional a => Unit DPressure a
+> psi = poundForce / inch ^ pos2
+
 Other (non inch-pound) units.
 
 > yard, mile, nauticalMile :: (Fractional a) => Unit DLength a
