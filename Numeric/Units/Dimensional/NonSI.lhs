@@ -53,7 +53,19 @@ had a combined uncertainty of 0.0000010e-27 kg.
 > unifiedAtomicMassUnit = prefix 1.6605402e-27 (kilo gram)
 
 
-= Other units =
+= Standard gravity =
+
+In order to relate e.g. pounds mass to pounds force we define the unit
+'gee' equal to the standard gravity g_0: the nominal acceleration of a
+body in free fall in a vacuum near the surface of the earth (note that
+local values of acceleration due to gravity will differ from the standard
+gravity). I.e. g_0 = 1 gee.
+
+> gee :: Fractional a => Unit DAcceleration a
+> gee = prefix 9.80665 meter / second ^ pos2
+
+
+= Inch-pound units =
 
 Some US customary (that is, inch-pound) units.
 
@@ -64,22 +76,16 @@ Some US customary (that is, inch-pound) units.
 > poundMass = prefix 0.45359237 (kilo gram)
 > ounce     = prefix 28.349523 gram
 
-In order to relate pounds mass to pounds force we define the
-questionable unit 'gee' (G) as the gravitational acceleration at
-sea level. Note that 'gee' is experimental and has an inherent
-uncertainty which also transfers to 'poundForce'.
-
-> gee :: Fractional a => Unit DAcceleration a
-> gee = prefix 9.80665 meter / second ^ pos2
 > poundForce :: Fractional a => Unit DForce a
 > poundForce = poundMass * gee  -- 4.4482 N
 
-Pounds per square inch.
+Pounds of force per square inch.
 
 > psi :: Fractional a => Unit DPressure a
 > psi = poundForce / inch ^ pos2
 
-Other (non inch-pound) units.
+
+= Various other (non inch-pound) units =
 
 > yard, mile, nauticalMile :: (Fractional a) => Unit DLength a
 > yard = prefix 3 foot
@@ -87,11 +93,8 @@ Other (non inch-pound) units.
 > nauticalMile = prefix 1852 meter
 > revolution :: (Floating a) => Unit DOne a
 > revolution = prefix 360 degree
-> bar :: (Fractional a) => Unit DPressure a
-> bar = prefix 1.0e5 pascal
 > teaspoon :: (Fractional a) => Unit DVolume a
 > teaspoon = prefix 5 (milli liter)
-
 
 The IAU recommends[2] that:
 
@@ -108,7 +111,54 @@ constraint, and also provide a Julian century.
 > century = prefix 100 year
 
 
+= Pressure units =
+
+Psi was defined earlier.
+
+> bar :: (Fractional a) => Unit DPressure a
+> bar = prefix 1.0e5 pascal
+
+From Wikipedia[3]:
+
+  The standard atmosphere (atm) is an established constant. It is
+  approximately equal to typical air pressure at earth mean sea
+  level.
+
+> atmosphere :: (Fractional a) => Unit DPressure a
+> atmosphere = prefix 101325 pascal
+
+From Wikipedia:
+
+  A technical atmosphere (symbol: at) is a non-SI unit of pressure equal
+  to one kilogram-force per square centimeter.
+
+> technicalAtmosphere :: (Fractional a) => Unit DPressure a
+> technicalAtmosphere = kilo gram * gee * centi meter ^ neg2
+
+Manometric pressure units:
+
+Per Wikipedia[4] one mmHg (millimeter of mercury) is defined as:
+
+  The pressure exerted at the base of a column of fluid exactly 1 mm high,
+  when the density of the fluid is exactly 13.5951 g/cm^3, at a place
+  where the acceleration of gravity is exactly 9.80665 m/s^2.
+
+The chosen fluid density approximately corresponds to that of mercury
+at 0 deg. Under most conditions, 1 mmHg is approximately equal to 1 torr.
+
+> mmHg :: (Fractional a) => Unit DPressure a
+> mmHg = prefix 13.5951 gram * centi meter ^ neg3 * milli meter * gee
+
+One torr (symbol: Torr) is defined as 1/760 atm, which is approximately equal
+to 1 mmHg.
+
+> torr :: (Fractional a) => Unit DPressure a
+> torr = prefix (1 Prelude./ 760) atmosphere
+
+
 = References =
 
 [1] http://physics.nist.gov/Pubs/SP811/
 [2] http://www.iau.org/science/publications/proceedings_rules/units/
+[3] http://en.m.wikipedia.org/wiki/Pressure
+[4] http://en.m.wikipedia.org/wiki/Torr
