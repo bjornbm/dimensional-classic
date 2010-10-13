@@ -156,6 +156,12 @@ to 1 mmHg.
 > torr = prefix (1 Prelude./ 760) atmosphere
 
 
+= Radiation =
+
+> rad :: (Fractional a) => Unit DAbsorbedDose a
+> rad = centi gray
+
+
 = References =
 
 [1] http://physics.nist.gov/Pubs/SP811/
