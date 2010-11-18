@@ -92,7 +92,9 @@ Pounds of force per square inch.
 > mile = prefix 1760 yard
 > nauticalMile = prefix 1852 meter
 > revolution :: (Floating a) => Unit DOne a
-> revolution = prefix 360 degree
+> revolution = prefix (2 Prelude.* Prelude.pi) radian
+> solid :: (Floating a) => Unit DOne a
+> solid = prefix (4 Prelude.* Prelude.pi) steradian
 > teaspoon :: (Fractional a) => Unit DVolume a
 > teaspoon = prefix 5 (milli liter)
 
