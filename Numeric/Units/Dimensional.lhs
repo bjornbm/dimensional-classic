@@ -443,12 +443,17 @@ For convenience We define some constants for small integer values
 that often show up in formulae. We also throw in 'pi' for good
 measure.
 
-> _0, _1, _2, _3, _4 :: (Num a) => Dimensionless a
+> _0, _1, _2, _3, _4, _5, _6, _7, _8, _9 :: (Num a) => Dimensionless a
 > _0 = 0 *~ one
 > _1 = 1 *~ one
 > _2 = 2 *~ one
 > _3 = 3 *~ one
 > _4 = 4 *~ one
+> _5 = 5 *~ one
+> _6 = 6 *~ one
+> _7 = 7 *~ one
+> _8 = 8 *~ one
+> _9 = 9 *~ one
 
 > pi :: (Floating a) => Dimensionless a
 > pi = Prelude.pi *~ one
