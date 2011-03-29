@@ -50,7 +50,7 @@ Please correct and inform me if my assumptions are wrong!
 >            , FlexibleInstances
 >            , FlexibleContexts
 > #-}
-
+> {-# OPTIONS_GHC -fcontext-stack=22 #-}
 > {- |
 >    Copyright  : Copyright (C) 2006-2008 Bjorn Buckwalter
 >    License    : BSD3
