@@ -376,6 +376,8 @@ elements of a list.
 > (/~~) :: Fractional a => [Quantity d a] -> Unit d a -> [a]
 > xs /~~ u = map (/~ u) xs
 
+> infixl 7  *~~, /~~
+
 The sum of all elements in a list.
 
 > sum :: forall d a . Num a => [Quantity d a] -> Quantity d a
