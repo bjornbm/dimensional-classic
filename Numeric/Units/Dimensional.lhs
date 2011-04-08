@@ -368,13 +368,13 @@ Here we define operators and functions to make working with homogenuous
 lists of dimensionals more convenient.
 
 We define two convenience operators for applying units to all
-elements of a list.
+elements of a functor (e.g. a list).
 
-> (*~~) :: Num a => [a] -> Unit d a -> [Quantity d a]
-> xs *~~ u = map (*~ u) xs
+> (*~~) :: (Functor f, Num a) => f a -> Unit d a -> f (Quantity d a)
+> xs *~~ u = fmap (*~ u) xs
 
-> (/~~) :: Fractional a => [Quantity d a] -> Unit d a -> [a]
-> xs /~~ u = map (/~ u) xs
+> (/~~) :: (Functor f, Fractional a) => f (Quantity d a) -> Unit d a -> f a
+> xs /~~ u = fmap (/~ u) xs
 
 > infixl 7  *~~, /~~
 
