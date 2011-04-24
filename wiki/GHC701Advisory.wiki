@@ -1,0 +1,45 @@
+#summary GHC 7.0.1 has a bug related to type-inferencing that can cause programs to loop (hang).
+
+GHC 7.0.1 has a [http://www.haskell.org/pipermail/glasgow-haskell-users/2011-January/019910.html bug] related to type-inferencing that can cause programs to loop (hang). A minimal example to induce the bug is:_
+
+{{{
+sqrt (9 *~ meter^pos2)
+}}}
+
+_A work-around (for this particular case) is to add a type signature to the argument of `sqrt`:_
+
+{{{
+sqrt (9 *~ meter^pos2 :: Area Double)
+}}}
+
+_This bug was [http://www.haskell.org/pipermail/glasgow-haskell-users/2011-January/019916.html fixed] in GHC 7.0.2. (Thanks Pavel Perikov for reporting this!)_
+
+
+_*GHC 7.0.1 advisory:* GHC 7.0.1 has a [http://www.haskell.org/pipermail/glasgow-haskell-users/2011-January/019910.html bug] related to type-inferencing that can cause programs to loop (hang). A minimal example to induce the bug is:_
+
+{{{
+sqrt (9 *~ meter^pos2)
+}}}
+
+_A work-around (for this particular case) is to add a type signature to the argument of `sqrt`:_
+
+{{{
+sqrt (9 *~ meter^pos2 :: Area Double)
+}}}
+
+_This bug was [http://www.haskell.org/pipermail/glasgow-haskell-users/2011-January/019916.html fixed] in GHC 7.0.2. (Thanks Pavel Perikov for reporting this!)_
+
+
+_*GHC 7.0.1 advisory:* GHC 7.0.1 has a [http://www.haskell.org/pipermail/glasgow-haskell-users/2011-January/019910.html bug] related to type-inferencing that can cause programs to loop (hang). A minimal example to induce the bug is:_
+
+{{{
+sqrt (9 *~ meter^pos2)
+}}}
+
+_A work-around (for this particular case) is to add a type signature to the argument of `sqrt`:_
+
+{{{
+sqrt (9 *~ meter^pos2 :: Area Double)
+}}}
+
+_This bug was [http://www.haskell.org/pipermail/glasgow-haskell-users/2011-January/019916.html fixed] in GHC 7.0.2. (Thanks Pavel Perikov for reporting this!)_
