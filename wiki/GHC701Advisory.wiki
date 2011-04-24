@@ -1,4 +1,5 @@
 #summary GHC 7.0.1 has a bug related to type-inferencing that can cause programs to loop (hang).
+#labels Featured
 
 GHC 7.0.1 has a [http://www.haskell.org/pipermail/glasgow-haskell-users/2011-January/019910.html bug] related to type-inferencing that can cause programs to loop (hang). A minimal example to induce the bug is:_
 
