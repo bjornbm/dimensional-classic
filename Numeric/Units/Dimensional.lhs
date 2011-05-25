@@ -54,6 +54,7 @@ extensions.
 >            , FlexibleInstances
 >            , TypeSynonymInstances
 >            , FlexibleContexts
+>            , GeneralizedNewtypeDeriving
 > #-}
 
 > {- |
@@ -73,7 +74,7 @@ extensions.
 >   where
 
 > import Prelude
->   ( Show, Eq, Ord, Num, Fractional, Floating, RealFloat, Functor, fmap
+>   ( Show, Eq, Ord, Enum, Num, Fractional, Floating, RealFloat, Functor, fmap
 >   , (.), flip, show, (++), undefined, otherwise, (==), String, unwords
 >   , map, foldr, null, Integer
 >   )
@@ -108,7 +109,7 @@ to occasionally cumbersome type classes.
 We call this data type 'Dimensional' to capture the notion that the
 units and quantities it represents have physical dimensions.
 
-> newtype Dimensional v d a = Dimensional a deriving (Eq, Ord)
+> newtype Dimensional v d a = Dimensional a deriving (Eq, Ord, Enum)
 
 The type variable 'a' is the only non-phantom type variable and
 represents the numerical value of a quantity or the scale (w.r.t.
