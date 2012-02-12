@@ -16,3 +16,21 @@ The numtype package source code is in a Git repository at http://github.com/bjor
 {{{
 git clone git://github.com/bjornbm/numtype.git
 }}}
+
+
+= dimensional-tf =
+
+The dimensional-tf package source code is in a Git repository at http://github.com/bjornbm/dimensional-tf. To check it out do:
+
+{{{
+git clone git://github.com/bjornbm/dimensional-tf.git
+}}}
+
+
+= numtype-tf =
+
+The numtype-tf package source code is in a Git repository at http://github.com/bjornbm/numtype-tf. To check it out do:
+
+{{{
+git clone git://github.com/bjornbm/numtype-tf.git
+}}}
