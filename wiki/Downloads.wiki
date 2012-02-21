@@ -1,0 +1,17 @@
+#summary Download dimensional from Hackage
+
+Library releases from the dimensional project can be downloaded from [http://hackage.haskell.org/ Hackage]. Specific links to libraries below.
+
+== Functional Dependencies ==
+
+These are the stable recommended library versions built using functional dependencies.
+
+  * [http://hackage.haskell.org/package/dimensional dimensional]
+  * [http://hackage.haskell.org/package/numtype numtype]
+
+== Type Families ==
+
+These are experimental reimplementations built type families.
+
+  * [http://hackage.haskell.org/package/dimensional-tf dimensional-tf] 
+  * [http://hackage.haskell.org/package/numtype-tf numtype-tf]
