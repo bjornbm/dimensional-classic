@@ -1,8 +1,8 @@
 Name:                dimensional
-Version:             0.10.1.2
+Version:             0.10.2
 License:             BSD3
 License-File:        LICENSE
-Copyright:           Bjorn Buckwalter 2006-2011
+Copyright:           Bjorn Buckwalter 2006-2012
 Author:              Bjorn Buckwalter
 Maintainer:          bjorn.buckwalter@gmail.com
 Stability:           mostly stable
