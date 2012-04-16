@@ -69,9 +69,10 @@ gravity). I.e. g_0 = 1 gee.
 
 Some US customary (that is, inch-pound) units.
 
-> inch, foot :: Fractional a => Unit DLength a
+> inch, foot, mil :: Fractional a => Unit DLength a
 > inch = prefix 2.54 (centi meter)
 > foot = prefix 12 inch     -- 0.3048 m
+> mil  = prefix 0.001 inch
 > poundMass, ounce :: Fractional a => Unit DMass a
 > poundMass = prefix 0.45359237 (kilo gram)
 > ounce     = prefix 28.349523 gram
