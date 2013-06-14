@@ -262,9 +262,17 @@ temperature.
 > tonne     = prefix 1000 (kilo gram) -- Name in original SI text.
 > metricTon = tonne                   -- American name.
 
+In 2012 the IAU redefined the astronomical unit as a conventional
+unit of length directly tied to the meter, with a length of exactly
+149,597,870,700 m and the official abbreviation of au[3].
+
+> astronomicalUnit :: Num a => Unit DLength a
+> astronomicalUnit = prefix 149597870700 meter
+
 
 = References =
 
 [1] http://physics.nist.gov/Pubs/SP811/
 [2] http://en.wikipedia.org/wiki/Minute_of_arc
+[3] http://en.wikipedia.org/wiki/Astronomical_unit
 
