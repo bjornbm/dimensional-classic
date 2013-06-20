@@ -442,9 +442,7 @@ values.
 > one :: Num a => Unit DOne a
 > one = Dimensional 1
 
-For convenience We define some constants for small integer values
-that often show up in formulae. We also throw in 'pi' for good
-measure.
+For convenience we define some small integer values and constants.
 
 > _0, _1, _2, _3, _4, _5, _6, _7, _8, _9 :: (Num a) => Dimensionless a
 > _0 = 0 *~ one
@@ -458,8 +456,12 @@ measure.
 > _8 = 8 *~ one
 > _9 = 9 *~ one
 
-> pi :: (Floating a) => Dimensionless a
+For background on 'tau' see http://tauday.com/tau-manifesto (but also
+feel free to review http://www.thepimanifesto.com).
+
+> pi, tau :: (Floating a) => Dimensionless a
 > pi = Prelude.pi *~ one
+> tau = _2 * pi
 
 
 = Instances of 'Show' =
