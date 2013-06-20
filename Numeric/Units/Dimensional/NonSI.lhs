@@ -176,10 +176,12 @@ to 1 mmHg.
 Per http://en.wikipedia.org/wiki/Imperial_units.
 
 > imperialGallon, imperialQuart, imperialPint, imperialCup,
->                 imperialGill, imperialFluidOunce :: (Fractional a) => Unit DVolume a
+>                 imperialGill, imperialFluidOunce
+>                 :: (Fractional a) => Unit DVolume a
 > imperialGallon = prefix 4.54609 liter
 > imperialQuart  = prefix (1 Prelude./ 4) imperialGallon
 > imperialPint   = prefix (1 Prelude./ 8) imperialGallon
+> imperialCup    = prefix 0.5 imperialPint
 > imperialGill   = prefix (1 Prelude./ 4) imperialPint
 > imperialFluidOunce = prefix (1 Prelude./ 20) imperialPint
 
