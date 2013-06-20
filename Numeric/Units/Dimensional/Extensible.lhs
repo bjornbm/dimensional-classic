@@ -35,7 +35,7 @@ Similarly with 'Numeric.Dimensional' this module requires GHC
 > #-}
 
 > {- |
->    Copyright  : Copyright (C) 2006-2011 Bjorn Buckwalter
+>    Copyright  : Copyright (C) 2006-2013 Bjorn Buckwalter
 >    License    : BSD3
 >
 >    Maintainer : bjorn.buckwalter@gmail.com

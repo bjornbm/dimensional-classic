@@ -52,7 +52,7 @@ Please correct and inform me if my assumptions are wrong!
 > #-}
 > {-# OPTIONS_GHC -fcontext-stack=30 #-}
 > {- |
->    Copyright  : Copyright (C) 2006-2011 Bjorn Buckwalter
+>    Copyright  : Copyright (C) 2006-2013 Bjorn Buckwalter
 >    License    : BSD3
 >
 >    Maintainer : bjorn.buckwalter@gmail.com

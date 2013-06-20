@@ -13,7 +13,7 @@ Any chapters, sections or tables referenced are from [1] unless
 otherwise specified.
 
 > {- |
->    Copyright  : Copyright (C) 2006-2011 Bjorn Buckwalter
+>    Copyright  : Copyright (C) 2006-2013 Bjorn Buckwalter
 >    License    : BSD3
 >
 >    Maintainer : bjorn.buckwalter@gmail.com
