@@ -382,7 +382,7 @@ elements of a functor (e.g. a list).
 The sum of all elements in a list.
 
 > sum :: forall d a . Num a => [Quantity d a] -> Quantity d a
-> sum = foldr (+) (Dimensional 0 :: Quantity d a)
+> sum = foldr (+) _0
 
 The length of the list as a 'Dimensionless'. This can be useful for
 purposes of e.g. calculating averages.
@@ -444,8 +444,15 @@ values.
 
 For convenience we define some small integer values and constants.
 
-> _0, _1, _2, _3, _4, _5, _6, _7, _8, _9 :: (Num a) => Dimensionless a
-> _0 = 0 *~ one
+The constant for zero is polymorphic as proposed by Douglas McClean
+(http://code.google.com/p/dimensional/issues/detail?id=39) allowing
+it to express zero Length or Capacitance or Velocity etc, in addition
+to the dimensionless value zero.
+
+> _0 :: (Num a) => Quantity d a
+> _0 = Dimensional 0
+
+> _1, _2, _3, _4, _5, _6, _7, _8, _9 :: (Num a) => Dimensionless a
 > _1 = 1 *~ one
 > _2 = 2 *~ one
 > _3 = 3 *~ one
