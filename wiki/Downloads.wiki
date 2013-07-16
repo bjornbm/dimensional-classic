@@ -11,7 +11,7 @@ These are the stable recommended library versions built using functional depende
 
 == Type Families ==
 
-These are experimental reimplementations built type families.
+These are experimental reimplementations built using type families.
 
   * [http://hackage.haskell.org/package/dimensional-tf dimensional-tf] 
   * [http://hackage.haskell.org/package/numtype-tf numtype-tf]
