@@ -45,8 +45,8 @@ We define all SI prefixes from Table 5. Multiples first.
 >   :: Num a => Unit d a -> Unit d a
 > deka  = prefix 10 -- International English.
 > deca  = deka      -- American English.
-> hecto = deka . deka
-> kilo  = deka . hecto
+> hecto = prefix 100
+> kilo  = prefix 1000
 > mega  = kilo . kilo
 > giga  = kilo . mega
 > tera  = kilo . giga
@@ -60,15 +60,15 @@ Then the submultiples.
 > deci, centi, milli, micro, nano, pico, femto, atto, zepto, yocto
 >   :: Fractional a => Unit d a -> Unit d a
 > deci  = prefix 0.1
-> centi = deci . deci
-> milli = deci . centi
-> micro = milli . milli
-> nano  = milli . micro
-> pico  = milli . nano
-> femto = milli . pico
-> atto  = milli . femto
-> zepto = milli . atto
-> yocto = milli . zepto
+> centi = prefix 0.01
+> milli = prefix 1e-3
+> micro = prefix 1e-6
+> nano  = prefix 1e-9
+> pico  = prefix 1e-12
+> femto = prefix 1e-15
+> atto  = prefix 1e-18
+> zepto = prefix 1e-21
+> yocto = prefix 1e-24
 
 By defining SI prefixes as functions applied to a 'Unit' we satisfy
 section 6.2.6 "Unacceptability of stand-alone prefixes".
