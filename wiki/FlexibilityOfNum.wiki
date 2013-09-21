@@ -46,7 +46,7 @@ import qualified Prelude
 height = (10 :+- 1) *~ meter
 x = (2 :+- 0.2) *~ meter
 
-main = print $ height + x
+main = print $ height + x  -- "12.0 :+- 1.019803902718557 m"
 }}}
 
 That being said, this representation of uncertainty breaks down pretty rapidly as the gaussian distribution does not translate very far beyond addition and subtraction (as you can see in my Num instance). For this particular problem something more clever (or brute force, e.g. Monte Carlo method) is needed—if you look around on Hackage you may find that someone has solved this problem already for Num (et al)!
