@@ -444,7 +444,9 @@ values.
 > one :: Num a => Unit DOne a
 > one = Dimensional 1
 
-For convenience we define some small integer values and constants.
+For convenience we define some constants for small integer values
+that often show up in formulae. We also throw in 'pi' and 'tau' for
+good measure.
 
 The constant for zero is polymorphic as proposed by Douglas McClean
 (http://code.google.com/p/dimensional/issues/detail?id=39) allowing
