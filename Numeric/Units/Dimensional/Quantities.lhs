@@ -305,6 +305,15 @@ provide some synonyms that we anticipate will be useful.
 > type DKinematicViscosity = Dim Pos2 Zero Neg1 Zero Zero Zero Zero
 > type KinematicViscosity  = Quantity DKinematicViscosity
 
+> type DFirstMassMoment = Dim Pos1 Pos1 Zero Zero Zero Zero Zero
+> type FirstMassMoment = Quantity DFirstMassMoment
+
+> type DMomentOfInertia = Dim Pos2 Pos1 Zero Zero Zero Zero Zero
+> type MomentOfInertia = Quantity DMomentOfInertia
+
+> type DAngularMomentum = Dim Pos2 Pos1 Neg1 Zero Zero Zero Zero
+> type AngularMomentum = Quantity DAngularMomentum
+
 For these we don't bother defining new type synonyms for dimensionalities.
 Is this rational?
 
@@ -316,4 +325,3 @@ Is this rational?
 = References =
 
 [1] http://physics.nist.gov/Pubs/SP811/
-
