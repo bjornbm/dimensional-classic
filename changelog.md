@@ -1,6 +1,7 @@
-0.12.2.1 (2014-02)
+0.12.2.2 (2014-02)
 ------------------
 *  Bump numtype dependency to 1.1 (GHC 7.8.1 compatibility fix).
+*  Added `Torque`.
 
 
 0.12.2 (2013-11)
