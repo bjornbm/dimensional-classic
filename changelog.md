@@ -2,6 +2,7 @@
 ------------------
 *  Bump numtype dependency to 1.1 (GHC 7.8.1 compatibility fix).
 *  Added `Torque`.
+*  Added D.. for the type synonym quanities (e.g., `Angle`).
 
 
 0.12.2 (2013-11)
