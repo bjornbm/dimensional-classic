@@ -1,3 +1,8 @@
+0.13 (2014-02)
+--------------
+*  Bump major version (should have been done in previous version).
+
+
 0.12.3 (2014-02)
 ----------------
 *  Bump numtype dependency to 1.1 (GHC 7.8.1 compatibility fix).
