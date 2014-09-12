@@ -1,3 +1,8 @@
+0.13.0.1 (2014-09)
+------------------
+*  Bumped time dependency to < 1.6.
+
+
 0.13 (2014-02)
 --------------
 *  Bump major version (should have been done in previous version).
