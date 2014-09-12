@@ -1,5 +1,5 @@
 Numeric.Dimensional.Quantities
-Bjorn Buckwalter, bjorn.buckwalter@gmail.com
+Bjorn Buckwalter, bjorn@buckwalter.se
 License: BSD3
 
 
@@ -16,10 +16,10 @@ is defined. If there are several quantity types with the same
 dimensionality type synonyms are provided for each quantity type.
 
 > {- |
->    Copyright  : Copyright (C) 2006-2013 Bjorn Buckwalter
+>    Copyright  : Copyright (C) 2006-2014 Bjorn Buckwalter
 >    License    : BSD3
 >
->    Maintainer : bjorn.buckwalter@gmail.com
+>    Maintainer : bjorn@buckwalter.se
 >    Stability  : Stable
 >    Portability: GHC only?
 >
