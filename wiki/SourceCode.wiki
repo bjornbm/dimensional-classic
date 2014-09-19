@@ -34,3 +34,20 @@ The numtype-tf package source code is in a Git repository at http://github.com/b
 {{{
 git clone git://github.com/bjornbm/numtype-tf.git
 }}}
+
+= dimensional-dk (unreleased) =
+
+The dimensional-dk package source code is in a Git repository at http://github.com/bjornbm/dimensional-dk. To check it out do:
+
+{{{
+git clone git://github.com/bjornbm/dimensional-dk.git
+}}}
+
+
+= numtype-dk (unreleased) =
+
+The numtype-dk package source code is in a Git repository at http://github.com/bjornbm/numtype-dk. To check it out do:
+
+{{{
+git clone git://github.com/bjornbm/numtype-dk.git
+}}}
