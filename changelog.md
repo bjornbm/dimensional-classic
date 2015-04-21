@@ -1,3 +1,8 @@
+0.13.0.2 (2015-04)
+------------------
+*  Corrected definition of lumen.
+
+
 0.13.0.1 (2014-09)
 ------------------
 *  Bumped time dependency to < 1.6.
