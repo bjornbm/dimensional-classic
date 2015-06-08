@@ -1,0 +1,65 @@
+# Introduction #
+
+Earlier it was perceived as beneficial to make 'Dimensionless' and instance of 'Num', 'Floating' et al. The benefit would be that literal constants could be used in expressions when the type of the constant could be inferred to 'Dimensionless'.
+
+Example without 'Num' instance:
+```
+> f x = x + (2 *~ one) * x  -- The literal '2' must but multiplied by a unit.
+```
+Example with 'Num' instance:
+```
+> f x = x + 2 * x  -- The literal '2' is inferred to be 'Dimensionless'.
+```
+
+In Dimensional 0.3 'Dimensionless' was indeed made an instance of 'Num' et al. However, experience with Dimensional 0.3 has shown that the grief outweighs the gain.
+
+
+
+
+# Shortcomings #
+
+
+## Inference often requires explicit type signature ##
+
+In many cases the type of a literal constant cannot be inferred unless the function has an explicit type signature.
+
+For example, the type of '2' below cannot be inferred without explicit type signature.
+```
+> kineticEnergy = m * v ^ pos2 / 2
+```
+TODO: Show the compiler error message.
+
+We add the type signature.
+```
+> kineticEnergy :: Num a => Mass a -> Velocity a -> Energy a
+```
+
+
+## Inference is often impossible ##
+
+TODO: Add example.
+
+
+# Problems #
+
+
+## Type constraints for polymorphic functions ##
+
+Type constraints with MPTC or type synonyms not valid in Haskell 98:
+```
+> f :: (Num a, Num (Dimensionless a)) => Quantity d a -> Quantity d a
+> f x = x + 2 * sin x
+```
+
+
+## Unintelligible (even more so) compiler messages ##
+
+
+# Final call #
+
+In Dimensional 0.4 the 'Num' et al instances of 'Dimensionless' were removed. Relevant elementary functions where redefined instead of overloaded. For convienience, shorthands (`_1`, `_2`, ...) where defined for small natural numbers that appear naturally in physical formulae.
+
+
+# The upside #
+
+Apart from the lessons learned the 'NumType' module came out significantly stronger. The most important improvements are 'Div' and 'Mul' classes as well as full functional dependencies for the 'Sum' class.

@@ -1,0 +1,51 @@
+# dimensional #
+
+The dimensional package source code is in a Darcs repository at http://code.haskell.org/dimensional. To check it out do:
+
+```
+darcs get http://code.haskell.org/dimensional/
+```
+
+
+# numtype #
+
+The numtype package source code is in a Git repository at http://github.com/bjornbm/numtype. To check it out do:
+
+```
+git clone git://github.com/bjornbm/numtype.git
+```
+
+
+# dimensional-tf #
+
+The dimensional-tf package source code is in a Git repository at http://github.com/bjornbm/dimensional-tf. To check it out do:
+
+```
+git clone git://github.com/bjornbm/dimensional-tf.git
+```
+
+
+# numtype-tf #
+
+The numtype-tf package source code is in a Git repository at http://github.com/bjornbm/numtype-tf. To check it out do:
+
+```
+git clone git://github.com/bjornbm/numtype-tf.git
+```
+
+# dimensional-dk (unreleased) #
+
+The dimensional-dk package source code is in a Git repository at http://github.com/bjornbm/dimensional-dk. To check it out do:
+
+```
+git clone git://github.com/bjornbm/dimensional-dk.git
+```
+
+
+# numtype-dk (unreleased) #
+
+The numtype-dk package source code is in a Git repository at http://github.com/bjornbm/numtype-dk. To check it out do:
+
+```
+git clone git://github.com/bjornbm/numtype-dk.git
+```

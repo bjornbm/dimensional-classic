@@ -1,0 +1,68 @@
+# Introduction #
+
+The module hierarchy of the Dimensional library is an open question (as is the name). This page describes the current vision for the modules. Note that **the hierarchy and functionality described below is not necessarily reflected in the currently released version** of the library.
+
+
+# Hierarchy #
+
+  * Numeric.Units.Dimensional
+  * Numeric.Units.Dimensional.Quantities
+  * Numeric.Units.Dimensional.SIUnits
+  * Numeric.Units.Dimensional.Prelude
+  * Numeric.Units.Dimensional.NonSI
+  * Numeric.Units.Dimensional.CGS (experimental)
+  * Numeric.Units.Dimensional.Extensible (experimental)
+  * Numeric.Units.Dimensional.ForwardAD (experimental, planned)
+
+
+# Module summaries #
+
+
+## Dimensional ##
+
+The meat of code. Defines base dimensions and the unit 'one'. Defines type classes, operators and functions necessary for working with physical quantities.
+
+This module exports as little as possible in terms of type classes and such. However, to facilitate some trickery (e.g. 'Dimensional.Extensible') the restrictions must be loosened somewhat (but see 'Dimensional.Prelude').
+
+
+## Dimensional.Quantities ##
+
+Defines all derived dimensionalities and the corresponding quantity types. New dimensionalities will be added on an as-needed basis.
+
+
+## Dimensional.SIUnits ##
+
+Defines the SI units (base and derived) and units approved for use with SI. This module should be static.
+
+
+## Dimensional.Prelude ##
+
+Contains no definition -- only re-exports other modules for users' convenience. **More often than not this will be the only module users need to import.**
+
+The following modules have a subset of their contents re-exported through 'Dimensional.Prelude':
+
+  * Dimensional (a minimal subset will be re-exported)
+  * Dimensional.Quantities (will be re-exported in its entirety)
+  * Dimensional.SIUnits (will be re-exported in its entirety)
+  * Prelude (will be re-exported in its entirety with the exception of definitions conflicting with those in 'Dimensional')
+
+
+## Dimensional.NonSI ##
+
+Defines units outside of SI. Will never be "complete" but units will be added on an as-needed basis.
+
+
+## Experimental modules ##
+
+### Dimensional.CGS ###
+
+CGS units/quantities with type safe conversions to/from SI. Proof of concept that systems with rational exponents can be supported and that we can statically prohibit invalid conversions between systems.
+
+### Dimensional.Extensible ###
+
+Facilitates the use of custom dimensions (e.g. apples and oranges) in addition to the seven base dimensions.
+
+### Dimensional.ForwardAD (planned) ###
+
+Will provide forward-mode automatic differentiation (in one variable) on functions of physical quantities. The intent is to provide at least a differentiation operator together with a lifting function to prevent [perturbation confusion](http://www.bcl.hamilton.ie/~qobi/nesting/papers/ifl2005.pdf). See [this thread](http://thread.gmane.org/gmane.comp.lang.haskell.cafe/22308/) for more details.
+See also [Differentiating regions](http://conway.rutgers.edu/~ccshan/wiki/blog/posts/Differentiation/) and Conal's [vector-space](http://haskell.org/haskellwiki/Vector-space) library and the [related blog posts](http://conal.net/blog/tag/derivatives/).
