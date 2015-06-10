@@ -9,7 +9,8 @@ quantities is done by multiplication and division with units. The
 library is designed to, as far as is practical, enforce/encourage
 [best practices](http://physics.nist.gov/Pubs/SP811/) of unit usage.
 
-A spin-off of dimensional is the [numtype](numtype) library which
+A spin-off of dimensional is the
+[numtype](https://github.com/bjornbm/dimensional/wiki/numtype) library which
 provides a type-level representation of integers. Numtype is a
 dependency of the dimensional library.
 
@@ -35,8 +36,7 @@ there is an experimental implementation of dimensional built on (open)
 Type Families. Install with `cabal install dimensional-tf`.
 
 
-### [dimensional-dk](https://github.com/bjornbm/dimensional-dk/) (the
-future)
+### [dimensional-dk](https://github.com/bjornbm/dimensional-dk/) (the future)
 
 A new implementation leveraging Data Kinds and Closed Type Families is
 being drafted on [Github](https://github.com/bjornbm/dimensional-dk/).
