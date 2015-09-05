@@ -335,5 +335,5 @@ as a template. I imagine this should be fairly straight forward.
 
 = References =
 
-[1] http://code.google.com/p/dimensional/wiki/ChuckBlake20070611
+[1] https://github.com/bjornbm/dimensional/wiki/ChuckBlake20070611
 [2] http://www.tf.uni-kiel.de/matwis/amat/mw1_ge/kap_2/basics/b2_1_14.html

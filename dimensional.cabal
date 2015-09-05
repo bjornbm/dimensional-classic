@@ -6,7 +6,7 @@ Copyright:           Bjorn Buckwalter 2006-2015
 Author:              Bjorn Buckwalter
 Maintainer:          bjorn@buckwalter.se
 Stability:           mostly stable
-Homepage:            http://dimensional.googlecode.com/
+Homepage:            https://github.com/bjornbm/dimensional
 Synopsis:            Statically checked physical dimensions.
 Description:
     Dimensional is a library providing data types for performing arithmetic

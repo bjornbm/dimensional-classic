@@ -449,7 +449,7 @@ that often show up in formulae. We also throw in 'pi' and 'tau' for
 good measure.
 
 The constant for zero is polymorphic as proposed by Douglas McClean
-(http://code.google.com/p/dimensional/issues/detail?id=39) allowing
+(https://github.com/bjornbm/dimensional/issues/39) allowing
 it to express zero Length or Capacitance or Velocity etc, in addition
 to the dimensionless value zero.
 
