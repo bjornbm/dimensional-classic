@@ -18,7 +18,7 @@ the code produced.
 
 The 'Dimensional' module and the supporting module 'NumType', both
 written in literate Haskell, follow at the end of this message. For
-a tarball and/or a current darcs repository see [1]. The code is
+a tarball and/or a current git repository see [1]. The code is
 released under a BSD3 license.
 
 Before a 1.0 release I intend to, among other thing, change the
@@ -30,7 +30,7 @@ Happy New Year!
 
 -Bjorn Buckwalter
 
-[1] http://code.google.com/p/dimensional/
+[1] https://github.com/bjornbm/dimensional
 [2] http://cgi.cse.unsw.edu.au/~dons/blog/2006/12/11#release-a-library-today
 [3] http://article.gmane.org/gmane.comp.lang.haskell.general/14671
 [4] http://www.haskell.org/haskellwiki/Dimensionalized_numbers
